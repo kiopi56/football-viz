@@ -105,7 +105,7 @@ export default function Liverpool() {
   useEffect(() => {
     // fetchはブラウザ組み込みのHTTPリクエスト関数
     // Promiseを返すので .then() / .catch() でチェーンする
-    fetch("/data/liverpool.json")
+    fetch(`${import.meta.env.BASE_URL}data/liverpool.json`)
       // レスポンスが返ってきたら JSONに変換する
       // response.json() もPromiseを返す
       .then(response => {

@@ -101,7 +101,7 @@ export default function Arsenal() {
   useEffect(() => {
     // fetchはブラウザ組み込みのHTTPリクエスト関数
     // Promiseを返すので .then() / .catch() でチェーンする
-    fetch("/data/arsenal.json")
+    fetch(`${import.meta.env.BASE_URL}data/arsenal.json`)
       // レスポンスが返ってきたら JSONに変換する
       // response.json() もPromiseを返す
       .then(response => {

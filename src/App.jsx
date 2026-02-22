@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
+import { HashRouter, Routes, Route, NavLink } from "react-router-dom";
 import Home from "./pages/Home";
 import Liverpool from "./pages/Liverpool";
 import Arsenal from "./pages/Arsenal";
@@ -25,7 +25,7 @@ const linkBase = {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       {/* ── NavBar ── */}
       <nav style={navStyle}>
         <NavLink
@@ -67,6 +67,6 @@ export default function App() {
         <Route path="/liverpool" element={<Liverpool />} />
         <Route path="/arsenal" element={<Arsenal />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
