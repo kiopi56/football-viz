@@ -2,6 +2,7 @@ import { HashRouter, Routes, Route, NavLink } from "react-router-dom";
 import Home from "./pages/Home";
 import Liverpool from "./pages/Liverpool";
 import Arsenal from "./pages/Arsenal";
+import Compare from "./pages/Compare";
 
 const navStyle = {
   background: "#03060F",
@@ -59,6 +60,16 @@ export default function App() {
         >
           ARSENAL
         </NavLink>
+        <NavLink
+          to="/compare"
+          style={({ isActive }) => ({
+            ...linkBase,
+            color: isActive ? "#fff" : "#555",
+            borderBottomColor: isActive ? "#aaa" : "transparent",
+          })}
+        >
+          COMPARE
+        </NavLink>
       </nav>
 
       {/* ── ページコンテンツ ── */}
@@ -66,6 +77,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/liverpool" element={<Liverpool />} />
         <Route path="/arsenal" element={<Arsenal />} />
+        <Route path="/compare" element={<Compare />} />
       </Routes>
     </HashRouter>
   );

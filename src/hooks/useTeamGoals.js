@@ -10,18 +10,17 @@ import { aggregateGoalsByTime } from "../utils/aggregateGoals";
  * 使い方:
  *   const { data, loading, error } = useTeamGoals(64, 2024);
  *
- * @param {number} teamId - チームID（Liverpool=64, Arsenal=57）
+ * @param {number|null} teamId - チームID（Liverpool=64, Arsenal=57）。null の場合はfetchしない
  * @param {number} season - シーズン開始年（2024 = 2024-25シーズン）
  * @returns {{ data: Array|null, loading: boolean, error: string|null }}
  */
 export function useTeamGoals(teamId, season) {
   // data: 集計結果 [{ time: "0-15", goals: 3 }, ...] を保持する
-  // 最初は null（データ未取得）
   const [data, setData] = useState(null);
 
-  // loading: API 通信中かどうかを示すフラグ
-  // 最初は true（表示時にすぐ fetch を開始するため）
-  const [loading, setLoading] = useState(true);
+  // loading: teamId が指定されている場合は true でスタート（即 fetch するため）
+  // teamId が null の場合は fetch しないので false
+  const [loading, setLoading] = useState(teamId != null);
 
   // error: エラーメッセージを保持する。正常時は null
   const [error, setError] = useState(null);
@@ -29,6 +28,14 @@ export function useTeamGoals(teamId, season) {
   // useEffect の依存配列に teamId と season を入れることで、
   // どちらかが変わったときも自動的に再 fetch される
   useEffect(() => {
+    // teamId が null/undefined の場合は fetch しない（Compare ページの未選択スロット用）
+    if (!teamId) {
+      setData(null);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
     // 前回のデータをリセットして再ローディング状態にする
     setData(null);
     setLoading(true);

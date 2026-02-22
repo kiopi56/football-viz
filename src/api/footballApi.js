@@ -40,3 +40,12 @@ export async function getTeamMatches(teamId, season) {
     `/teams/${teamId}/matches?season=${season}&status=FINISHED`
   );
 }
+
+/**
+ * プレミアリーグの全チーム一覧を取得する
+ * @param {number} season - シーズン開始年（2024 = 2024-25シーズン）
+ * @returns {Promise<{ teams: Array<{ id, name, shortName, crest }> }>}
+ */
+export async function getPLTeams(season = 2024) {
+  return footballFetch(`/competitions/PL/teams?season=${season}`);
+}
