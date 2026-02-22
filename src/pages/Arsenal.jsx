@@ -4,36 +4,44 @@ import {
 
 const TEAM_COLOR = "#EF0107";
 
-// ── 試合別データ (2025-26) ──────────────────────────────
+// ── 試合別データ (2025-26 PL 直近10試合) ──────────────
+// goals = Arsenal が失点した分数
 const matches = [
-  { id: "MCI", date: "12/22", result: "W 5-1", goals: [36] },
-  { id: "IPS", date: "12/27", result: "W 1-0", goals: [] },
-  { id: "BRE", date: "1/1",   result: "W 1-0", goals: [] },
-  { id: "TOT", date: "1/5",   result: "W 2-1", goals: [90] },
+  { id: "BHA", date: "12/27", result: "W 2-1", goals: [63] },
+  { id: "AVL", date: "12/30", result: "W 4-1", goals: [90] },
+  { id: "BOU", date: "1/3",   result: "W 3-2", goals: [10, 76] },
   { id: "LIV", date: "1/8",   result: "D 0-0", goals: [] },
-  { id: "STK", date: "1/14",  result: "W 3-1", goals: [45] },
-  { id: "MUN", date: "1/22",  result: "W 3-1", goals: [24] },
-  { id: "WOL", date: "1/25",  result: "W 1-0", goals: [] },
-  { id: "SOU", date: "2/1",   result: "W 3-1", goals: [62] },
-  { id: "LEI", date: "2/15",  result: "W 5-1", goals: [66] },
+  { id: "NFO", date: "1/17",  result: "D 0-0", goals: [] },
+  { id: "MUN", date: "1/25",  result: "L 2-3", goals: [37, 50, 87] },
+  { id: "LEE", date: "1/31",  result: "W 4-0", goals: [] },
+  { id: "SUN", date: "2/7",   result: "W 3-0", goals: [] },
+  { id: "BRE", date: "2/12",  result: "D 1-1", goals: [70] },
+  { id: "WOL", date: "2/18",  result: "D 2-2", goals: [61, 90] },
 ];
 
 // ── 時間帯別失点データ (2025-26) ──────────────────────
+// 0-15': 10'(BOU) = 1
+// 16-30': なし = 0
+// 31-45': 37'(MUN) = 1
+// 46-60': 50'(MUN) = 1
+// 61-75': 61'(WOL), 63'(BHA), 70'(BRE) = 3
+// 76-89': 76'(BOU), 87'(MUN) = 2
+// 90'+:   90'(AVL), 90'(WOL) = 2
 const data = [
-  { period: "0-15'",  goals: 0, color: "#22c55e" },
-  { period: "16-30'", goals: 1, color: "#84cc16" },
+  { period: "0-15'",  goals: 1, color: "#22c55e" },
+  { period: "16-30'", goals: 0, color: "#84cc16" },
   { period: "31-45'", goals: 1, color: "#eab308" },
-  { period: "46-60'", goals: 0, color: "#f97316" },
-  { period: "61-75'", goals: 2, color: "#ef4444" },
-  { period: "76-89'", goals: 0, color: "#dc2626" },
+  { period: "46-60'", goals: 1, color: "#f97316" },
+  { period: "61-75'", goals: 3, color: "#ef4444" },
+  { period: "76-89'", goals: 2, color: "#dc2626" },
   { period: "90'+",   goals: 2, color: "#a855f7" },
 ];
 
 const total = data.reduce((acc, curr) => acc + curr.goals, 0);
 const cleanSheets = matches.filter((m) => m.goals.length === 0).length;
 
-// ── 昨季データ (2024-25 プレースホルダー) ──────────────
-const lastSeasonGoals = [2, 2, 3, 2, 2, 3, 1];
+// ── 昨季データ (2024-25 同時期10試合プレースホルダー) ─
+const lastSeasonGoals = [2, 2, 3, 2, 1, 3, 2];
 
 const comparisonData = data.map((d, i) => ({
   period: d.period,

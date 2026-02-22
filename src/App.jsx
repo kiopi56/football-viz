@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
+import Home from "./pages/Home";
 import Liverpool from "./pages/Liverpool";
 import Arsenal from "./pages/Arsenal";
 
@@ -11,7 +12,7 @@ const navStyle = {
   fontFamily: "monospace",
 };
 
-const linkStyle = {
+const linkBase = {
   display: "inline-block",
   padding: "14px 20px",
   fontSize: "12px",
@@ -31,7 +32,17 @@ export default function App() {
           to="/"
           end
           style={({ isActive }) => ({
-            ...linkStyle,
+            ...linkBase,
+            color: isActive ? "#fff" : "#555",
+            borderBottomColor: isActive ? "#888" : "transparent",
+          })}
+        >
+          HOME
+        </NavLink>
+        <NavLink
+          to="/liverpool"
+          style={({ isActive }) => ({
+            ...linkBase,
             color: isActive ? "#fff" : "#555",
             borderBottomColor: isActive ? "#C8102E" : "transparent",
           })}
@@ -41,7 +52,7 @@ export default function App() {
         <NavLink
           to="/arsenal"
           style={({ isActive }) => ({
-            ...linkStyle,
+            ...linkBase,
             color: isActive ? "#fff" : "#555",
             borderBottomColor: isActive ? "#EF0107" : "transparent",
           })}
@@ -52,7 +63,8 @@ export default function App() {
 
       {/* ── ページコンテンツ ── */}
       <Routes>
-        <Route path="/" element={<Liverpool />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/liverpool" element={<Liverpool />} />
         <Route path="/arsenal" element={<Arsenal />} />
       </Routes>
     </BrowserRouter>
