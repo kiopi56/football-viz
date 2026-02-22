@@ -1,12 +1,17 @@
-import { useState } from "react";
+// useState  = コンポーネント内で「変化する値」を管理するフック
+// useEffect = コンポーネントが表示されたタイミングで処理を実行するフック
+import { useState, useEffect } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Legend,
 } from "recharts";
-import lfcData from "../data/liverpool.json";
 
-const { matches, prevRaw: PREV_RAW, totalPrev: TOTAL_2425, gamesPrev: GAMES_2425 } = lfcData;
-
+// ────────────────────────────────────────────────────────────
+// 2024-25 LFC失点データ（FootyStats公式より：38試合 41失点）
+// 時間帯別: 0-15'=2, 16-30'=1, 31-45'=10, 46-60'=9, 61-75'=5, 76-89'=12, 90+'=2
+// 注: FootyStatsは76-90をまとめて14と報告。Opta記事より90+AT失点は
+//   Southampton戦の1件のみが確認されているため 76-89'=12, 90+'=2 と推定
+// ────────────────────────────────────────────────────────────
 const PERIODS = [
   { label: "0–15'",  min: 0,   max: 15,  color: "#22c55e", colorDim: "#16532e" },
   { label: "16–30'", min: 16,  max: 30,  color: "#84cc16", colorDim: "#3a5a09" },
@@ -17,19 +22,6 @@ const PERIODS = [
   { label: "90'+",   min: 90,  max: 999, color: "#a855f7", colorDim: "#4c1d95" },
 ];
 
-// matches から flat なゴールイベント配列を生成
-const LFC_CONCEDED_2526 = matches.flatMap(m =>
-  m.goals.map(time => ({ match: m.id, date: m.date, time, result: m.result }))
-);
-
-// 試合別サマリー（conceded = 失点数）
-const MATCHES_2526 = matches.map(m => ({
-  id: m.id,
-  date: m.date,
-  result: m.result,
-  conceded: m.goals.length,
-}));
-
 function getPeriodIdx(time) {
   for (let i = 0; i < PERIODS.length; i++) {
     if (time >= PERIODS[i].min && time <= PERIODS[i].max) return i;
@@ -37,33 +29,9 @@ function getPeriodIdx(time) {
   return PERIODS.length - 1;
 }
 
-const GAMES_2526 = 10;
-const TOTAL_2526 = LFC_CONCEDED_2526.length;
-
-const comparisonData = PERIODS.map((p, i) => {
-  const cur = LFC_CONCEDED_2526.filter(g => g.time >= p.min && g.time <= p.max).length;
-  const prev = PREV_RAW[i];
-  return {
-    period: p.label,
-    "2025-26（実数)": cur,
-    "2024-25（10試合換算)": +(prev * GAMES_2526 / GAMES_2425).toFixed(2),
-    cur,
-    prev,
-    curPct: +((cur / TOTAL_2526) * 100).toFixed(1),
-    prevPct: +((prev / TOTAL_2425) * 100).toFixed(1),
-    color: p.color,
-  };
-});
-
-const pctData = PERIODS.map((p, i) => ({
-  period: p.label,
-  "2025-26": comparisonData[i].curPct,
-  "2024-25": comparisonData[i].prevPct,
-}));
-
 
 // ── Tooltips ──────────────────────────────────────────────
-const CompareTooltip = ({ active, payload, label }) => {
+const CompareTooltip = ({ active, payload, label, comparisonData }) => {
   if (!active || !payload?.length) return null;
   const d = comparisonData.find(x => x.period === label);
   return (
@@ -115,7 +83,129 @@ const PctTooltip = ({ active, payload, label }) => {
 
 // ── メインコンポーネント ──────────────────────────────────
 export default function Liverpool() {
+  // ── useStateの使い方 ──────────────────────────────────────
+  // useState(初期値) を呼ぶと [現在の値, 値を更新する関数] が返ってくる
+  // 値が更新されると Reactが自動的に画面を再描画する
+
+  // view: グラフの表示モード（"compare" / "pct" / "radar"）
   const [view, setView] = useState("compare");
+
+  // data: fetchで取得したJSONデータを保持する。最初はnull
+  const [data, setData] = useState(null);
+
+  // loading: データ読み込み中かどうかを示すフラグ。最初はtrue
+  const [loading, setLoading] = useState(true);
+
+  // error: エラーメッセージを保持する。最初はnull（エラーなし）
+  const [error, setError] = useState(null);
+
+  // ── useEffectの使い方 ─────────────────────────────────────
+  // useEffect(実行したい処理, [依存配列]) の形で使う
+  // 依存配列が [] の場合、コンポーネントが初めて表示されたときに1回だけ実行される
+  useEffect(() => {
+    // fetchはブラウザ組み込みのHTTPリクエスト関数
+    // Promiseを返すので .then() / .catch() でチェーンする
+    fetch("/data/liverpool.json")
+      // レスポンスが返ってきたら JSONに変換する
+      // response.json() もPromiseを返す
+      .then(response => {
+        // HTTPステータスが 200以外（404, 500など）の場合はエラー扱いにする
+        if (!response.ok) {
+          throw new Error(`HTTP error: ${response.status}`);
+        }
+        return response.json();
+      })
+      // JSONのパースが完了したら dataに保存し、loadingをfalseにする
+      .then(json => {
+        setData(json);    // データをstateにセット → 画面が再描画される
+        setLoading(false); // ローディング終了
+      })
+      // fetch自体が失敗した場合（ネットワークエラーなど）はこちらに来る
+      .catch(err => {
+        setError(err.message); // エラーメッセージをstateにセット
+        setLoading(false);      // ローディング終了（エラー状態で）
+      });
+  }, []); // [] = 依存配列が空なので、マウント時に1回だけ実行
+
+  // ── ローディング中の表示 ──────────────────────────────────
+  // loading が true の間はこの画面を返す
+  if (loading) {
+    return (
+      <div style={{
+        minHeight: "100vh",
+        background: "#03060F",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "'Space Mono', monospace",
+        color: "#555",
+        fontSize: 13,
+      }}>
+        Loading...
+      </div>
+    );
+  }
+
+  // ── エラー時の表示 ────────────────────────────────────────
+  // error が null でない場合はエラー画面を返す
+  if (error) {
+    return (
+      <div style={{
+        minHeight: "100vh",
+        background: "#03060F",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "'Space Mono', monospace",
+        color: "#ef4444",
+        fontSize: 13,
+      }}>
+        Error: データを取得できませんでした
+      </div>
+    );
+  }
+
+  // ── データの展開 ──────────────────────────────────────────
+  // ここに来た時点で data は null でないことが保証されている
+  const { matches, prevRaw: PREV_RAW, totalPrev: TOTAL_2425, gamesPrev: GAMES_2425 } = data;
+
+  // matches から flat なゴールイベント配列を生成
+  const LFC_CONCEDED_2526 = matches.flatMap(m =>
+    m.goals.map(time => ({ match: m.id, date: m.date, time, result: m.result }))
+  );
+
+  // 試合別サマリー（conceded = 失点数）
+  const MATCHES_2526 = matches.map(m => ({
+    id: m.id,
+    date: m.date,
+    result: m.result,
+    conceded: m.goals.length,
+  }));
+
+  const GAMES_2526 = 10;
+  const TOTAL_2526 = LFC_CONCEDED_2526.length;
+
+  const comparisonData = PERIODS.map((p, i) => {
+    const cur = LFC_CONCEDED_2526.filter(g => g.time >= p.min && g.time <= p.max).length;
+    const prev = PREV_RAW[i];
+    return {
+      period: p.label,
+      "2025-26（実数)": cur,
+      "2024-25（10試合換算)": +(prev * GAMES_2526 / GAMES_2425).toFixed(2),
+      cur,
+      prev,
+      curPct: +((cur / TOTAL_2526) * 100).toFixed(1),
+      prevPct: +((prev / TOTAL_2425) * 100).toFixed(1),
+      color: p.color,
+    };
+  });
+
+  const pctData = PERIODS.map((p, i) => ({
+    period: p.label,
+    "2025-26": comparisonData[i].curPct,
+    "2024-25": comparisonData[i].prevPct,
+  }));
+
   const cleanSheets = MATCHES_2526.filter(m => m.conceded === 0).length;
   const atGoals2526 = comparisonData[6].cur;
   const atGoals2425 = comparisonData[6].prev;
@@ -205,7 +295,7 @@ export default function Liverpool() {
               <BarChart data={comparisonData} barGap={3} barCategoryGap="25%">
                 <XAxis dataKey="period" tick={{ fill: "#888", fontSize: 11, fontFamily: "'Space Mono', monospace" }} axisLine={{ stroke: "rgba(255,255,255,0.08)" }} tickLine={false} />
                 <YAxis allowDecimals={false} tick={{ fill: "#555", fontSize: 10 }} axisLine={false} tickLine={false} />
-                <Tooltip content={<CompareTooltip />} cursor={{ fill: "rgba(255,255,255,0.03)" }} />
+                <Tooltip content={<CompareTooltip comparisonData={comparisonData} />} cursor={{ fill: "rgba(255,255,255,0.03)" }} />
                 <Legend
                   formatter={v => <span style={{ color: v === "2025-26（実数)" ? "#C8102E" : "#4ade80", fontSize: 11 }}>{v}</span>}
                 />
