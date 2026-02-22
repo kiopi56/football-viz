@@ -1,33 +1,30 @@
-// useState  = コンポーネント内で「変化する値」を管理するフック
-// useEffect = コンポーネントが表示されたタイミングで処理を実行するフック
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Legend,
 } from "recharts";
+import { useTeamGoals } from "../hooks/useTeamGoals";
+
+// Liverpool FC のチームID（football-data.org）
+const TEAM_ID = 64;
 
 // ────────────────────────────────────────────────────────────
-// 2024-25 LFC失点データ（FootyStats公式より：38試合 41失点）
-// 時間帯別: 0-15'=2, 16-30'=1, 31-45'=10, 46-60'=9, 61-75'=5, 76-89'=12, 90+'=2
-// 注: FootyStatsは76-90をまとめて14と報告。Opta記事より90+AT失点は
-//   Southampton戦の1件のみが確認されているため 76-89'=12, 90+'=2 と推定
+// 2023-24 LFC失点データ（比較用・FootyStats公式より：38試合 41失点）
+// 時間帯別（6区分）: 0-15=2, 16-30=1, 31-45=10, 46-60=9, 61-75=5, 76-90=14
 // ────────────────────────────────────────────────────────────
+const PREV_RAW  = [2, 1, 10, 9, 5, 14];
+const TOTAL_PREV = 41;
+const GAMES_PREV = 38;
+
+// 表示用の時間帯定義（aggregateGoalsByTime の6区分に対応）
 const PERIODS = [
-  { label: "0–15'",  min: 0,   max: 15,  color: "#22c55e", colorDim: "#16532e" },
-  { label: "16–30'", min: 16,  max: 30,  color: "#84cc16", colorDim: "#3a5a09" },
-  { label: "31–45'", min: 31,  max: 45,  color: "#eab308", colorDim: "#6b5100" },
-  { label: "46–60'", min: 46,  max: 60,  color: "#f97316", colorDim: "#7c3a0a" },
-  { label: "61–75'", min: 61,  max: 75,  color: "#ef4444", colorDim: "#7c1c1c" },
-  { label: "76–89'", min: 76,  max: 89,  color: "#dc2626", colorDim: "#6b1414" },
-  { label: "90'+",   min: 90,  max: 999, color: "#a855f7", colorDim: "#4c1d95" },
+  { label: "0–15'",  color: "#22c55e" },
+  { label: "16–30'", color: "#84cc16" },
+  { label: "31–45'", color: "#eab308" },
+  { label: "46–60'", color: "#f97316" },
+  { label: "61–75'", color: "#ef4444" },
+  { label: "76–90'", color: "#a855f7" }, // ATを含む終盤
 ];
-
-function getPeriodIdx(time) {
-  for (let i = 0; i < PERIODS.length; i++) {
-    if (time >= PERIODS[i].min && time <= PERIODS[i].max) return i;
-  }
-  return PERIODS.length - 1;
-}
 
 
 // ── Tooltips ──────────────────────────────────────────────
@@ -47,11 +44,11 @@ const CompareTooltip = ({ active, payload, label, comparisonData }) => {
     }}>
       <div style={{ color: "#aaa", marginBottom: 8, fontSize: 11 }}>{label}</div>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 16, marginBottom: 4 }}>
-        <span style={{ color: "#C8102E" }}>2025-26</span>
+        <span style={{ color: "#C8102E" }}>2024-25</span>
         <span>{d.cur}失点 <span style={{ color: "#666" }}>({d.curPct}%)</span></span>
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 16 }}>
-        <span style={{ color: "#4ade80" }}>2024-25</span>
+        <span style={{ color: "#4ade80" }}>2023-24</span>
         <span>{d.prev}失点 <span style={{ color: "#666" }}>({d.prevPct}%)</span></span>
       </div>
     </div>
@@ -81,134 +78,77 @@ const PctTooltip = ({ active, payload, label }) => {
 };
 
 
+// ── ローディング画面 ──────────────────────────────────────
+const LoadingScreen = () => (
+  <div style={{
+    minHeight: "100vh",
+    background: "#03060F",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontFamily: "'Space Mono', monospace",
+    color: "#555",
+    fontSize: 13,
+  }}>
+    Loading...
+  </div>
+);
+
+// ── エラー画面 ────────────────────────────────────────────
+const ErrorScreen = () => (
+  <div style={{
+    minHeight: "100vh",
+    background: "#03060F",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontFamily: "'Space Mono', monospace",
+    color: "#ef4444",
+    fontSize: 13,
+  }}>
+    Error: データを取得できませんでした
+  </div>
+);
+
+
 // ── メインコンポーネント ──────────────────────────────────
 export default function Liverpool() {
-  // ── useStateの使い方 ──────────────────────────────────────
-  // useState(初期値) を呼ぶと [現在の値, 値を更新する関数] が返ってくる
-  // 値が更新されると Reactが自動的に画面を再描画する
-
-  // view: グラフの表示モード（"compare" / "pct" / "radar"）
   const [view, setView] = useState("compare");
 
-  // data: fetchで取得したJSONデータを保持する。最初はnull
-  const [data, setData] = useState(null);
+  // useTeamGoals フックで 2024-25シーズンの失点データを取得する
+  // data = [{ time: "0-15", goals: N }, ...] (6期間)
+  const { data, loading, error } = useTeamGoals(TEAM_ID, 2024);
 
-  // loading: データ読み込み中かどうかを示すフラグ。最初はtrue
-  const [loading, setLoading] = useState(true);
+  if (loading) return <LoadingScreen />;
+  if (error)   return <ErrorScreen />;
 
-  // error: エラーメッセージを保持する。最初はnull（エラーなし）
-  const [error, setError] = useState(null);
+  // ── データ計算 ──────────────────────────────────────────
+  // API から取得した今季の失点総数
+  const TOTAL_CUR = data.reduce((sum, d) => sum + d.goals, 0);
+  const GAMES_CUR = 38; // 2024-25シーズン全試合数
 
-  // ── useEffectの使い方 ─────────────────────────────────────
-  // useEffect(実行したい処理, [依存配列]) の形で使う
-  // 依存配列が [] の場合、コンポーネントが初めて表示されたときに1回だけ実行される
-  useEffect(() => {
-    // fetchはブラウザ組み込みのHTTPリクエスト関数
-    // Promiseを返すので .then() / .catch() でチェーンする
-    fetch(`${import.meta.env.BASE_URL}data/liverpool.json`)
-      // レスポンスが返ってきたら JSONに変換する
-      // response.json() もPromiseを返す
-      .then(response => {
-        // HTTPステータスが 200以外（404, 500など）の場合はエラー扱いにする
-        if (!response.ok) {
-          throw new Error(`HTTP error: ${response.status}`);
-        }
-        return response.json();
-      })
-      // JSONのパースが完了したら dataに保存し、loadingをfalseにする
-      .then(json => {
-        setData(json);    // データをstateにセット → 画面が再描画される
-        setLoading(false); // ローディング終了
-      })
-      // fetch自体が失敗した場合（ネットワークエラーなど）はこちらに来る
-      .catch(err => {
-        setError(err.message); // エラーメッセージをstateにセット
-        setLoading(false);      // ローディング終了（エラー状態で）
-      });
-  }, []); // [] = 依存配列が空なので、マウント時に1回だけ実行
-
-  // ── ローディング中の表示 ──────────────────────────────────
-  // loading が true の間はこの画面を返す
-  if (loading) {
-    return (
-      <div style={{
-        minHeight: "100vh",
-        background: "#03060F",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontFamily: "'Space Mono', monospace",
-        color: "#555",
-        fontSize: 13,
-      }}>
-        Loading...
-      </div>
-    );
-  }
-
-  // ── エラー時の表示 ────────────────────────────────────────
-  // error が null でない場合はエラー画面を返す
-  if (error) {
-    return (
-      <div style={{
-        minHeight: "100vh",
-        background: "#03060F",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontFamily: "'Space Mono', monospace",
-        color: "#ef4444",
-        fontSize: 13,
-      }}>
-        Error: データを取得できませんでした
-      </div>
-    );
-  }
-
-  // ── データの展開 ──────────────────────────────────────────
-  // ここに来た時点で data は null でないことが保証されている
-  const { matches, prevRaw: PREV_RAW, totalPrev: TOTAL_2425, gamesPrev: GAMES_2425 } = data;
-
-  // matches から flat なゴールイベント配列を生成
-  const LFC_CONCEDED_2526 = matches.flatMap(m =>
-    m.goals.map(time => ({ match: m.id, date: m.date, time, result: m.result }))
-  );
-
-  // 試合別サマリー（conceded = 失点数）
-  const MATCHES_2526 = matches.map(m => ({
-    id: m.id,
-    date: m.date,
-    result: m.result,
-    conceded: m.goals.length,
-  }));
-
-  const GAMES_2526 = 10;
-  const TOTAL_2526 = LFC_CONCEDED_2526.length;
-
+  // 比較用データを組み立てる
+  // data[i].goals = 今季実数, PREV_RAW[i] = 前季実数
   const comparisonData = PERIODS.map((p, i) => {
-    const cur = LFC_CONCEDED_2526.filter(g => g.time >= p.min && g.time <= p.max).length;
+    const cur  = data[i]?.goals ?? 0;
     const prev = PREV_RAW[i];
     return {
       period: p.label,
-      "2025-26（実数)": cur,
-      "2024-25（10試合換算)": +(prev * GAMES_2526 / GAMES_2425).toFixed(2),
+      "2024-25（実数)":      cur,
+      "2023-24（換算)": +(prev * GAMES_CUR / GAMES_PREV).toFixed(2),
       cur,
       prev,
-      curPct: +((cur / TOTAL_2526) * 100).toFixed(1),
-      prevPct: +((prev / TOTAL_2425) * 100).toFixed(1),
+      curPct:  TOTAL_CUR  > 0 ? +((cur  / TOTAL_CUR)  * 100).toFixed(1) : 0,
+      prevPct: TOTAL_PREV > 0 ? +((prev / TOTAL_PREV) * 100).toFixed(1) : 0,
       color: p.color,
     };
   });
 
   const pctData = PERIODS.map((p, i) => ({
     period: p.label,
-    "2025-26": comparisonData[i].curPct,
-    "2024-25": comparisonData[i].prevPct,
+    "2024-25": comparisonData[i].curPct,
+    "2023-24": comparisonData[i].prevPct,
   }));
-
-  const cleanSheets = MATCHES_2526.filter(m => m.conceded === 0).length;
-  const atGoals2526 = comparisonData[6].cur;
-  const atGoals2425 = comparisonData[6].prev;
 
   return (
     <div style={{
@@ -234,7 +174,7 @@ export default function Liverpool() {
               時間帯別 失点分析 — シーズン対比
             </div>
             <div style={{ fontSize: 10, color: "#555", marginTop: 6 }}>
-              2025-26（直近10試合） vs 2024-25（全38試合・優勝シーズン）
+              2024-25（全38試合） vs 2023-24（全38試合）
             </div>
           </div>
         </div>
@@ -242,10 +182,10 @@ export default function Liverpool() {
         {/* ── KPI strip ── */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr) repeat(2,1fr)", gap: 8, marginBottom: 24 }}>
           {[
-            { label: "2025-26 総失点", value: `${TOTAL_2526}`, sub: "10試合", accent: "#C8102E" },
-            { label: "2024-25 総失点", value: `${TOTAL_2425}`, sub: "38試合（優勝）", accent: "#4ade80" },
-            { label: "90'以降 2025-26", value: `${atGoals2526}`, sub: `全失点の${comparisonData[6].curPct}%`, accent: "#a855f7" },
-            { label: "90'以降 2024-25", value: `${atGoals2425}`, sub: `全失点の${comparisonData[6].prevPct}%`, accent: "#818cf8" },
+            { label: "2024-25 総失点", value: `${TOTAL_CUR}`,  sub: `${GAMES_CUR}試合`,  accent: "#C8102E" },
+            { label: "2023-24 総失点", value: `${TOTAL_PREV}`, sub: `${GAMES_PREV}試合`, accent: "#4ade80" },
+            { label: "76-90' 2024-25", value: `${comparisonData[5].cur}`,  sub: `全失点の${comparisonData[5].curPct}%`,  accent: "#a855f7" },
+            { label: "76-90' 2023-24", value: `${comparisonData[5].prev}`, sub: `全失点の${comparisonData[5].prevPct}%`, accent: "#818cf8" },
           ].map(({ label, value, sub, accent }) => (
             <div key={label} style={{
               background: "rgba(255,255,255,0.03)",
@@ -264,9 +204,9 @@ export default function Liverpool() {
         {/* ── View toggle ── */}
         <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
           {[
-            ["compare", "10試合換算・実数比較"],
-            ["pct", "割合（%）比較"],
-            ["radar", "レーダー"],
+            ["compare", "実数比較"],
+            ["pct",     "割合（%）比較"],
+            ["radar",   "レーダー"],
           ].map(([v, label]) => (
             <button key={v} onClick={() => setView(v)} style={{
               padding: "6px 14px",
@@ -287,7 +227,7 @@ export default function Liverpool() {
           border: "1px solid rgba(255,255,255,0.07)",
           borderRadius: 12,
           padding: "24px 16px",
-          marginBottom: 16,
+          marginBottom: 20,
           height: 300,
         }}>
           {view === "compare" && (
@@ -296,11 +236,9 @@ export default function Liverpool() {
                 <XAxis dataKey="period" tick={{ fill: "#888", fontSize: 11, fontFamily: "'Space Mono', monospace" }} axisLine={{ stroke: "rgba(255,255,255,0.08)" }} tickLine={false} />
                 <YAxis allowDecimals={false} tick={{ fill: "#555", fontSize: 10 }} axisLine={false} tickLine={false} />
                 <Tooltip content={<CompareTooltip comparisonData={comparisonData} />} cursor={{ fill: "rgba(255,255,255,0.03)" }} />
-                <Legend
-                  formatter={v => <span style={{ color: v === "2025-26（実数)" ? "#C8102E" : "#4ade80", fontSize: 11 }}>{v}</span>}
-                />
-                <Bar dataKey="2025-26（実数)" fill="#C8102E" radius={[3, 3, 0, 0]} />
-                <Bar dataKey="2024-25（10試合換算)" fill="#4ade80" fillOpacity={0.7} radius={[3, 3, 0, 0]} />
+                <Legend formatter={v => <span style={{ color: v === "2024-25（実数)" ? "#C8102E" : "#4ade80", fontSize: 11 }}>{v}</span>} />
+                <Bar dataKey="2024-25（実数)" fill="#C8102E" radius={[3, 3, 0, 0]} />
+                <Bar dataKey="2023-24（換算)" fill="#4ade80" fillOpacity={0.7} radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           )}
@@ -310,11 +248,9 @@ export default function Liverpool() {
                 <XAxis dataKey="period" tick={{ fill: "#888", fontSize: 11, fontFamily: "'Space Mono', monospace" }} axisLine={{ stroke: "rgba(255,255,255,0.08)" }} tickLine={false} />
                 <YAxis tick={{ fill: "#555", fontSize: 10 }} axisLine={false} tickLine={false} unit="%" />
                 <Tooltip content={<PctTooltip />} cursor={{ fill: "rgba(255,255,255,0.03)" }} />
-                <Legend
-                  formatter={v => <span style={{ color: v === "2025-26" ? "#C8102E" : "#4ade80", fontSize: 11 }}>{v}</span>}
-                />
-                <Bar dataKey="2025-26" fill="#C8102E" radius={[3, 3, 0, 0]} />
-                <Bar dataKey="2024-25" fill="#4ade80" fillOpacity={0.7} radius={[3, 3, 0, 0]} />
+                <Legend formatter={v => <span style={{ color: v === "2024-25" ? "#C8102E" : "#4ade80", fontSize: 11 }}>{v}</span>} />
+                <Bar dataKey="2024-25" fill="#C8102E" radius={[3, 3, 0, 0]} />
+                <Bar dataKey="2023-24" fill="#4ade80" fillOpacity={0.7} radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           )}
@@ -324,125 +260,38 @@ export default function Liverpool() {
                 <PolarGrid stroke="rgba(255,255,255,0.1)" />
                 <PolarAngleAxis dataKey="period" tick={{ fill: "#aaa", fontSize: 11, fontFamily: "'Space Mono', monospace" }} />
                 <PolarRadiusAxis tick={false} axisLine={false} />
-                <Radar name="2025-26" dataKey="2025-26" stroke="#C8102E" fill="#C8102E" fillOpacity={0.3} strokeWidth={2} />
-                <Radar name="2024-25" dataKey="2024-25" stroke="#4ade80" fill="#4ade80" fillOpacity={0.2} strokeWidth={2} />
-                <Legend formatter={v => <span style={{ color: v === "2025-26" ? "#C8102E" : "#4ade80", fontSize: 11 }}>{v}</span>} />
+                <Radar name="2024-25" dataKey="2024-25" stroke="#C8102E" fill="#C8102E" fillOpacity={0.3} strokeWidth={2} />
+                <Radar name="2023-24" dataKey="2023-24" stroke="#4ade80" fill="#4ade80" fillOpacity={0.2} strokeWidth={2} />
+                <Legend formatter={v => <span style={{ color: v === "2024-25" ? "#C8102E" : "#4ade80", fontSize: 11 }}>{v}</span>} />
               </RadarChart>
             </ResponsiveContainer>
           )}
         </div>
 
-        {/* ── 90+ callout banner ── */}
-        <div style={{
-          background: "linear-gradient(135deg, rgba(168,85,247,0.12), rgba(200,16,46,0.08))",
-          border: "1px solid rgba(168,85,247,0.35)",
-          borderRadius: 10,
-          padding: "16px 20px",
-          marginBottom: 20,
-          display: "flex",
-          alignItems: "center",
-          gap: 20,
-          flexWrap: "wrap",
-        }}>
-          <div>
-            <div style={{ fontSize: 10, color: "#a78bfa", letterSpacing: "0.1em", marginBottom: 4 }}>⚡ 90分以降（アディショナルタイム）</div>
-            <div style={{ display: "flex", gap: 24, alignItems: "baseline" }}>
-              <div>
-                <span style={{ fontSize: 36, fontWeight: 700, color: "#a855f7", fontFamily: "'Anton',sans-serif" }}>{atGoals2526}</span>
-                <span style={{ fontSize: 12, color: "#888", marginLeft: 6 }}>失点 (2025-26 · 10試合)</span>
-              </div>
-              <div style={{ color: "#555" }}>vs</div>
-              <div>
-                <span style={{ fontSize: 36, fontWeight: 700, color: "#818cf8", fontFamily: "'Anton',sans-serif" }}>{atGoals2425}</span>
-                <span style={{ fontSize: 12, color: "#888", marginLeft: 6 }}>失点 (2024-25 · 全38試合)</span>
-              </div>
-            </div>
-          </div>
-          <div style={{
-            marginLeft: "auto",
-            background: "rgba(168,85,247,0.15)",
-            border: "1px solid rgba(168,85,247,0.3)",
-            borderRadius: 8,
-            padding: "10px 16px",
-            textAlign: "center",
-            minWidth: 120,
-          }}>
-            <div style={{ fontSize: 10, color: "#a78bfa", marginBottom: 4 }}>全失点に占める割合</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: "#a855f7" }}>{comparisonData[6].curPct}%</div>
-            <div style={{ fontSize: 10, color: "#666" }}>昨季 {comparisonData[6].prevPct}%</div>
-          </div>
-        </div>
-
         {/* ── 時間帯別 内訳テーブル ── */}
         <div style={{ fontSize: 10, color: "#555", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>時間帯別 内訳</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 6, marginBottom: 28 }}>
-          {comparisonData.map((d, i) => {
-            const isAt = i === 6;
-            return (
-              <div key={d.period} style={{
-                background: isAt ? "rgba(168,85,247,0.08)" : "rgba(255,255,255,0.03)",
-                border: `1px solid ${isAt ? "rgba(168,85,247,0.3)" : "rgba(255,255,255,0.06)"}`,
-                borderBottom: `2px solid ${PERIODS[i].color}`,
-                borderRadius: 8,
-                padding: "10px 6px",
-                textAlign: "center",
-              }}>
-                <div style={{ fontSize: 9, color: "#666", marginBottom: 6 }}>{d.period}</div>
-                <div style={{ fontSize: 18, fontWeight: 700, color: "#C8102E" }}>{d.cur}</div>
-                <div style={{ fontSize: 9, color: "#555", marginBottom: 4 }}>{d.curPct}%</div>
-                <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "6px 0" }} />
-                <div style={{ fontSize: 15, fontWeight: 700, color: "#4ade80" }}>{d.prev}</div>
-                <div style={{ fontSize: 9, color: "#555" }}>{d.prevPct}%</div>
-              </div>
-            );
-          })}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(6,1fr)", gap: 6, marginBottom: 12 }}>
+          {comparisonData.map((d, i) => (
+            <div key={d.period} style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.06)",
+              borderBottom: `2px solid ${PERIODS[i].color}`,
+              borderRadius: 8,
+              padding: "10px 6px",
+              textAlign: "center",
+            }}>
+              <div style={{ fontSize: 9, color: "#666", marginBottom: 6 }}>{d.period}</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: "#C8102E" }}>{d.cur}</div>
+              <div style={{ fontSize: 9, color: "#555", marginBottom: 4 }}>{d.curPct}%</div>
+              <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "6px 0" }} />
+              <div style={{ fontSize: 15, fontWeight: 700, color: "#4ade80" }}>{d.prev}</div>
+              <div style={{ fontSize: 9, color: "#555" }}>{d.prevPct}%</div>
+            </div>
+          ))}
         </div>
         <div style={{ display: "flex", gap: 16, marginBottom: 28, fontSize: 10, color: "#555" }}>
-          <span><span style={{ color: "#C8102E", fontWeight: 700 }}>赤</span> = 2025-26（実数）</span>
-          <span><span style={{ color: "#4ade80", fontWeight: 700 }}>緑</span> = 2024-25（実数）</span>
-        </div>
-
-        {/* ── 試合別 失点ログ ── */}
-        <div style={{ fontSize: 10, color: "#555", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>2025-26 試合別 失点ログ</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 8, marginBottom: 28 }}>
-          {MATCHES_2526.map(m => {
-            const resultColor = m.result.startsWith("W") ? "#22c55e" : m.result.startsWith("D") ? "#f59e0b" : "#ef4444";
-            return (
-              <div key={m.id} style={{
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(255,255,255,0.07)",
-                borderLeft: `3px solid ${resultColor}`,
-                borderRadius: 8,
-                padding: "10px 12px",
-              }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                  <span style={{ fontSize: 13, fontWeight: 700 }}>{m.id}</span>
-                  <span style={{ fontSize: 10, color: resultColor }}>{m.result}</span>
-                </div>
-                <div style={{ fontSize: 10, color: "#555", marginBottom: 8 }}>{m.date}</div>
-                {m.conceded === 0 ? (
-                  <div style={{ fontSize: 10, color: "#22c55e" }}>✓ クリーンシート</div>
-                ) : (
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
-                    {LFC_CONCEDED_2526.filter(g => g.match === m.id).map((g, i) => {
-                      const pidx = getPeriodIdx(g.time);
-                      const c = PERIODS[pidx].color;
-                      return (
-                        <span key={i} style={{
-                          background: `${c}22`,
-                          border: `1px solid ${c}`,
-                          color: c,
-                          borderRadius: 3,
-                          padding: "2px 6px",
-                          fontSize: 10,
-                        }}>{g.time}'</span>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+          <span><span style={{ color: "#C8102E", fontWeight: 700 }}>赤</span> = 2024-25（実数）</span>
+          <span><span style={{ color: "#4ade80", fontWeight: 700 }}>緑</span> = 2023-24（実数）</span>
         </div>
 
         {/* ── INSIGHT ── */}
@@ -455,19 +304,19 @@ export default function Liverpool() {
         }}>
           <div style={{ fontSize: 11, color: "#C8102E", fontWeight: 700, marginBottom: 10, letterSpacing: "0.06em" }}>📊 INSIGHT</div>
           <div style={{ fontSize: 11, color: "#ccc", lineHeight: 1.9 }}>
-            • <strong>90分以降の失点が {atGoals2526}→{atGoals2425} の逆転現象</strong>：今季は10試合で{atGoals2526}失点（{comparisonData[6].curPct}%）、昨季は38試合全体でわずか{atGoals2425}失点（{comparisonData[6].prevPct}%）と、アディショナルタイムの脆弱性が今季の最大の特徴
-            <br/>
-            • <strong>Opta統計では今季リバプールは後半ATで6失点（うち4本が逆転弾）</strong>—PLシーズン最多タイ記録
-            <br/>
-            • 昨季は 31-45'（10失点・24%）と 46-60'（9失点・22%）に失点が集中していた。今季は終盤に集中する形にパターンが変化
-            <br/>
-            • クリーンシートは10試合中{cleanSheets}試合のみ（Leeds・Arsenal・Sunderland）
+            • <strong>76-90'の失点が {comparisonData[5].cur} → {comparisonData[5].prev}</strong>：
+              今季は全失点の {comparisonData[5].curPct}%、昨季は {comparisonData[5].prevPct}%。終盤の失点傾向に注目
+            <br />
+            • <strong>31-45'に失点が集中（昨季 {comparisonData[2].prev} 失点・{comparisonData[2].prevPct}%）</strong>：
+              前半終盤の守備が課題として継続
+            <br />
+            • 今季総失点 {TOTAL_CUR} vs 昨季 {TOTAL_PREV}（{GAMES_CUR}試合）
           </div>
         </div>
 
         <div style={{ fontSize: 9, color: "#2d2d2d", lineHeight: 1.8 }}>
-          ※ 2025-26データ：APIから取得した直近10試合の得点イベントより集計（2025年12月〜2026年2月）。シーズン全体ではなく標本データ。<br/>
-          ※ 2024-25データ：FootyStats公式（全38試合41失点）の時間帯別割合より算出。90'区分はOpta記事の言及をもとに76-89'/90'+に分割推定。
+          ※ 2024-25データ：football-data.org API より取得（全38試合・FINISHED）<br />
+          ※ 2023-24データ：FootyStats公式（全38試合41失点）の時間帯別割合より算出
         </div>
 
       </div>
