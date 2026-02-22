@@ -7,6 +7,22 @@ import {
 
 
 // ── データ定義 ────────────────────────────────────────
+// ── 試合別データ ──────────────────────────────────────
+// 各試合で「何分に失点したか」を記録した配列
+// result: W=勝ち, D=引き分け, L=負け
+const matches = [
+  { id: "TOT", date: "12/20", result: "W 2-1", goals: [83] },
+  { id: "WOL", date: "12/27", result: "W 2-1", goals: [51] },
+  { id: "LEE", date: "1/1",   result: "D 0-0", goals: [] },
+  { id: "FUL", date: "1/4",   result: "D 2-2", goals: [17, 90] },
+  { id: "ARS", date: "1/8",   result: "D 0-0", goals: [] },
+  { id: "BUR", date: "1/17",  result: "D 1-1", goals: [65] },
+  { id: "BOU", date: "1/24",  result: "L 2-3", goals: [26, 33, 90] },
+  { id: "NEW", date: "1/31",  result: "W 4-1", goals: [36] },
+  { id: "MCI", date: "2/8",   result: "L 1-2", goals: [84, 90] },
+  { id: "SUN", date: "2/11",  result: "W 1-0", goals: [] },
+];
+
 // 時間帯ごとに「色」も一緒に定義する
 // 後半終盤になるほど赤に近づくイメージ
 const data = [
@@ -178,6 +194,70 @@ export default function App() {
           </BarChart>
         </ResponsiveContainer>
       </div>
+      {/* ── 試合別ログ ── */}
+      <div style={{ fontSize: "10px", color: "#555", letterSpacing: "0.1em", marginBottom: "12px" }}>
+        試合別 失点ログ
+      </div>
+
+      {/* matches配列をmapで1試合ずつカードに変換する */}
+      {/* mapは「配列の要素を1つずつ取り出して、別の形に変換する」JS関数 */}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(5, 1fr)", // 5列グリッド
+        gap: "8px",
+      }}>
+        {matches.map((match) => {
+          // 結果によって左のラインの色を変える
+          // 三項演算子: 条件 ? 真のとき : 偽のとき
+          const borderColor =
+            match.result.startsWith("W") ? "#22c55e" :  // 勝ち=緑
+            match.result.startsWith("D") ? "#f59e0b" :  // 引き分け=黄
+            "#ef4444";                                   // 負け=赤
+
+          return (
+            <div key={match.id} style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.07)",
+              borderLeft: `3px solid ${borderColor}`, // 左ラインだけ色をつける
+              borderRadius: "8px",
+              padding: "10px 12px",
+            }}>
+              {/* 試合名と結果 */}
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "4px" }}>
+                <span style={{ fontSize: "13px", fontWeight: "bold" }}>{match.id}</span>
+                <span style={{ fontSize: "10px", color: borderColor }}>{match.result}</span>
+              </div>
+
+              {/* 日付 */}
+              <div style={{ fontSize: "10px", color: "#555", marginBottom: "8px" }}>{match.date}</div>
+
+              {/* 失点がない場合はクリーンシート表示 */}
+              {/* 失点がある場合は分数バッジを表示 */}
+              {match.goals.length === 0 ? (
+                <div style={{ fontSize: "10px", color: "#22c55e" }}>✓ クリーンシート</div>
+              ) : (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+                  {/* goalsの各分数をバッジに変換する */}
+                  {match.goals.map((minute, i) => (
+                    <span key={i} style={{
+                      background: "rgba(200,16,46,0.2)",
+                      border: "1px solid #C8102E",
+                      color: "#C8102E",
+                      borderRadius: "4px",
+                      padding: "2px 6px",
+                      fontSize: "10px",
+                    }}>
+                      {minute}'
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+
 
     </div>
   );
