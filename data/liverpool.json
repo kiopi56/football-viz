@@ -1,0 +1,17 @@
+{
+  "matches": [
+    { "id": "TOT", "date": "12/20", "result": "W 2-1", "goals": [83] },
+    { "id": "WOL", "date": "12/27", "result": "W 2-1", "goals": [51] },
+    { "id": "LEE", "date": "1/1",   "result": "D 0-0", "goals": [] },
+    { "id": "FUL", "date": "1/4",   "result": "D 2-2", "goals": [17, 90] },
+    { "id": "ARS", "date": "1/8",   "result": "D 0-0", "goals": [] },
+    { "id": "BUR", "date": "1/17",  "result": "D 1-1", "goals": [65] },
+    { "id": "BOU", "date": "1/24",  "result": "L 2-3", "goals": [26, 33, 90] },
+    { "id": "NEW", "date": "1/31",  "result": "W 4-1", "goals": [36] },
+    { "id": "MCI", "date": "2/8",   "result": "L 1-2", "goals": [84, 90] },
+    { "id": "SUN", "date": "2/11",  "result": "W 1-0", "goals": [] }
+  ],
+  "prevRaw": [2, 1, 10, 9, 5, 12, 2],
+  "totalPrev": 41,
+  "gamesPrev": 38
+}
