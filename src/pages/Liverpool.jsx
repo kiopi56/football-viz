@@ -3,31 +3,9 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Legend,
 } from "recharts";
+import lfcData from "../data/liverpool.json";
 
-// ────────────────────────────────────────────────────────────
-// 2025-26 LFC 試合別データ（直近10試合）
-// goals = 失点した分数の配列
-// ────────────────────────────────────────────────────────────
-const matches = [
-  { id: "TOT", date: "12/20", result: "W 2-1", goals: [83] },
-  { id: "WOL", date: "12/27", result: "W 2-1", goals: [51] },
-  { id: "LEE", date: "1/1",   result: "D 0-0", goals: [] },
-  { id: "FUL", date: "1/4",   result: "D 2-2", goals: [17, 90] },
-  { id: "ARS", date: "1/8",   result: "D 0-0", goals: [] },
-  { id: "BUR", date: "1/17",  result: "D 1-1", goals: [65] },
-  { id: "BOU", date: "1/24",  result: "L 2-3", goals: [26, 33, 90] },
-  { id: "NEW", date: "1/31",  result: "W 4-1", goals: [36] },
-  { id: "MCI", date: "2/8",   result: "L 1-2", goals: [84, 90] },
-  { id: "SUN", date: "2/11",  result: "W 1-0", goals: [] },
-];
-
-// ────────────────────────────────────────────────────────────
-// 2024-25 LFC失点データ（FootyStats公式より：38試合 41失点）
-// 時間帯別: 0-15'=2, 16-30'=1, 31-45'=10, 46-60'=9, 61-75'=5, 76-89'=12, 90+'=2
-// 注: FootyStatsは76-90をまとめて14と報告。Opta記事より90+AT失点は
-//   Southampton戦の1件のみが確認されているため 76-89'=12, 90+'=2 と推定
-// ────────────────────────────────────────────────────────────
-const PREV_RAW = [2, 1, 10, 9, 5, 12, 2];
+const { matches, prevRaw: PREV_RAW, totalPrev: TOTAL_2425, gamesPrev: GAMES_2425 } = lfcData;
 
 const PERIODS = [
   { label: "0–15'",  min: 0,   max: 15,  color: "#22c55e", colorDim: "#16532e" },
@@ -60,9 +38,7 @@ function getPeriodIdx(time) {
 }
 
 const GAMES_2526 = 10;
-const GAMES_2425 = 38;
 const TOTAL_2526 = LFC_CONCEDED_2526.length;
-const TOTAL_2425 = 41;
 
 const comparisonData = PERIODS.map((p, i) => {
   const cur = LFC_CONCEDED_2526.filter(g => g.time >= p.min && g.time <= p.max).length;

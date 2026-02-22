@@ -3,31 +3,11 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Legend,
 } from "recharts";
+import arsData from "../data/arsenal.json";
 
 const TEAM_COLOR = "#EF0107";
 
-// ────────────────────────────────────────────────────────────
-// 2025-26 Arsenal 試合別データ（PL 直近10試合）
-// goals = Arsenal が失点した分数の配列
-// ────────────────────────────────────────────────────────────
-const matches = [
-  { id: "BHA", date: "12/27", result: "W 2-1", goals: [63] },
-  { id: "AVL", date: "12/30", result: "W 4-1", goals: [90] },
-  { id: "BOU", date: "1/3",   result: "W 3-2", goals: [10, 76] },
-  { id: "LIV", date: "1/8",   result: "D 0-0", goals: [] },
-  { id: "NFO", date: "1/17",  result: "D 0-0", goals: [] },
-  { id: "MUN", date: "1/25",  result: "L 2-3", goals: [37, 50, 87] },
-  { id: "LEE", date: "1/31",  result: "W 4-0", goals: [] },
-  { id: "SUN", date: "2/7",   result: "W 3-0", goals: [] },
-  { id: "BRE", date: "2/12",  result: "D 1-1", goals: [70] },
-  { id: "WOL", date: "2/18",  result: "D 2-2", goals: [61, 90] },
-];
-
-// ────────────────────────────────────────────────────────────
-// 2024-25 Arsenal失点データ（PL 38試合 34失点・リーグ最少）
-// 時間帯別推定: Opta/FBref より
-// ────────────────────────────────────────────────────────────
-const PREV_RAW = [3, 5, 6, 6, 5, 6, 3];
+const { matches, prevRaw: PREV_RAW, totalPrev: TOTAL_2425, gamesPrev: GAMES_2425 } = arsData;
 
 const PERIODS = [
   { label: "0–15'",  min: 0,   max: 15,  color: "#22c55e", colorDim: "#16532e" },
@@ -60,9 +40,7 @@ function getPeriodIdx(time) {
 }
 
 const GAMES_2526 = 10;
-const GAMES_2425 = 38;
 const TOTAL_2526 = ARS_CONCEDED_2526.length;
-const TOTAL_2425 = 34;
 
 const comparisonData = PERIODS.map((p, i) => {
   const cur = ARS_CONCEDED_2526.filter(g => g.time >= p.min && g.time <= p.max).length;

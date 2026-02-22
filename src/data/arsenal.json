@@ -1,0 +1,17 @@
+{
+  "matches": [
+    { "id": "BHA", "date": "12/27", "result": "W 2-1", "goals": [63] },
+    { "id": "AVL", "date": "12/30", "result": "W 4-1", "goals": [90] },
+    { "id": "BOU", "date": "1/3",   "result": "W 3-2", "goals": [10, 76] },
+    { "id": "LIV", "date": "1/8",   "result": "D 0-0", "goals": [] },
+    { "id": "NFO", "date": "1/17",  "result": "D 0-0", "goals": [] },
+    { "id": "MUN", "date": "1/25",  "result": "L 2-3", "goals": [37, 50, 87] },
+    { "id": "LEE", "date": "1/31",  "result": "W 4-0", "goals": [] },
+    { "id": "SUN", "date": "2/7",   "result": "W 3-0", "goals": [] },
+    { "id": "BRE", "date": "2/12",  "result": "D 1-1", "goals": [70] },
+    { "id": "WOL", "date": "2/18",  "result": "D 2-2", "goals": [61, 90] }
+  ],
+  "prevRaw": [3, 5, 6, 6, 5, 6, 3],
+  "totalPrev": 34,
+  "gamesPrev": 38
+}
