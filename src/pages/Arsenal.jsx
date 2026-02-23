@@ -3,222 +3,300 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Legend,
 } from "recharts";
-import { useTeamGoals } from "../hooks/useTeamGoals";
+import { useTeamData } from "../hooks/useTeamData";
 
-const TEAM_ID    = 42; // api-sports.io: Arsenal FC
+const TEAM_ID    = 42;
 const TEAM_COLOR = "#EF0107";
 
-// 2023-24 Arsenal失点データ（比較用・FBref公式：38試合 29失点）
-const PREV_RAW   = [3, 4, 5, 5, 5, 7];
-const TOTAL_PREV = 29;
-const GAMES_PREV = 38;
+const PERIOD_KEYS   = ["0-15", "16-30", "31-45", "46-60", "61-75", "76-90"];
+const PERIOD_LABELS = ["0–15'", "16–30'", "31–45'", "46–60'", "61–75'", "76–90'"];
+const PERIOD_COLORS = ["#22c55e", "#84cc16", "#eab308", "#f97316", "#ef4444", "#a855f7"];
 
-const PERIODS = [
-  { label: "0–15'",  color: "#22c55e" },
-  { label: "16–30'", color: "#84cc16" },
-  { label: "31–45'", color: "#eab308" },
-  { label: "46–60'", color: "#f97316" },
-  { label: "61–75'", color: "#ef4444" },
-  { label: "76–90'", color: "#a855f7" },
-];
+function getByTime(data, metric, venue) {
+  if (!data?.byTimeAvailable) return null;
+  const root = venue === "all" ? data : data[venue];
+  if (!root?.[metric]?.byTime) return null;
+  return PERIOD_KEYS.map(k => root[metric].byTime[k] ?? 0);
+}
 
+function getTotal(data, metric, venue) {
+  if (!data) return null;
+  const root = venue === "all" ? data : data[venue];
+  return root?.[metric]?.total ?? null;
+}
 
-// ── Tooltips ──────────────────────────────────────────────
-const CompareTooltip = ({ active, payload, label, comparisonData }) => {
-  if (!active || !payload?.length) return null;
-  const d = comparisonData.find(x => x.period === label);
-  return (
-    <div style={{ background: "rgba(5,10,20,0.97)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, padding: "12px 16px", fontFamily: "'Space Mono', monospace", fontSize: 12, color: "#fff", minWidth: 180 }}>
-      <div style={{ color: "#aaa", marginBottom: 8, fontSize: 11 }}>{label}</div>
-      <div style={{ display: "flex", justifyContent: "space-between", gap: 16, marginBottom: 4 }}>
-        <span style={{ color: TEAM_COLOR }}>2024-25</span>
-        <span>{d.cur}失点 <span style={{ color: "#666" }}>({d.curPct}%)</span></span>
-      </div>
-      <div style={{ display: "flex", justifyContent: "space-between", gap: 16 }}>
-        <span style={{ color: "#4ade80" }}>2023-24</span>
-        <span>{d.prev}失点 <span style={{ color: "#666" }}>({d.prevPct}%)</span></span>
-      </div>
-    </div>
-  );
-};
-
-const PctTooltip = ({ active, payload, label }) => {
-  if (!active || !payload?.length) return null;
-  return (
-    <div style={{ background: "rgba(5,10,20,0.97)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, padding: "10px 14px", fontFamily: "'Space Mono', monospace", fontSize: 12, color: "#fff" }}>
-      <div style={{ color: "#aaa", marginBottom: 6, fontSize: 11 }}>{label}</div>
-      {payload.map(p => (
-        <div key={p.name} style={{ color: p.color, marginBottom: 2 }}>{p.name}: {p.value}%</div>
-      ))}
-    </div>
-  );
-};
+// ── サブコンポーネント ──────────────────────────────────────
 
 const LoadingScreen = () => (
-  <div style={{ minHeight: "100vh", background: "#03060F", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Space Mono', monospace", color: "#555", fontSize: 13 }}>
+  <div style={{ minHeight: "100vh", background: "#03060F", display: "flex",
+    alignItems: "center", justifyContent: "center",
+    fontFamily: "'Space Mono', monospace", color: "#555", fontSize: 13 }}>
     Loading...
   </div>
 );
-const ErrorScreen = ({ msg }) => (
-  <div style={{ minHeight: "100vh", background: "#03060F", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Space Mono', monospace", color: "#ef4444", fontSize: 13 }}>
-    Error: {msg}
-  </div>
-);
 
+function FormBadge({ result }) {
+  const bg = result === "W" ? "#22c55e" : result === "L" ? "#ef4444" : "#666";
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center",
+      width: 22, height: 22, borderRadius: 4, background: bg,
+      fontSize: 9, fontWeight: 700, color: "#fff" }}>
+      {result}
+    </span>
+  );
+}
+
+function ToggleGroup({ options, value, onChange, activeColor = TEAM_COLOR }) {
+  return (
+    <div style={{ display: "flex", gap: 4 }}>
+      {options.map(([v, label]) => {
+        const active = value === v;
+        return (
+          <button key={v} onClick={() => onChange(v)} style={{
+            padding: "5px 12px", borderRadius: 4, fontSize: 11, cursor: "pointer",
+            fontFamily: "'Space Mono', monospace",
+            border: active ? `1px solid ${activeColor}` : "1px solid rgba(255,255,255,0.12)",
+            background: active ? `${activeColor}22` : "transparent",
+            color: active ? activeColor : "#888",
+          }}>{label}</button>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── メインコンポーネント ──────────────────────────────────────
 
 export default function Arsenal() {
-  const [view, setView] = useState("compare");
-  const { data, loading, error } = useTeamGoals(TEAM_ID, 2024);
+  const [season,   setSeason]   = useState(2024);
+  const [dataType, setDataType] = useState("conceded");
+  const [venue,    setVenue]    = useState("all");
+  const [view,     setView]     = useState("compare");
 
-  if (loading || !data) return <LoadingScreen />;
-  if (error)            return <ErrorScreen msg={error} />;
+  const { data: data2024, loading: l2024 } = useTeamData(TEAM_ID, 2024);
+  const { data: data2023, loading: l2023 } = useTeamData(TEAM_ID, 2023);
 
-  const TOTAL_CUR = data.reduce((sum, d) => sum + d.goals, 0);
-  const GAMES_CUR = 38;
+  if (l2024 || l2023) return <LoadingScreen />;
 
-  const comparisonData = PERIODS.map((p, i) => {
-    const cur  = data[i]?.goals ?? 0;
-    const prev = PREV_RAW[i];
-    return {
-      period:            p.label,
-      "2024-25（実数)":  cur,
-      "2023-24（換算)":  +(prev * GAMES_CUR / GAMES_PREV).toFixed(2),
-      cur, prev,
-      curPct:  TOTAL_CUR  > 0 ? +((cur  / TOTAL_CUR)  * 100).toFixed(1) : 0,
-      prevPct: TOTAL_PREV > 0 ? +((prev / TOTAL_PREV) * 100).toFixed(1) : 0,
-      color:   p.color,
-    };
+  const primaryData  = season === 2024 ? data2024 : data2023;
+  const otherData    = season === 2024 ? data2023 : data2024;
+  const primaryLabel = season === 2024 ? "2024-25" : "2023-24";
+  const otherLabel   = season === 2024 ? "2023-24" : "2024-25";
+
+  const isBoth = dataType === "both";
+
+  const priVals     = isBoth ? null : getByTime(primaryData, dataType, venue);
+  const othVals     = isBoth ? null : getByTime(otherData,   dataType, venue);
+  const priScored   = isBoth ? getByTime(primaryData, "scored",   venue) : null;
+  const priConceded = isBoth ? getByTime(primaryData, "conceded", venue) : null;
+
+  const priTotal = isBoth
+    ? { scored: getTotal(primaryData, "scored", venue), conceded: getTotal(primaryData, "conceded", venue) }
+    : getTotal(primaryData, dataType, venue);
+  const othTotal = isBoth ? null : getTotal(otherData, dataType, venue);
+
+  const chartData = PERIOD_KEYS.map((k, i) => {
+    const e = { period: PERIOD_LABELS[i] };
+    if (isBoth) {
+      e["得点"] = priScored?.[i]   ?? 0;
+      e["失点"] = priConceded?.[i] ?? 0;
+    } else {
+      if (priVals) e[primaryLabel] = priVals[i];
+      if (othVals) e[otherLabel]   = othVals[i];
+    }
+    return e;
   });
 
-  const pctData = PERIODS.map((p, i) => ({
-    period:    p.label,
-    "2024-25": comparisonData[i].curPct,
-    "2023-24": comparisonData[i].prevPct,
+  const priSum = Array.isArray(priVals) ? priVals.reduce((s, v) => s + v, 0) : 0;
+  const othSum = Array.isArray(othVals) ? othVals.reduce((s, v) => s + v, 0) : 0;
+  const pctData = PERIOD_KEYS.map((k, i) => ({
+    period: PERIOD_LABELS[i],
+    [primaryLabel]: priSum > 0 ? +((priVals?.[i] ?? 0) / priSum * 100).toFixed(1) : 0,
+    ...(othVals ? { [otherLabel]: othSum > 0 ? +((othVals[i] ?? 0) / othSum * 100).toFixed(1) : 0 } : {}),
   }));
 
+  const recentForm  = primaryData?.recentForm ?? [];
+  const metricLabel = dataType === "conceded" ? "失点" : dataType === "scored" ? "得点" : "得失点";
+  const venueLabel  = venue === "all" ? "全試合" : venue === "home" ? "ホーム" : "アウェイ";
+
   return (
-    <div style={{ minHeight: "100vh", background: "#03060F", color: "#fff", fontFamily: "'Space Mono', monospace", padding: "28px 20px", boxSizing: "border-box" }}>
+    <div style={{ minHeight: "100vh", background: "#03060F", color: "#fff",
+      fontFamily: "'Space Mono', monospace", padding: "28px 20px", boxSizing: "border-box" }}>
       <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Anton&display=swap" rel="stylesheet" />
 
       <div style={{ maxWidth: 880, margin: "0 auto" }}>
 
         {/* ── Header ── */}
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 20, marginBottom: 28 }}>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 20, marginBottom: 20 }}>
           <div style={{ width: 6, background: TEAM_COLOR, alignSelf: "stretch", borderRadius: 3, flexShrink: 0 }} />
           <div>
-            <div style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(24px, 5vw, 48px)", letterSpacing: "0.04em", lineHeight: 1 }}>ARSENAL FC</div>
-            <div style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(13px, 2.2vw, 22px)", letterSpacing: "0.1em", color: TEAM_COLOR, lineHeight: 1.3 }}>
-              時間帯別 失点分析 — シーズン対比
+            <div style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(24px,5vw,48px)", letterSpacing: "0.04em", lineHeight: 1 }}>
+              ARSENAL FC
             </div>
-            <div style={{ fontSize: 10, color: "#555", marginTop: 6 }}>2024-25 vs 2023-24（各38試合）</div>
+            <div style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(13px,2.2vw,22px)", letterSpacing: "0.1em", color: TEAM_COLOR, lineHeight: 1.3 }}>
+              時間帯別 得失点分析
+            </div>
+            <div style={{ fontSize: 10, color: "#555", marginTop: 6 }}>PL シーズン比較</div>
           </div>
         </div>
 
-        {/* ── KPI strip ── */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr) repeat(2,1fr)", gap: 8, marginBottom: 24 }}>
-          {[
-            { label: "2024-25 総失点", value: `${TOTAL_CUR}`,  sub: `${GAMES_CUR}試合`,  accent: TEAM_COLOR },
-            { label: "2023-24 総失点", value: `${TOTAL_PREV}`, sub: `${GAMES_PREV}試合（PL2位）`, accent: "#4ade80" },
-            { label: "76-90' 2024-25", value: `${comparisonData[5].cur}`,  sub: `全失点の${comparisonData[5].curPct}%`,  accent: "#a855f7" },
-            { label: "76-90' 2023-24", value: `${comparisonData[5].prev}`, sub: `全失点の${comparisonData[5].prevPct}%`, accent: "#818cf8" },
-          ].map(({ label, value, sub, accent }) => (
-            <div key={label} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderTop: `2px solid ${accent}`, borderRadius: 8, padding: "12px 14px" }}>
-              <div style={{ fontSize: 9, color: "#666", letterSpacing: "0.08em", marginBottom: 4, textTransform: "uppercase" }}>{label}</div>
-              <div style={{ fontSize: 26, fontWeight: 700, color: accent, lineHeight: 1 }}>{value}</div>
-              <div style={{ fontSize: 10, color: "#555", marginTop: 4 }}>{sub}</div>
+        {/* ── シーズンタブ + 直近フォーム ── */}
+        <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20, flexWrap: "wrap" }}>
+          <ToggleGroup
+            options={[[2024, "2024-25"], [2023, "2023-24"]]}
+            value={season}
+            onChange={v => setSeason(Number(v))}
+            activeColor={TEAM_COLOR}
+          />
+          {recentForm.length > 0 && (
+            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              <span style={{ fontSize: 9, color: "#555" }}>直近5試合</span>
+              {recentForm.map((r, i) => <FormBadge key={i} result={r} />)}
             </div>
-          ))}
+          )}
         </div>
 
-        {/* ── View toggle ── */}
-        <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
-          {[["compare","実数比較"],["pct","割合（%）比較"],["radar","レーダー"]].map(([v, label]) => (
-            <button key={v} onClick={() => setView(v)} style={{
-              padding: "6px 14px", borderRadius: 4,
-              border: view === v ? `1px solid ${TEAM_COLOR}` : "1px solid rgba(255,255,255,0.12)",
-              background: view === v ? "rgba(239,1,7,0.15)" : "transparent",
-              color: view === v ? TEAM_COLOR : "#888",
-              fontSize: 11, cursor: "pointer", fontFamily: "'Space Mono', monospace",
-            }}>{label}</button>
-          ))}
+        {/* ── KPIカード ── */}
+        <div style={{ display: "grid", gridTemplateColumns: isBoth ? "1fr 1fr" : "1fr 1fr 1fr 1fr", gap: 8, marginBottom: 20 }}>
+          {isBoth ? (
+            <>
+              {[
+                { label: `${primaryLabel} 得点`, value: priTotal?.scored  != null ? String(priTotal.scored)   : "–", accent: "#22c55e", sub: venueLabel },
+                { label: `${primaryLabel} 失点`, value: priTotal?.conceded != null ? String(priTotal.conceded) : "–", accent: TEAM_COLOR, sub: venueLabel },
+              ].map(({ label, value, accent, sub }) => (
+                <div key={label} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderTop: `2px solid ${accent}`, borderRadius: 8, padding: "12px 14px" }}>
+                  <div style={{ fontSize: 9, color: "#666", letterSpacing: "0.08em", marginBottom: 4, textTransform: "uppercase" }}>{label}</div>
+                  <div style={{ fontSize: 26, fontWeight: 700, color: accent, lineHeight: 1 }}>{value}</div>
+                  <div style={{ fontSize: 10, color: "#555", marginTop: 4 }}>{sub}</div>
+                </div>
+              ))}
+            </>
+          ) : (
+            [
+              { label: `${primaryLabel} ${metricLabel}`, value: priTotal != null ? String(priTotal) : "–", accent: TEAM_COLOR, sub: venueLabel },
+              { label: `${otherLabel} ${metricLabel}`,   value: othTotal != null ? String(othTotal)  : "–", accent: "#4ade80",  sub: venueLabel },
+              { label: `76-90' ${metricLabel}（今季）`,  value: priVals  ? String(priVals[5]) : "–",         accent: "#a855f7", sub: primaryLabel },
+              { label: `76-90' ${metricLabel}（昨季）`,  value: othVals  ? String(othVals[5]) : "–",         accent: "#818cf8", sub: otherLabel   },
+            ].map(({ label, value, accent, sub }) => (
+              <div key={label} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderTop: `2px solid ${accent}`, borderRadius: 8, padding: "12px 14px" }}>
+                <div style={{ fontSize: 9, color: "#666", letterSpacing: "0.08em", marginBottom: 4, textTransform: "uppercase" }}>{label}</div>
+                <div style={{ fontSize: 26, fontWeight: 700, color: accent, lineHeight: 1 }}>{value}</div>
+                <div style={{ fontSize: 10, color: "#555", marginTop: 4 }}>{sub}</div>
+              </div>
+            ))
+          )}
         </div>
 
-        {/* ── Main chart ── */}
+        {/* ── コントロール ── */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 14 }}>
+          <ToggleGroup options={[["conceded","失点"],["scored","得点"],["both","両方"]]} value={dataType} onChange={setDataType} activeColor={TEAM_COLOR} />
+          <ToggleGroup options={[["all","全試合"],["home","ホーム"],["away","アウェイ"]]} value={venue} onChange={setVenue} activeColor="#777" />
+          {!isBoth && (
+            <ToggleGroup options={[["compare","実数比較"],["pct","割合（%）"],["radar","レーダー"]]} value={view} onChange={setView} activeColor={TEAM_COLOR} />
+          )}
+        </div>
+
+        {/* ── メインチャート ── */}
         <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 12, padding: "24px 16px", marginBottom: 20, height: 300 }}>
-          {view === "compare" && (
+          {(!priVals && !isBoth) && (
+            <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#555", fontSize: 12 }}>
+              このシーズンの時間帯データは取得できませんでした
+            </div>
+          )}
+
+          {(isBoth || (priVals && view === "compare")) && (
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={comparisonData} barGap={3} barCategoryGap="25%">
+              <BarChart data={chartData} barGap={3} barCategoryGap="25%">
                 <XAxis dataKey="period" tick={{ fill: "#888", fontSize: 11, fontFamily: "'Space Mono', monospace" }} axisLine={{ stroke: "rgba(255,255,255,0.08)" }} tickLine={false} />
                 <YAxis allowDecimals={false} tick={{ fill: "#555", fontSize: 10 }} axisLine={false} tickLine={false} />
-                <Tooltip content={<CompareTooltip comparisonData={comparisonData} />} cursor={{ fill: "rgba(255,255,255,0.03)" }} />
-                <Legend formatter={v => <span style={{ color: v === "2024-25（実数)" ? TEAM_COLOR : "#4ade80", fontSize: 11 }}>{v}</span>} />
-                <Bar dataKey="2024-25（実数)" fill={TEAM_COLOR} radius={[3,3,0,0]} />
-                <Bar dataKey="2023-24（換算)" fill="#4ade80" fillOpacity={0.7} radius={[3,3,0,0]} />
+                <Tooltip contentStyle={{ background: "rgba(5,10,20,0.97)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, fontFamily: "'Space Mono', monospace", fontSize: 11 }} itemStyle={{ color: "#ccc" }} labelStyle={{ color: "#888", marginBottom: 4 }} cursor={{ fill: "rgba(255,255,255,0.03)" }} />
+                <Legend formatter={v => <span style={{ fontSize: 11, color: "#ccc" }}>{v}</span>} />
+                {isBoth ? (
+                  <>
+                    <Bar dataKey="得点" fill="#22c55e" radius={[3,3,0,0]} />
+                    <Bar dataKey="失点" fill={TEAM_COLOR} radius={[3,3,0,0]} />
+                  </>
+                ) : (
+                  <>
+                    {priVals && <Bar dataKey={primaryLabel} fill={TEAM_COLOR} radius={[3,3,0,0]} />}
+                    {othVals && <Bar dataKey={otherLabel}   fill="#4ade80"   fillOpacity={0.7} radius={[3,3,0,0]} />}
+                  </>
+                )}
               </BarChart>
             </ResponsiveContainer>
           )}
-          {view === "pct" && (
+
+          {!isBoth && priVals && view === "pct" && (
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={pctData} barGap={3} barCategoryGap="25%">
                 <XAxis dataKey="period" tick={{ fill: "#888", fontSize: 11, fontFamily: "'Space Mono', monospace" }} axisLine={{ stroke: "rgba(255,255,255,0.08)" }} tickLine={false} />
                 <YAxis tick={{ fill: "#555", fontSize: 10 }} axisLine={false} tickLine={false} unit="%" />
-                <Tooltip content={<PctTooltip />} cursor={{ fill: "rgba(255,255,255,0.03)" }} />
-                <Legend formatter={v => <span style={{ color: v === "2024-25" ? TEAM_COLOR : "#4ade80", fontSize: 11 }}>{v}</span>} />
-                <Bar dataKey="2024-25" fill={TEAM_COLOR} radius={[3,3,0,0]} />
-                <Bar dataKey="2023-24" fill="#4ade80" fillOpacity={0.7} radius={[3,3,0,0]} />
+                <Tooltip contentStyle={{ background: "rgba(5,10,20,0.97)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, fontFamily: "'Space Mono', monospace", fontSize: 11 }} itemStyle={{ color: "#ccc" }} labelStyle={{ color: "#888" }} cursor={{ fill: "rgba(255,255,255,0.03)" }} />
+                <Legend formatter={v => <span style={{ fontSize: 11, color: "#ccc" }}>{v}</span>} />
+                <Bar dataKey={primaryLabel} fill={TEAM_COLOR}        radius={[3,3,0,0]} />
+                {othVals && <Bar dataKey={otherLabel} fill="#4ade80" fillOpacity={0.7} radius={[3,3,0,0]} />}
               </BarChart>
             </ResponsiveContainer>
           )}
-          {view === "radar" && (
+
+          {!isBoth && priVals && view === "radar" && (
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart data={pctData}>
                 <PolarGrid stroke="rgba(255,255,255,0.1)" />
                 <PolarAngleAxis dataKey="period" tick={{ fill: "#aaa", fontSize: 11, fontFamily: "'Space Mono', monospace" }} />
                 <PolarRadiusAxis tick={false} axisLine={false} />
-                <Radar name="2024-25" dataKey="2024-25" stroke={TEAM_COLOR} fill={TEAM_COLOR} fillOpacity={0.3} strokeWidth={2} />
-                <Radar name="2023-24" dataKey="2023-24" stroke="#4ade80" fill="#4ade80" fillOpacity={0.2} strokeWidth={2} />
-                <Legend formatter={v => <span style={{ color: v === "2024-25" ? TEAM_COLOR : "#4ade80", fontSize: 11 }}>{v}</span>} />
+                <Radar name={primaryLabel} dataKey={primaryLabel} stroke={TEAM_COLOR} fill={TEAM_COLOR} fillOpacity={0.3} strokeWidth={2} />
+                {othVals && <Radar name={otherLabel} dataKey={otherLabel} stroke="#4ade80" fill="#4ade80" fillOpacity={0.2} strokeWidth={2} />}
+                <Legend formatter={v => <span style={{ fontSize: 11, color: "#ccc" }}>{v}</span>} />
               </RadarChart>
             </ResponsiveContainer>
           )}
         </div>
 
-        {/* ── 時間帯別 内訳テーブル ── */}
-        <div style={{ fontSize: 10, color: "#555", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>時間帯別 内訳</div>
+        {/* ── 時間帯別内訳テーブル ── */}
+        <div style={{ fontSize: 10, color: "#555", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>
+          時間帯別 内訳
+        </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(6,1fr)", gap: 6, marginBottom: 12 }}>
-          {comparisonData.map((d, i) => (
-            <div key={d.period} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderBottom: `2px solid ${PERIODS[i].color}`, borderRadius: 8, padding: "10px 6px", textAlign: "center" }}>
-              <div style={{ fontSize: 9, color: "#666", marginBottom: 6 }}>{d.period}</div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: TEAM_COLOR }}>{d.cur}</div>
-              <div style={{ fontSize: 9, color: "#555", marginBottom: 4 }}>{d.curPct}%</div>
-              <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "6px 0" }} />
-              <div style={{ fontSize: 15, fontWeight: 700, color: "#4ade80" }}>{d.prev}</div>
-              <div style={{ fontSize: 9, color: "#555" }}>{d.prevPct}%</div>
+          {PERIOD_KEYS.map((k, i) => (
+            <div key={k} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderBottom: `2px solid ${PERIOD_COLORS[i]}`, borderRadius: 8, padding: "10px 6px", textAlign: "center" }}>
+              <div style={{ fontSize: 9, color: "#666", marginBottom: 6 }}>{PERIOD_LABELS[i]}</div>
+              {isBoth ? (
+                <>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "#22c55e" }}>{priScored?.[i]   ?? "–"}</div>
+                  <div style={{ fontSize: 8, color: "#555", marginBottom: 2 }}>得点</div>
+                  <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "4px 0" }} />
+                  <div style={{ fontSize: 15, fontWeight: 700, color: TEAM_COLOR }}>{priConceded?.[i] ?? "–"}</div>
+                  <div style={{ fontSize: 8, color: "#555" }}>失点</div>
+                </>
+              ) : (
+                <>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: TEAM_COLOR }}>{priVals?.[i] ?? "–"}</div>
+                  {othVals && <><div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "4px 0" }} /><div style={{ fontSize: 15, fontWeight: 700, color: "#4ade80" }}>{othVals[i]}</div></>}
+                </>
+              )}
             </div>
           ))}
         </div>
-        <div style={{ display: "flex", gap: 16, marginBottom: 28, fontSize: 10, color: "#555" }}>
-          <span><span style={{ color: TEAM_COLOR, fontWeight: 700 }}>赤</span> = 2024-25（実数）</span>
-          <span><span style={{ color: "#4ade80", fontWeight: 700 }}>緑</span> = 2023-24（実数）</span>
-        </div>
 
-        {/* ── INSIGHT ── */}
-        <div style={{ background: "rgba(239,1,7,0.05)", border: "1px solid rgba(239,1,7,0.18)", borderRadius: 10, padding: "16px 20px", marginBottom: 24 }}>
-          <div style={{ fontSize: 11, color: TEAM_COLOR, fontWeight: 700, marginBottom: 10, letterSpacing: "0.06em" }}>📊 INSIGHT</div>
-          <div style={{ fontSize: 11, color: "#ccc", lineHeight: 1.9 }}>
-            • <strong>76-90'の失点：今季 {comparisonData[5].cur} / 昨季 {comparisonData[5].prev}</strong>
-              （今季 {comparisonData[5].curPct}%・昨季 {comparisonData[5].prevPct}%）
-            <br />
-            • <strong>61-75'：今季 {comparisonData[4].cur} 失点（{comparisonData[4].curPct}%）</strong>
-              後半の守備ブロックの安定性に注目
-            <br />
-            • 今季総失点 {TOTAL_CUR} vs 昨季（2023-24）{TOTAL_PREV}（各{GAMES_PREV}試合）
-          </div>
+        {/* 凡例 */}
+        <div style={{ display: "flex", gap: 16, marginBottom: 28, fontSize: 10, color: "#555", flexWrap: "wrap" }}>
+          {isBoth ? (
+            <>
+              <span><span style={{ color: "#22c55e", fontWeight: 700 }}>■</span> 得点（{primaryLabel}・{venueLabel}）</span>
+              <span><span style={{ color: TEAM_COLOR, fontWeight: 700 }}>■</span> 失点（{primaryLabel}・{venueLabel}）</span>
+            </>
+          ) : (
+            <>
+              {priVals && <span><span style={{ color: TEAM_COLOR, fontWeight: 700 }}>■</span> {primaryLabel}（{metricLabel}・{venueLabel}）</span>}
+              {othVals && <span><span style={{ color: "#4ade80",  fontWeight: 700 }}>■</span> {otherLabel}（{metricLabel}・{venueLabel}）</span>}
+              {!priVals && !othVals && <span style={{ color: "#444" }}>時間帯データなし（スコアのみ）</span>}
+            </>
+          )}
         </div>
 
         <div style={{ fontSize: 9, color: "#2d2d2d", lineHeight: 1.8 }}>
-          ※ 2024-25データ：api-sports.io より取得（イベントデータ集計・ビルド時生成）<br />
-          ※ 2023-24データ：FBref公式（全38試合29失点）の時間帯別割合より推定算出
+          ※ データ：api-sports.io より取得（PL FINISHEDを集計・ビルド時生成）
         </div>
 
       </div>
