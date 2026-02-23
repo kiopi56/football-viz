@@ -173,7 +173,7 @@ export default function Compare() {
                     padding: "10px 16px",
                   }}>
                     <img
-                      src={team.crest}
+                      src={team.logo}
                       width={24}
                       height={24}
                       style={{ objectFit: "contain" }}

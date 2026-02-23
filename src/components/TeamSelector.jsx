@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { getPLTeams } from "../api/footballApi";
 
 /**
  * プレミアリーグのチームをグリッド表示し、最大2チームを選択させるコンポーネント
+ * チーム一覧は public/data/pl-teams-2024.json から取得（APIを叩かない）
  *
- * @param {number[]}   selectedIds    - 選択中のチームID配列（最大2件）
- * @param {Function}   onChange       - 選択変更時のコールバック (ids: number[]) => void
+ * @param {number[]}   selectedIds     - 選択中のチームID配列（最大2件）
+ * @param {Function}   onChange        - 選択変更時のコールバック (ids: number[]) => void
  * @param {Function}   [onTeamsLoaded] - チーム一覧取得完了時のコールバック (teams: Team[]) => void
  */
 export default function TeamSelector({ selectedIds, onChange, onTeamsLoaded }) {
@@ -14,19 +14,14 @@ export default function TeamSelector({ selectedIds, onChange, onTeamsLoaded }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    getPLTeams()
+    fetch(`${import.meta.env.BASE_URL}data/pl-teams-2024.json`)
       .then(res => {
-        // api-sports のレスポンスを { id, name, shortName, crest } に正規化してアルファベット順にソート
-        const sorted = res.response
-          .map(item => ({
-            id:        item.team.id,
-            name:      item.team.name,
-            shortName: item.team.code || item.team.name.slice(0, 3).toUpperCase(),
-            crest:     item.team.logo,
-          }))
-          .sort((a, b) => a.name.localeCompare(b.name));
-        setTeams(sorted);
-        onTeamsLoaded?.(sorted);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        setTeams(data);
+        onTeamsLoaded?.(data);
         setLoading(false);
       })
       .catch(err => {
@@ -101,7 +96,8 @@ export default function TeamSelector({ selectedIds, onChange, onTeamsLoaded }) {
         {teams.map(team => {
           const slotIndex = selectedIds.indexOf(team.id);
           const isSelected = slotIndex !== -1;
-          const isDisabled = !isSelected && selectedIds.length >= 2;
+          // データなしチームは選択不可、2チーム埋まっていても選択不可
+          const isDisabled = !team.hasData || (!isSelected && selectedIds.length >= 2);
 
           return (
             <button
@@ -119,7 +115,8 @@ export default function TeamSelector({ selectedIds, onChange, onTeamsLoaded }) {
                 borderRadius: 8,
                 padding: "10px 6px 8px",
                 cursor: isDisabled ? "not-allowed" : "pointer",
-                opacity: isDisabled ? 0.25 : 1,
+                // データなしはより薄く表示
+                opacity: !team.hasData ? 0.2 : isDisabled ? 0.25 : 1,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -151,7 +148,7 @@ export default function TeamSelector({ selectedIds, onChange, onTeamsLoaded }) {
 
               {/* クレスト画像 */}
               <img
-                src={team.crest}
+                src={team.logo}
                 alt={team.shortName}
                 width={28}
                 height={28}

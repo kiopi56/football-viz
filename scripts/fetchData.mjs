@@ -124,6 +124,24 @@ async function main() {
     data.byPeriod.forEach((p) => console.log(`  ${p.time}: ${p.goals}`));
   }
 
+  // ── PLチーム一覧を保存 ───────────────────────────────────────
+  console.log("\n[teams] Fetching PL team list...");
+  await wait(7000);
+  const teamsRes = await apiFetch(`/teams?league=39&season=2024`);
+  const teamsData = teamsRes.response
+    .map(item => ({
+      id:        item.team.id,
+      name:      item.team.name,
+      shortName: item.team.code || item.team.name.slice(0, 3).toUpperCase(),
+      logo:      item.team.logo,
+      hasData:   TEAMS.some(t => t.id === item.team.id),
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  const teamsPath = join(outDir, "pl-teams-2024.json");
+  writeFileSync(teamsPath, JSON.stringify(teamsData, null, 2));
+  console.log(`✓ Saved: ${teamsPath} (${teamsData.length} teams)`);
+
   console.log("\n✓ All done!");
 }
 
