@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://api.football-data.org',
+        target: 'https://v3.football.api-sports.io',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
       }

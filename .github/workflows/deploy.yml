@@ -29,7 +29,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          VITE_FOOTBALL_API_KEY: ${{ secrets.VITE_FOOTBALL_API_KEY }}
+          VITE_APISPORTS_KEY: ${{ secrets.VITE_APISPORTS_KEY }}
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4

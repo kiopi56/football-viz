@@ -5,27 +5,28 @@ import {
 import TeamSelector from "../components/TeamSelector";
 import { useTeamGoals } from "../hooks/useTeamGoals";
 
-// ── チームカラーマップ（football-data.org のチームID → クラブカラー） ──
+// ── チームカラーマップ（api-sports.io のチームID → クラブカラー） ──
 const TEAM_COLORS = {
-  57:  "#EF0107", // Arsenal
-  58:  "#95BFE5", // Aston Villa
-  61:  "#034694", // Chelsea
-  62:  "#C4122E", // Crystal Palace
-  64:  "#C8102E", // Liverpool
-  65:  "#6CABDD", // Man City
-  66:  "#DA291C", // Man United
-  67:  "#00A4E4", // Newcastle
-  73:  "#FDB913", // Wolves
-  328: "#E03A3E", // Brentford
-  338: "#0057B8", // Brighton
-  340: "#D71920", // Southampton
-  341: "#0044A9", // Ipswich
-  346: "#FDBE11", // Leicester
-  351: "#DD0000", // Nottm Forest
-  354: "#CC0000", // Fulham
-  356: "#DA291C", // Bournemouth
-  402: "#274488", // Everton
-  563: "#7A263A", // West Ham
+  33:  "#DA291C", // Man United
+  34:  "#00A4E4", // Newcastle
+  35:  "#DA020E", // Bournemouth
+  36:  "#CC0000", // Fulham
+  39:  "#FDB913", // Wolves
+  40:  "#C8102E", // Liverpool
+  41:  "#D71920", // Southampton
+  42:  "#EF0107", // Arsenal
+  45:  "#274488", // Everton
+  46:  "#003090", // Leicester
+  47:  "#132257", // Tottenham
+  48:  "#7A263A", // West Ham
+  49:  "#034694", // Chelsea
+  50:  "#6CABDD", // Man City
+  51:  "#0057B8", // Brighton
+  52:  "#C4122E", // Crystal Palace
+  55:  "#E03A3E", // Brentford
+  57:  "#0044A9", // Ipswich
+  65:  "#DD0000", // Nottm Forest
+  66:  "#95BFE5", // Aston Villa
 };
 
 // チームカラーが未登録の場合のフォールバック

@@ -5,7 +5,7 @@ import {
 } from "recharts";
 import { useTeamGoals } from "../hooks/useTeamGoals";
 
-const TEAM_ID   = 57;
+const TEAM_ID   = 42; // api-sports.io: Arsenal FC
 const TEAM_COLOR = "#EF0107";
 
 // 2023-24 Arsenal失点データ（比較用・FBref公式より：38試合 29失点）

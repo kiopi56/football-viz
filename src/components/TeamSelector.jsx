@@ -16,10 +16,15 @@ export default function TeamSelector({ selectedIds, onChange, onTeamsLoaded }) {
   useEffect(() => {
     getPLTeams()
       .then(res => {
-        // アルファベット順にソート
-        const sorted = [...res.teams].sort((a, b) =>
-          a.name.localeCompare(b.name)
-        );
+        // api-sports のレスポンスを { id, name, shortName, crest } に正規化してアルファベット順にソート
+        const sorted = res.response
+          .map(item => ({
+            id:        item.team.id,
+            name:      item.team.name,
+            shortName: item.team.code || item.team.name.slice(0, 3).toUpperCase(),
+            crest:     item.team.logo,
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name));
         setTeams(sorted);
         onTeamsLoaded?.(sorted);
         setLoading(false);

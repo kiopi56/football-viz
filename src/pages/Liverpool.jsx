@@ -5,7 +5,7 @@ import {
 } from "recharts";
 import { useTeamGoals } from "../hooks/useTeamGoals";
 
-const TEAM_ID = 64;
+const TEAM_ID = 40; // api-sports.io: Liverpool FC
 
 // 2023-24 LFC失点データ（比較用・FootyStats公式より：38試合 41失点）
 // 前半(0-45'): 2+1+10 = 13、後半(46-90'): 9+5+14 = 28

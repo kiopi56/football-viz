@@ -1,55 +1,60 @@
-// football-data.org v4 API クライアント
-// VITE_FOOTBALL_API_KEY は .env に記載し、絶対に Git にコミットしない
+// api-sports.io (api-football) v3 API クライアント
+// VITE_APISPORTS_KEY は .env に記載し、絶対に Git にコミットしない
 
-// ローカル開発時: Vite プロキシ経由（/api → https://api.football-data.org）でCORSを回避
+// ローカル開発時: Vite プロキシ経由（/api → https://v3.football.api-sports.io）でCORSを回避
 // 本番（GitHub Pages）: 直接 API を呼び出す
 const BASE_URL = import.meta.env.DEV
-  ? "/api/v4"
-  : "https://api.football-data.org/v4";
+  ? "/api"
+  : "https://v3.football.api-sports.io";
 
-// API キーを環境変数から取得する
-// import.meta.env は Vite が提供するオブジェクト
-// VITE_ プレフィックスがついた変数だけがブラウザ側に公開される
-const API_KEY = import.meta.env.VITE_FOOTBALL_API_KEY;
+const API_KEY = import.meta.env.VITE_APISPORTS_KEY;
 
 /**
- * football-data.org へのリクエストに APIキーヘッダーを付与する共通 fetch ラッパー
- * @param {string} path - ベースURLからの相対パス（例: "/teams/64/matches"）
+ * api-sports.io へのリクエストに APIキーヘッダーを付与する共通 fetch ラッパー
+ * @param {string} path - ベースURLからの相対パス（例: "/fixtures?team=40&season=2024"）
  * @returns {Promise<any>} - JSON レスポンス
  */
-async function footballFetch(path) {
+async function apiFetch(path) {
   const response = await fetch(`${BASE_URL}${path}`, {
     headers: {
-      // football-data.org はこのヘッダーで認証する
-      "X-Auth-Token": API_KEY,
+      "x-apisports-key": API_KEY,
     },
   });
 
-  // HTTP エラー（401, 403, 429 など）は fetch では例外にならないため手動でチェック
   if (!response.ok) {
     throw new Error(`API error ${response.status}: ${response.statusText}`);
   }
 
-  return response.json();
+  const json = await response.json();
+
+  // api-sports はエラーをレスポンスボディに含める場合がある
+  // errors フィールドがオブジェクト（空配列ではない）のときはエラー
+  const errors = json.errors;
+  if (errors && !Array.isArray(errors) && Object.keys(errors).length > 0) {
+    throw new Error(`API error: ${Object.values(errors)[0]}`);
+  }
+
+  return json;
 }
 
 /**
- * チームの試合一覧を取得する
- * @param {number} teamId - チームID（Liverpool=64, Arsenal=57）
+ * チームのリーグ戦試合結果一覧を取得する
+ * @param {number} teamId - チームID（Liverpool=40, Arsenal=42）
  * @param {number} season - シーズン開始年（2024 = 2024-25シーズン）
- * @returns {Promise<{ matches: Array }>}
+ * @returns {Promise<{ response: Array }>}
+ *   response[].teams.home/away.id  - チームID
+ *   response[].goals.home/away     - フルタイム得点
+ *   response[].score.halftime.home/away - ハーフタイム得点
  */
-export async function getTeamMatches(teamId, season) {
-  return footballFetch(
-    `/teams/${teamId}/matches?season=${season}&status=FINISHED`
-  );
+export async function getTeamFixtures(teamId, season) {
+  return apiFetch(`/fixtures?team=${teamId}&season=${season}&status=FT&league=39`);
 }
 
 /**
  * プレミアリーグの全チーム一覧を取得する
  * @param {number} season - シーズン開始年（2024 = 2024-25シーズン）
- * @returns {Promise<{ teams: Array<{ id, name, shortName, crest }> }>}
+ * @returns {Promise<{ response: Array<{ team: { id, name, code, logo } }> }>}
  */
 export async function getPLTeams(season = 2024) {
-  return footballFetch(`/competitions/PL/teams?season=${season}`);
+  return apiFetch(`/teams?league=39&season=${season}`);
 }
