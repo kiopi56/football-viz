@@ -1,7 +1,11 @@
 // football-data.org v4 API クライアント
 // VITE_FOOTBALL_API_KEY は .env に記載し、絶対に Git にコミットしない
 
-const BASE_URL = "https://api.football-data.org/v4";
+// ローカル開発時: Vite プロキシ経由（/api → https://api.football-data.org）でCORSを回避
+// 本番（GitHub Pages）: 直接 API を呼び出す
+const BASE_URL = import.meta.env.DEV
+  ? "/api/v4"
+  : "https://api.football-data.org/v4";
 
 // API キーを環境変数から取得する
 // import.meta.env は Vite が提供するオブジェクト
