@@ -5,26 +5,18 @@ import {
 } from "recharts";
 import { useTeamGoals } from "../hooks/useTeamGoals";
 
-// Arsenal FC のチームID（football-data.org）
-const TEAM_ID = 57;
+const TEAM_ID   = 57;
 const TEAM_COLOR = "#EF0107";
 
-// ────────────────────────────────────────────────────────────
 // 2023-24 Arsenal失点データ（比較用・FBref公式より：38試合 29失点）
-// 時間帯別（6区分推定）: 0-15=3, 16-30=4, 31-45=5, 46-60=5, 61-75=5, 76-90=7
-// ────────────────────────────────────────────────────────────
-const PREV_RAW  = [3, 4, 5, 5, 5, 7];
+// 前半(0-45'): 3+4+5 = 12、後半(46-90'): 5+5+7 = 17
+const PREV_RAW   = [12, 17];
 const TOTAL_PREV = 29;
 const GAMES_PREV = 38;
 
-// 表示用の時間帯定義（aggregateGoalsByTime の6区分に対応）
 const PERIODS = [
-  { label: "0–15'",  color: "#22c55e" },
-  { label: "16–30'", color: "#84cc16" },
-  { label: "31–45'", color: "#eab308" },
-  { label: "46–60'", color: "#f97316" },
-  { label: "61–75'", color: "#ef4444" },
-  { label: "76–90'", color: "#a855f7" }, // ATを含む終盤
+  { label: "前半", color: "#22c55e" },
+  { label: "後半", color: "#ef4444" },
 ];
 
 
@@ -79,51 +71,34 @@ const PctTooltip = ({ active, payload, label }) => {
 };
 
 
-// ── ローディング画面 ──────────────────────────────────────
 const LoadingScreen = () => (
   <div style={{
-    minHeight: "100vh",
-    background: "#03060F",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontFamily: "'Space Mono', monospace",
-    color: "#555",
-    fontSize: 13,
+    minHeight: "100vh", background: "#03060F",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    fontFamily: "'Space Mono', monospace", color: "#555", fontSize: 13,
   }}>
     Loading...
   </div>
 );
 
-// ── エラー画面 ────────────────────────────────────────────
 const ErrorScreen = () => (
   <div style={{
-    minHeight: "100vh",
-    background: "#03060F",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontFamily: "'Space Mono', monospace",
-    color: "#ef4444",
-    fontSize: 13,
+    minHeight: "100vh", background: "#03060F",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    fontFamily: "'Space Mono', monospace", color: "#ef4444", fontSize: 13,
   }}>
     Error: データを取得できませんでした
   </div>
 );
 
 
-// ── メインコンポーネント ──────────────────────────────────
 export default function Arsenal() {
   const [view, setView] = useState("compare");
-
-  // useTeamGoals フックで 2024-25シーズンの失点データを取得する
-  // data = [{ time: "0-15", goals: N }, ...] (6期間)
   const { data, loading, error } = useTeamGoals(TEAM_ID, 2024);
 
-  if (loading) return <LoadingScreen />;
-  if (error)   return <ErrorScreen />;
+  if (loading || !data) return <LoadingScreen />;
+  if (error)            return <ErrorScreen />;
 
-  // ── データ計算 ──────────────────────────────────────────
   const TOTAL_CUR = data.reduce((sum, d) => sum + d.goals, 0);
   const GAMES_CUR = 38;
 
@@ -169,7 +144,7 @@ export default function Arsenal() {
               ARSENAL FC
             </div>
             <div style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(13px, 2.2vw, 22px)", letterSpacing: "0.1em", color: TEAM_COLOR, lineHeight: 1.3 }}>
-              時間帯別 失点分析 — シーズン対比
+              前半/後半 失点分析 — シーズン対比
             </div>
             <div style={{ fontSize: 10, color: "#555", marginTop: 6 }}>
               2024-25（全38試合） vs 2023-24（全38試合）
@@ -182,8 +157,8 @@ export default function Arsenal() {
           {[
             { label: "2024-25 総失点", value: `${TOTAL_CUR}`,  sub: `${GAMES_CUR}試合`,  accent: TEAM_COLOR },
             { label: "2023-24 総失点", value: `${TOTAL_PREV}`, sub: `${GAMES_PREV}試合（PL2位）`, accent: "#4ade80" },
-            { label: "76-90' 2024-25", value: `${comparisonData[5].cur}`,  sub: `全失点の${comparisonData[5].curPct}%`,  accent: "#a855f7" },
-            { label: "76-90' 2023-24", value: `${comparisonData[5].prev}`, sub: `全失点の${comparisonData[5].prevPct}%`, accent: "#818cf8" },
+            { label: "後半 2024-25",   value: `${comparisonData[1].cur}`,  sub: `全失点の${comparisonData[1].curPct}%`,  accent: "#ef4444" },
+            { label: "後半 2023-24",   value: `${comparisonData[1].prev}`, sub: `全失点の${comparisonData[1].prevPct}%`, accent: "#f97316" },
           ].map(({ label, value, sub, accent }) => (
             <div key={label} style={{
               background: "rgba(255,255,255,0.03)",
@@ -230,8 +205,8 @@ export default function Arsenal() {
         }}>
           {view === "compare" && (
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={comparisonData} barGap={3} barCategoryGap="25%">
-                <XAxis dataKey="period" tick={{ fill: "#888", fontSize: 11, fontFamily: "'Space Mono', monospace" }} axisLine={{ stroke: "rgba(255,255,255,0.08)" }} tickLine={false} />
+              <BarChart data={comparisonData} barGap={3} barCategoryGap="35%">
+                <XAxis dataKey="period" tick={{ fill: "#888", fontSize: 13, fontFamily: "'Space Mono', monospace" }} axisLine={{ stroke: "rgba(255,255,255,0.08)" }} tickLine={false} />
                 <YAxis allowDecimals={false} tick={{ fill: "#555", fontSize: 10 }} axisLine={false} tickLine={false} />
                 <Tooltip content={<CompareTooltip comparisonData={comparisonData} />} cursor={{ fill: "rgba(255,255,255,0.03)" }} />
                 <Legend formatter={v => <span style={{ color: v === "2024-25（実数)" ? TEAM_COLOR : "#4ade80", fontSize: 11 }}>{v}</span>} />
@@ -242,8 +217,8 @@ export default function Arsenal() {
           )}
           {view === "pct" && (
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={pctData} barGap={3} barCategoryGap="25%">
-                <XAxis dataKey="period" tick={{ fill: "#888", fontSize: 11, fontFamily: "'Space Mono', monospace" }} axisLine={{ stroke: "rgba(255,255,255,0.08)" }} tickLine={false} />
+              <BarChart data={pctData} barGap={3} barCategoryGap="35%">
+                <XAxis dataKey="period" tick={{ fill: "#888", fontSize: 13, fontFamily: "'Space Mono', monospace" }} axisLine={{ stroke: "rgba(255,255,255,0.08)" }} tickLine={false} />
                 <YAxis tick={{ fill: "#555", fontSize: 10 }} axisLine={false} tickLine={false} unit="%" />
                 <Tooltip content={<PctTooltip />} cursor={{ fill: "rgba(255,255,255,0.03)" }} />
                 <Legend formatter={v => <span style={{ color: v === "2024-25" ? TEAM_COLOR : "#4ade80", fontSize: 11 }}>{v}</span>} />
@@ -256,7 +231,7 @@ export default function Arsenal() {
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart data={pctData}>
                 <PolarGrid stroke="rgba(255,255,255,0.1)" />
-                <PolarAngleAxis dataKey="period" tick={{ fill: "#aaa", fontSize: 11, fontFamily: "'Space Mono', monospace" }} />
+                <PolarAngleAxis dataKey="period" tick={{ fill: "#aaa", fontSize: 13, fontFamily: "'Space Mono', monospace" }} />
                 <PolarRadiusAxis tick={false} axisLine={false} />
                 <Radar name="2024-25" dataKey="2024-25" stroke={TEAM_COLOR} fill={TEAM_COLOR} fillOpacity={0.3} strokeWidth={2} />
                 <Radar name="2023-24" dataKey="2023-24" stroke="#4ade80" fill="#4ade80" fillOpacity={0.2} strokeWidth={2} />
@@ -266,24 +241,24 @@ export default function Arsenal() {
           )}
         </div>
 
-        {/* ── 時間帯別 内訳テーブル ── */}
-        <div style={{ fontSize: 10, color: "#555", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>時間帯別 内訳</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(6,1fr)", gap: 6, marginBottom: 12 }}>
+        {/* ── 前半/後半 内訳テーブル ── */}
+        <div style={{ fontSize: 10, color: "#555", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>前半/後半 内訳</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 6, marginBottom: 12 }}>
           {comparisonData.map((d, i) => (
             <div key={d.period} style={{
               background: "rgba(255,255,255,0.03)",
               border: "1px solid rgba(255,255,255,0.06)",
               borderBottom: `2px solid ${PERIODS[i].color}`,
               borderRadius: 8,
-              padding: "10px 6px",
+              padding: "14px 10px",
               textAlign: "center",
             }}>
-              <div style={{ fontSize: 9, color: "#666", marginBottom: 6 }}>{d.period}</div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: TEAM_COLOR }}>{d.cur}</div>
-              <div style={{ fontSize: 9, color: "#555", marginBottom: 4 }}>{d.curPct}%</div>
-              <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "6px 0" }} />
-              <div style={{ fontSize: 15, fontWeight: 700, color: "#4ade80" }}>{d.prev}</div>
-              <div style={{ fontSize: 9, color: "#555" }}>{d.prevPct}%</div>
+              <div style={{ fontSize: 11, color: "#666", marginBottom: 8 }}>{d.period}</div>
+              <div style={{ fontSize: 28, fontWeight: 700, color: TEAM_COLOR }}>{d.cur}</div>
+              <div style={{ fontSize: 10, color: "#555", marginBottom: 6 }}>{d.curPct}%</div>
+              <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "8px 0" }} />
+              <div style={{ fontSize: 22, fontWeight: 700, color: "#4ade80" }}>{d.prev}</div>
+              <div style={{ fontSize: 10, color: "#555" }}>{d.prevPct}%</div>
             </div>
           ))}
         </div>
@@ -302,11 +277,11 @@ export default function Arsenal() {
         }}>
           <div style={{ fontSize: 11, color: TEAM_COLOR, fontWeight: 700, marginBottom: 10, letterSpacing: "0.06em" }}>📊 INSIGHT</div>
           <div style={{ fontSize: 11, color: "#ccc", lineHeight: 1.9 }}>
-            • <strong>76-90'の失点が {comparisonData[5].cur} → {comparisonData[5].prev}</strong>：
-              今季は全失点の {comparisonData[5].curPct}%、昨季は {comparisonData[5].prevPct}%
+            • <strong>前半失点：今季 {comparisonData[0].cur} / 昨季 {comparisonData[0].prev}</strong>
+              （全失点の今季 {comparisonData[0].curPct}%・昨季 {comparisonData[0].prevPct}%）
             <br />
-            • <strong>61-75'に今季 {comparisonData[4].cur} 失点（{comparisonData[4].curPct}%）</strong>：
-              後半の守備ブロックの安定性に課題
+            • <strong>後半失点：今季 {comparisonData[1].cur} / 昨季 {comparisonData[1].prev}</strong>
+              （全失点の今季 {comparisonData[1].curPct}%・昨季 {comparisonData[1].prevPct}%）
             <br />
             • 今季総失点 {TOTAL_CUR} vs 昨季（2023-24）{TOTAL_PREV}（{GAMES_PREV}試合）
           </div>
@@ -314,7 +289,7 @@ export default function Arsenal() {
 
         <div style={{ fontSize: 9, color: "#2d2d2d", lineHeight: 1.8 }}>
           ※ 2024-25データ：football-data.org API より取得（全38試合・FINISHED）<br />
-          ※ 2023-24データ：FBref公式（全38試合29失点）の時間帯別割合より推定算出
+          ※ 2023-24データ：FBref公式（全38試合29失点）の前半/後半比率より推定算出
         </div>
 
       </div>
