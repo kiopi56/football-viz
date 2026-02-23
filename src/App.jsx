@@ -1,83 +1,89 @@
-import { HashRouter, Routes, Route, NavLink } from "react-router-dom";
-import Home from "./pages/Home";
-import Liverpool from "./pages/Liverpool";
-import Arsenal from "./pages/Arsenal";
-import Compare from "./pages/Compare";
+import { HashRouter, Routes, Route, NavLink, Navigate } from "react-router-dom";
+import Home       from "./pages/Home";
+import TeamDetail from "./pages/TeamDetail";
+import Compare    from "./pages/Compare";
 
-const navStyle = {
-  background: "#03060F",
-  borderBottom: "1px solid rgba(255,255,255,0.08)",
-  padding: "0 48px",
-  display: "flex",
-  gap: "0",
-  fontFamily: "monospace",
-};
+const NAV_BG = "#080c10";
 
 const linkBase = {
-  display: "inline-block",
-  padding: "14px 20px",
-  fontSize: "12px",
-  letterSpacing: "0.1em",
-  color: "#555",
+  display:        "inline-block",
+  padding:        "14px 22px",
+  fontSize:       "12px",
+  letterSpacing:  "0.12em",
+  color:          "#3a5060",
   textDecoration: "none",
-  borderBottom: "2px solid transparent",
-  transition: "color 0.2s, border-color 0.2s",
+  borderBottom:   "2px solid transparent",
+  transition:     "color 0.2s, border-color 0.2s",
+  fontFamily:     "'Barlow', sans-serif",
+  fontWeight:     600,
 };
+
+function NavBar() {
+  return (
+    <nav style={{
+      background:    NAV_BG,
+      borderBottom:  "1px solid #1a2530",
+      padding:       "0 44px",
+      display:       "flex",
+      alignItems:    "center",
+      gap:           0,
+      position:      "sticky",
+      top:           0,
+      zIndex:        100,
+    }}>
+      {/* ロゴ */}
+      <NavLink to="/" end style={{ textDecoration: "none", marginRight: "auto" }}>
+        <span style={{
+          fontFamily:    "'Bebas Neue', sans-serif",
+          fontSize:      18,
+          letterSpacing: "0.06em",
+          color:         "#fff",
+          padding:       "16px 0",
+          display:       "inline-block",
+        }}>
+          FOOTBALL<span style={{ color: "#c8102e" }}>-VIZ</span>
+        </span>
+      </NavLink>
+
+      {/* ナビリンク */}
+      <NavLink
+        to="/"
+        end
+        style={({ isActive }) => ({
+          ...linkBase,
+          color:           isActive ? "#fff" : "#3a5060",
+          borderBottomColor: isActive ? "#00ff85" : "transparent",
+        })}
+      >
+        HOME
+      </NavLink>
+      <NavLink
+        to="/compare"
+        style={({ isActive }) => ({
+          ...linkBase,
+          color:           isActive ? "#fff" : "#3a5060",
+          borderBottomColor: isActive ? "#6CABDD" : "transparent",
+        })}
+      >
+        COMPARE
+      </NavLink>
+    </nav>
+  );
+}
 
 export default function App() {
   return (
     <HashRouter>
-      {/* ── NavBar ── */}
-      <nav style={navStyle}>
-        <NavLink
-          to="/"
-          end
-          style={({ isActive }) => ({
-            ...linkBase,
-            color: isActive ? "#fff" : "#555",
-            borderBottomColor: isActive ? "#888" : "transparent",
-          })}
-        >
-          HOME
-        </NavLink>
-        <NavLink
-          to="/liverpool"
-          style={({ isActive }) => ({
-            ...linkBase,
-            color: isActive ? "#fff" : "#555",
-            borderBottomColor: isActive ? "#C8102E" : "transparent",
-          })}
-        >
-          LIVERPOOL
-        </NavLink>
-        <NavLink
-          to="/arsenal"
-          style={({ isActive }) => ({
-            ...linkBase,
-            color: isActive ? "#fff" : "#555",
-            borderBottomColor: isActive ? "#EF0107" : "transparent",
-          })}
-        >
-          ARSENAL
-        </NavLink>
-        <NavLink
-          to="/compare"
-          style={({ isActive }) => ({
-            ...linkBase,
-            color: isActive ? "#fff" : "#555",
-            borderBottomColor: isActive ? "#aaa" : "transparent",
-          })}
-        >
-          COMPARE
-        </NavLink>
-      </nav>
-
-      {/* ── ページコンテンツ ── */}
+      <NavBar />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/liverpool" element={<Liverpool />} />
-        <Route path="/arsenal" element={<Arsenal />} />
-        <Route path="/compare" element={<Compare />} />
+        <Route path="/"              element={<Home />} />
+        <Route path="/team/:teamId"  element={<TeamDetail />} />
+        <Route path="/compare"       element={<Compare />} />
+        {/* 後方互換：旧URLを /team/:id にリダイレクト */}
+        <Route path="/liverpool" element={<Navigate to="/team/40" replace />} />
+        <Route path="/arsenal"   element={<Navigate to="/team/42" replace />} />
+        {/* 404: HOME にフォールバック */}
+        <Route path="*"          element={<Navigate to="/" replace />} />
       </Routes>
     </HashRouter>
   );
