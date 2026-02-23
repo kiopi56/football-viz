@@ -1,0 +1,31 @@
+{
+  "teamId": 42,
+  "season": 2024,
+  "totalGoals": 34,
+  "byPeriod": [
+    {
+      "time": "0-15",
+      "goals": 5
+    },
+    {
+      "time": "16-30",
+      "goals": 5
+    },
+    {
+      "time": "31-45",
+      "goals": 4
+    },
+    {
+      "time": "46-60",
+      "goals": 7
+    },
+    {
+      "time": "61-75",
+      "goals": 8
+    },
+    {
+      "time": "76-90",
+      "goals": 5
+    }
+  ]
+}

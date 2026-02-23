@@ -38,19 +38,6 @@ async function apiFetch(path) {
 }
 
 /**
- * チームのリーグ戦試合結果一覧を取得する
- * @param {number} teamId - チームID（Liverpool=40, Arsenal=42）
- * @param {number} season - シーズン開始年（2024 = 2024-25シーズン）
- * @returns {Promise<{ response: Array }>}
- *   response[].teams.home/away.id  - チームID
- *   response[].goals.home/away     - フルタイム得点
- *   response[].score.halftime.home/away - ハーフタイム得点
- */
-export async function getTeamFixtures(teamId, season) {
-  return apiFetch(`/fixtures?team=${teamId}&season=${season}&status=FT&league=39`);
-}
-
-/**
  * プレミアリーグの全チーム一覧を取得する
  * @param {number} season - シーズン開始年（2024 = 2024-25シーズン）
  * @returns {Promise<{ response: Array<{ team: { id, name, code, logo } }> }>}

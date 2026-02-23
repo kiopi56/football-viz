@@ -2,8 +2,10 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]       # main へのプッシュで自動デプロイ
-  workflow_dispatch:       # GitHub UI から手動実行も可能
+    branches: [main]            # main へのプッシュで自動デプロイ
+  schedule:
+    - cron: '0 6 * * 1'         # 毎週月曜 6:00 UTC（日本時間 15:00）に自動更新
+  workflow_dispatch:            # GitHub UI から手動実行も可能
 
 # gh-pages ブランチへの書き込み権限を付与
 permissions:
@@ -25,6 +27,11 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Fetch football data
+        run: npm run fetch-data
+        env:
+          VITE_APISPORTS_KEY: ${{ secrets.VITE_APISPORTS_KEY }}
 
       - name: Build
         run: npm run build

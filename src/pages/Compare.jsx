@@ -36,10 +36,14 @@ function getTeamColor(teamId, slotIndex) {
   return TEAM_COLORS[teamId] ?? FALLBACK_COLORS[slotIndex % FALLBACK_COLORS.length];
 }
 
-// 前半/後半ラベルと対応するカラー（内訳テーブルのボトムライン用）
+// 6時間帯ラベルと対応するカラー（内訳テーブルのボトムライン用）
 const PERIODS = [
-  { label: "前半", color: "#22c55e" },
-  { label: "後半", color: "#ef4444" },
+  { label: "0–15'",  color: "#22c55e" },
+  { label: "16–30'", color: "#84cc16" },
+  { label: "31–45'", color: "#eab308" },
+  { label: "46–60'", color: "#f97316" },
+  { label: "61–75'", color: "#ef4444" },
+  { label: "76–90'", color: "#a855f7" },
 ];
 
 
@@ -112,7 +116,7 @@ export default function Compare() {
               color: "#888",
               lineHeight: 1.3,
             }}>
-              前半/後半 失点分析 — チーム間比較
+              時間帯別 失点分析 — チーム間比較
             </div>
             <div style={{ fontSize: 10, color: "#555", marginTop: 6 }}>
               2024-25 PL シーズン（全38試合・FINISHED）
@@ -260,12 +264,12 @@ export default function Compare() {
                   textTransform: "uppercase",
                   marginBottom: 10,
                 }}>
-                  前半/後半 内訳
+                  時間帯別 内訳
                 </div>
 
                 <div style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(2,1fr)",
+                  gridTemplateColumns: "repeat(6,1fr)",
                   gap: 6,
                   marginBottom: 12,
                 }}>
