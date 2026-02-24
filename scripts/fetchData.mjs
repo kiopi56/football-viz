@@ -5,23 +5,59 @@
  * api-sports.io から Liverpool / Arsenal の試合イベントデータを取得し、
  * 時間帯別得失点・ホーム/アウェイ別・直近フォームを集計して
  * public/data/ に JSON として保存する。
+ * 同時に Supabase の fixtures / goal_events テーブルにも upsert する。
  *
- * 実行: npm run fetch-data
- * 環境変数: VITE_APISPORTS_KEY
+ * 実行例:
+ *   node scripts/fetchData.mjs              # 2024シーズン（デフォルト）
+ *   node scripts/fetchData.mjs --season=2022
+ *
+ * 環境変数（.env から自動読み込み）:
+ *   VITE_APISPORTS_KEY
+ *   VITE_SUPABASE_URL
+ *   VITE_SUPABASE_ANON_KEY
  *
  * 出力ファイル:
  *   public/data/{slug}-{season}.json  ← チーム詳細データ
- *   public/data/pl-teams-2024.json    ← PLチーム一覧
+ *   public/data/pl-teams-2024.json    ← PLチーム一覧（season=2024 のみ）
  */
 
-import { writeFileSync, mkdirSync } from "fs";
+import { writeFileSync, mkdirSync, readFileSync } from "fs";
 import { join } from "path";
+import { createClient } from "@supabase/supabase-js";
+
+// ── .env ファイル読み込み（process.env の既存値は上書きしない）──────
+try {
+  const envContent = readFileSync(join(process.cwd(), ".env"), "utf-8");
+  for (const line of envContent.split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const eqIdx = trimmed.indexOf("=");
+    if (eqIdx === -1) continue;
+    const key = trimmed.slice(0, eqIdx).trim();
+    const val = trimmed.slice(eqIdx + 1).trim();
+    if (key && !(key in process.env)) process.env[key] = val;
+  }
+} catch {}
 
 const BASE_URL = "https://v3.football.api-sports.io";
 const API_KEY  = process.env.VITE_APISPORTS_KEY;
 
-// コマンドライン引数からシーズンを取得（例: --season=2022）
-// 引数なしの場合は 2024 がデフォルト
+// ── Supabase クライアント ────────────────────────────────────────
+const supabase =
+  process.env.VITE_SUPABASE_URL && process.env.VITE_SUPABASE_ANON_KEY
+    ? createClient(
+        process.env.VITE_SUPABASE_URL,
+        process.env.VITE_SUPABASE_ANON_KEY
+      )
+    : null;
+
+if (supabase) {
+  console.log("Supabase: connected ✓");
+} else {
+  console.warn("Supabase: not configured – DB への保存をスキップします");
+}
+
+// ── コマンドライン引数からシーズンを取得 ────────────────────────
 const seasonArg = process.argv.find(a => a.startsWith("--season="));
 const SEASON = seasonArg ? Number(seasonArg.split("=")[1]) : 2024;
 
@@ -77,7 +113,64 @@ function countsToObj(counts) {
   return Object.fromEntries(PERIOD_KEYS.map((k, i) => [k, counts[i]]));
 }
 
-// ── イベントAPIでの集計（2024シーズン向け） ───────────────────
+// ── Supabase: fixtures テーブルへ upsert ─────────────────────────
+
+async function upsertFixtures(teamId, season, fixtures) {
+  if (!supabase) return;
+
+  const rows = fixtures.map(fix => ({
+    id:             fix.fixture.id,
+    team_id:        teamId,
+    season:         season,
+    match_date:     fix.fixture.date,
+    home_team_id:   fix.teams.home.id,
+    away_team_id:   fix.teams.away.id,
+    home_team_name: fix.teams.home.name,
+    away_team_name: fix.teams.away.name,
+    goals_home:     fix.goals.home,
+    goals_away:     fix.goals.away,
+    ht_home:        fix.score?.halftime?.home ?? null,
+    ht_away:        fix.score?.halftime?.away ?? null,
+    status:         fix.fixture.status.short,
+  }));
+
+  const { error } = await supabase
+    .from("fixtures")
+    .upsert(rows, { onConflict: "id" });
+
+  if (error) {
+    console.warn(`  [supabase] fixtures upsert error: ${error.message}`);
+  } else {
+    console.log(`  [supabase] fixtures upserted: ${rows.length} rows`);
+  }
+}
+
+// ── Supabase: goal_events テーブルへ upsert ──────────────────────
+
+async function upsertGoalEvents(fixtureId, events) {
+  if (!supabase || events.length === 0) return;
+
+  // id: fixture_id + minute + team_id + type の複合キー（文字列）
+  const rows = events.map(event => ({
+    id:           `${fixtureId}_${event.time.elapsed ?? 0}_${event.team.id}_${event.type}`,
+    fixture_id:   fixtureId,
+    team_id:      event.team.id,
+    minute:       event.time.elapsed,
+    extra_minute: event.time.extra ?? null,
+    type:         event.type,
+    detail:       event.detail,
+  }));
+
+  const { error } = await supabase
+    .from("goal_events")
+    .upsert(rows, { onConflict: "id" });
+
+  if (error) {
+    console.warn(`  [supabase] goal_events upsert error (fixture ${fixtureId}): ${error.message}`);
+  }
+}
+
+// ── イベントAPIでの集計 ───────────────────────────────────────
 
 async function fetchByEvents(teamId, fixtures) {
   // scored/conceded × all/home/away の counts
@@ -89,21 +182,24 @@ async function fetchByEvents(teamId, fixtures) {
   for (let i = 0; i < fixtures.length; i++) {
     const fix = fixtures[i];
     const fixtureId = fix.fixture.id;
-    const isHome = fix.teams.home.id === teamId; // このチームがホームか
+    const isHome = fix.teams.home.id === teamId;
 
     await wait(7000); // 10 req/min 対策
 
     const eventsRes = await apiFetch(`/fixtures/events?fixture=${fixtureId}`);
     const events    = eventsRes.response;
 
+    // Supabase に全イベントを保存
+    await upsertGoalEvents(fixtureId, events);
+
     for (const event of events) {
       if (event.type !== "Goal") continue;
       if (event.detail !== "Normal Goal" && event.detail !== "Penalty") continue;
 
-      const elapsed  = event.time.elapsed;
-      const idx      = getPeriodIndex(elapsed);
+      const elapsed   = event.time.elapsed;
+      const idx       = getPeriodIndex(elapsed);
       const isOurGoal = event.team.id === teamId;
-      const venue    = isHome ? "home" : "away";
+      const venue     = isHome ? "home" : "away";
 
       if (isOurGoal) {
         counts.scored.all[idx]++;
@@ -121,8 +217,6 @@ async function fetchByEvents(teamId, fixtures) {
 // ── score.halftime / fulltime からの集計（イベントが取れない場合） ──
 
 function fetchByScore(teamId, fixtures) {
-  // イベントデータなしの場合、前半(0-45)と後半(45-90)のみ集計
-  // byTime は null を返してUIに「データ不足」と知らせる
   let scoredTotal = 0, concededTotal = 0;
   const recentForm = [];
 
@@ -173,6 +267,9 @@ async function fetchTeamData(teamId, slug, season) {
     return null;
   }
 
+  // Supabase: fixtures テーブルへ保存
+  await upsertFixtures(teamId, season, fixtures);
+
   // 直近5試合フォーム（新しい順）
   const recentForm = fixtures.slice(0, 5).map(fix => {
     const isHome = fix.teams.home.id === teamId;
@@ -182,7 +279,6 @@ async function fetchTeamData(teamId, slug, season) {
   });
 
   // イベントデータ取得を試みる
-  let byTimeAvailable = true;
   let evCounts;
   try {
     console.log(`[${slug}-${season}] Fetching events for ${fixtures.length} fixtures...`);
@@ -195,12 +291,12 @@ async function fetchTeamData(teamId, slug, season) {
   // ── 集計まとめ ──
   const sumAll = (c) => Object.values(c).reduce((s, v) => s + v, 0);
 
-  const scoredAll   = countsToObj(evCounts.scored.all);
-  const concededAll = countsToObj(evCounts.conceded.all);
-  const scoredHome  = countsToObj(evCounts.scored.home);
-  const concededHome= countsToObj(evCounts.conceded.home);
-  const scoredAway  = countsToObj(evCounts.scored.away);
-  const concededAway= countsToObj(evCounts.conceded.away);
+  const scoredAll    = countsToObj(evCounts.scored.all);
+  const concededAll  = countsToObj(evCounts.conceded.all);
+  const scoredHome   = countsToObj(evCounts.scored.home);
+  const concededHome = countsToObj(evCounts.conceded.home);
+  const scoredAway   = countsToObj(evCounts.scored.away);
+  const concededAway = countsToObj(evCounts.conceded.away);
 
   return {
     teamId,
