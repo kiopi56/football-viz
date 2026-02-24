@@ -1,0 +1,37 @@
+{
+  "teamId": 40,
+  "season": 2024,
+  "byTimeAvailable": true,
+  "recentForm": [],
+  "scored": {
+    "total": null,
+    "byTime": null
+  },
+  "conceded": {
+    "total": 39,
+    "byTime": {
+      "0-15":  9,
+      "16-30": 1,
+      "31-45": 10,
+      "46-60": 5,
+      "61-75": 6,
+      "76-90": 8
+    }
+  },
+  "home": {
+    "scored":   { "total": null, "byTime": null },
+    "conceded": { "total": null, "byTime": null }
+  },
+  "away": {
+    "scored":   { "total": null, "byTime": null },
+    "conceded": { "total": null, "byTime": null }
+  },
+  "byPeriod": [
+    { "time": "0-15",  "goals": 9  },
+    { "time": "16-30", "goals": 1  },
+    { "time": "31-45", "goals": 10 },
+    { "time": "46-60", "goals": 5  },
+    { "time": "61-75", "goals": 6  },
+    { "time": "76-90", "goals": 8  }
+  ]
+}

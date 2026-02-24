@@ -1,0 +1,38 @@
+{
+  "teamId": 42,
+  "season": 2023,
+  "byTimeAvailable": true,
+  "recentForm": [],
+  "_note": "2023-24 conceded byTime from FBref (38 games, 29 conceded). scored not available.",
+  "scored": {
+    "total": null,
+    "byTime": null
+  },
+  "conceded": {
+    "total": 29,
+    "byTime": {
+      "0-15":  3,
+      "16-30": 4,
+      "31-45": 5,
+      "46-60": 5,
+      "61-75": 5,
+      "76-90": 7
+    }
+  },
+  "home": {
+    "scored":   { "total": null, "byTime": null },
+    "conceded": { "total": null, "byTime": null }
+  },
+  "away": {
+    "scored":   { "total": null, "byTime": null },
+    "conceded": { "total": null, "byTime": null }
+  },
+  "byPeriod": [
+    { "time": "0-15",  "goals": 3 },
+    { "time": "16-30", "goals": 4 },
+    { "time": "31-45", "goals": 5 },
+    { "time": "46-60", "goals": 5 },
+    { "time": "61-75", "goals": 5 },
+    { "time": "76-90", "goals": 7 }
+  ]
+}
