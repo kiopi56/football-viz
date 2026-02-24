@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import StatsHighlight from "../components/StatsHighlight";
 
 // チームID → JSONスラッグ（fetch-data で生成したファイル名と一致）
 const SLUG_MAP = { 40: "liverpool", 42: "arsenal" };
@@ -11,12 +12,6 @@ const TEAM_COLORS = {
   45: "#274488", 46: "#003090", 47: "#132257", 48: "#7A263A",
   49: "#034694", 50: "#6CABDD", 51: "#0057B8", 52: "#C4122E",
   55: "#E03A3E", 57: "#0044A9", 65: "#DD0000", 66: "#95BFE5",
-};
-
-const PERIOD_KEYS   = ["0-15", "16-30", "31-45", "46-60", "61-75", "76-90"];
-const PERIOD_LABELS = {
-  "0-15": "0–15'", "16-30": "16–30'", "31-45": "31–45'",
-  "46-60": "46–60'", "61-75": "61–75'", "76-90": "76–90'",
 };
 
 // ── チームタイル ──────────────────────────────────────────────
@@ -155,31 +150,6 @@ export default function Home() {
       .catch(() => setLoading(false));
   }, []);
 
-  // ── 注目スタッツ計算 ──────────────────────────────────────
-  const dataEntries = Object.entries(teamData);
-
-  const periodTotals = PERIOD_KEYS.map(k => ({
-    key:   k,
-    label: PERIOD_LABELS[k],
-    total: dataEntries.reduce((sum, [, d]) => sum + (d?.conceded?.byTime?.[k] ?? 0), 0),
-  }));
-
-  const maxPeriod = periodTotals.length > 0
-    ? periodTotals.reduce((a, b) => b.total > a.total ? b : a)
-    : null;
-  const minPeriod = periodTotals.length > 0
-    ? periodTotals.reduce((a, b) => b.total < a.total ? b : a)
-    : null;
-
-  const bestDefenseEntry = dataEntries
-    .filter(([, d]) => d?.conceded?.total != null)
-    .sort(([, a], [, b]) => a.conceded.total - b.conceded.total)[0];
-  const bestDefenseTeam = bestDefenseEntry
-    ? teams.find(t => t.id === Number(bestDefenseEntry[0]))
-    : null;
-
-  const dataCount = dataEntries.length;
-
   return (
     <div style={{
       background: "#080c10",
@@ -286,60 +256,10 @@ export default function Home() {
       {/* ════════════════════════════════════════
           注目スタッツ
       ════════════════════════════════════════ */}
-      {dataCount > 0 && (
-        <section style={{ padding: "0 48px 72px", maxWidth: 1100, margin: "0 auto" }}>
-          <SectionHeader label={`注目スタッツ — ${dataCount}チーム集計`} />
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
-            {[
-              {
-                label:  "最多失点時間帯",
-                value:  maxPeriod?.label ?? "–",
-                sub:    maxPeriod ? `合計 ${maxPeriod.total} 失点（${dataCount}チーム）` : "",
-                accent: "#c8102e",
-                icon:   "▼",
-              },
-              {
-                label:  "最少失点時間帯",
-                value:  minPeriod?.label ?? "–",
-                sub:    minPeriod ? `合計 ${minPeriod.total} 失点（${dataCount}チーム）` : "",
-                accent: "#00ff85",
-                icon:   "▲",
-              },
-              {
-                label:  "最少失点チーム",
-                value:  bestDefenseTeam?.shortName ?? "–",
-                sub:    bestDefenseEntry ? `${bestDefenseEntry[1].conceded.total} 失点 / 2024-25` : "",
-                accent: "#6CABDD",
-                icon:   "★",
-              },
-            ].map(({ label, value, sub, accent, icon }) => (
-              <div key={label} style={{
-                background:   "#0e1318",
-                border:       "1px solid #1e2830",
-                borderTop:    `2px solid ${accent}`,
-                borderRadius: 8,
-                padding:      "22px 24px",
-              }}>
-                <div style={{ fontSize: 9, color: "#3a5060", letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 10, fontFamily: "'Barlow', sans-serif", fontWeight: 600 }}>
-                  {label}
-                </div>
-                <div style={{
-                  fontFamily:    "'Bebas Neue', sans-serif",
-                  fontSize:      40,
-                  color:         accent,
-                  lineHeight:    1,
-                  marginBottom:  6,
-                  letterSpacing: "0.02em",
-                }}>
-                  {value}
-                </div>
-                <div style={{ fontSize: 11, color: "#4a6070", fontFamily: "'Barlow', sans-serif" }}>{sub}</div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+      <section style={{ padding: "0 48px 72px", maxWidth: 1100, margin: "0 auto" }}>
+        <SectionHeader label="注目スタッツ — 2024-25" />
+        <StatsHighlight />
+      </section>
 
       {/* ════════════════════════════════════════
           このサイトについて
