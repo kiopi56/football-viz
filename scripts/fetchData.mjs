@@ -20,12 +20,22 @@ import { join } from "path";
 const BASE_URL = "https://v3.football.api-sports.io";
 const API_KEY  = process.env.VITE_APISPORTS_KEY;
 
-// 取得対象チーム × シーズン
+// コマンドライン引数からシーズンを取得（例: --season=2022）
+// 引数なしの場合は 2024 がデフォルト
+const seasonArg = process.argv.find(a => a.startsWith("--season="));
+const SEASON = seasonArg ? Number(seasonArg.split("=")[1]) : 2024;
+
+if (isNaN(SEASON) || SEASON < 2020 || SEASON > 2030) {
+  console.error(`Error: Invalid season "${seasonArg?.split("=")[1]}". Example: --season=2022`);
+  process.exit(1);
+}
+
+console.log(`\nTarget season: ${SEASON} (${SEASON}-${String(SEASON + 1).slice(-2)})`);
+
+// 取得対象チーム（指定シーズンの Liverpool + Arsenal のみ）
 const TEAMS = [
-  { id: 40, slug: "liverpool", season: 2024 },
-  { id: 40, slug: "liverpool", season: 2023 },
-  { id: 42, slug: "arsenal",   season: 2024 },
-  { id: 42, slug: "arsenal",   season: 2023 },
+  { id: 40, slug: "liverpool", season: SEASON },
+  { id: 42, slug: "arsenal",   season: SEASON },
 ];
 
 // 6時間帯定義
@@ -244,23 +254,27 @@ async function main() {
     console.log(`  recentForm: ${data.recentForm.join(" ")}`);
   }
 
-  // ── PLチーム一覧を保存 ───────────────────────────────────────
-  console.log("\n[teams] Fetching PL team list...");
-  await wait(7000);
-  const teamsRes = await apiFetch(`/teams?league=39&season=2024`);
-  const teamsData = teamsRes.response
-    .map(item => ({
-      id:        item.team.id,
-      name:      item.team.name,
-      shortName: item.team.code || item.team.name.slice(0, 3).toUpperCase(),
-      logo:      item.team.logo,
-      hasData:   [40, 42].includes(item.team.id),
-    }))
-    .sort((a, b) => a.name.localeCompare(b.name));
+  // ── PLチーム一覧を保存（2024シーズン指定時のみ・API節約）───────
+  if (SEASON === 2024) {
+    console.log("\n[teams] Fetching PL team list...");
+    await wait(7000);
+    const teamsRes = await apiFetch(`/teams?league=39&season=2024`);
+    const teamsData = teamsRes.response
+      .map(item => ({
+        id:        item.team.id,
+        name:      item.team.name,
+        shortName: item.team.code || item.team.name.slice(0, 3).toUpperCase(),
+        logo:      item.team.logo,
+        hasData:   [40, 42].includes(item.team.id),
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
 
-  const teamsPath = join(outDir, "pl-teams-2024.json");
-  writeFileSync(teamsPath, JSON.stringify(teamsData, null, 2));
-  console.log(`✓ Saved: ${teamsPath} (${teamsData.length} teams)`);
+    const teamsPath = join(outDir, "pl-teams-2024.json");
+    writeFileSync(teamsPath, JSON.stringify(teamsData, null, 2));
+    console.log(`✓ Saved: ${teamsPath} (${teamsData.length} teams)`);
+  } else {
+    console.log(`\n[teams] Skipping team list fetch (season=${SEASON}, not 2024)`);
+  }
 
   console.log("\n✓ All done!");
 }

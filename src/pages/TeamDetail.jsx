@@ -75,6 +75,7 @@ export default function TeamDetail() {
 
   const { data: data2024, loading: l2024 } = useTeamData(teamId || null, 2024);
   const { data: data2023, loading: l2023 } = useTeamData(teamId || null, 2023);
+  const { data: data2022, loading: l2022 } = useTeamData(teamId || null, 2022);
 
   // チーム未対応
   if (!info) {
@@ -88,7 +89,7 @@ export default function TeamDetail() {
     );
   }
 
-  if (l2024 || l2023) {
+  if (l2024 || l2023 || l2022) {
     return (
       <div style={{ minHeight: "100vh", background: "#080c10", display: "flex",
         alignItems: "center", justifyContent: "center",
@@ -98,11 +99,15 @@ export default function TeamDetail() {
     );
   }
 
-  const TEAM_COLOR   = info.color;
-  const primaryData  = season === 2024 ? data2024 : data2023;
-  const otherData    = season === 2024 ? data2023 : data2024;
-  const primaryLabel = season === 2024 ? "2024-25" : "2023-24";
-  const otherLabel   = season === 2024 ? "2023-24" : "2024-25";
+  const TEAM_COLOR = info.color;
+
+  // 3シーズン対応: 選択シーズン → 隣のシーズンと比較
+  const dataMap = { 2024: data2024, 2023: data2023, 2022: data2022 };
+  const otherSeason = season === 2024 ? 2023 : season + 1; // 2022→2023, 2023→2024
+  const primaryData  = dataMap[season];
+  const otherData    = dataMap[otherSeason];
+  const primaryLabel = `${season}-${String(season + 1).slice(-2)}`;
+  const otherLabel   = `${otherSeason}-${String(otherSeason + 1).slice(-2)}`;
   const isBoth       = dataType === "both";
 
   const priVals     = isBoth ? null : getByTime(primaryData, dataType, venue);
@@ -172,7 +177,7 @@ export default function TeamDetail() {
         {/* ── シーズンタブ + 直近フォーム ── */}
         <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20, flexWrap: "wrap" }}>
           <ToggleGroup
-            options={[[2024, "2024-25"], [2023, "2023-24"]]}
+            options={[[2024, "2024-25"], [2023, "2023-24"], [2022, "2022-23"]]}
             value={season}
             onChange={v => setSeason(Number(v))}
             activeColor={TEAM_COLOR}
@@ -202,8 +207,8 @@ export default function TeamDetail() {
             [
               { label: `${primaryLabel} ${metricLabel}`, value: priTotal != null ? String(priTotal) : "–", accent: TEAM_COLOR, sub: venueLabel },
               { label: `${otherLabel} ${metricLabel}`,   value: othTotal != null ? String(othTotal)  : "–", accent: "#4ade80",  sub: venueLabel },
-              { label: `76-90' ${metricLabel}（今季）`,  value: priVals  ? String(priVals[5]) : "–", accent: "#a855f7", sub: primaryLabel },
-              { label: `76-90' ${metricLabel}（昨季）`,  value: othVals  ? String(othVals[5]) : "–", accent: "#818cf8", sub: otherLabel },
+              { label: `76-90' ${metricLabel}（${primaryLabel}）`, value: priVals ? String(priVals[5]) : "–", accent: "#a855f7", sub: primaryLabel },
+              { label: `76-90' ${metricLabel}（${otherLabel}）`,   value: othVals ? String(othVals[5]) : "–", accent: "#818cf8", sub: otherLabel },
             ].map(({ label, value, accent, sub }) => (
               <div key={label} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderTop: `2px solid ${accent}`, borderRadius: 8, padding: "12px 14px" }}>
                 <div style={{ fontSize: 9, color: "#666", letterSpacing: "0.08em", marginBottom: 4, textTransform: "uppercase" }}>{label}</div>
