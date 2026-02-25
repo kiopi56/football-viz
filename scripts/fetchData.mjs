@@ -42,12 +42,12 @@ try {
 const BASE_URL = "https://v3.football.api-sports.io";
 const API_KEY  = process.env.VITE_APISPORTS_KEY;
 
-// ── Supabase クライアント ────────────────────────────────────────
+// ── Supabase クライアント（service_role キーで RLS をバイパス）────
 const supabase =
-  process.env.VITE_SUPABASE_URL && process.env.VITE_SUPABASE_ANON_KEY
+  process.env.VITE_SUPABASE_URL && process.env.VITE_SUPABASE_SERVICE_KEY
     ? createClient(
         process.env.VITE_SUPABASE_URL,
-        process.env.VITE_SUPABASE_ANON_KEY
+        process.env.VITE_SUPABASE_SERVICE_KEY
       )
     : null;
 
@@ -150,9 +150,9 @@ async function upsertFixtures(teamId, season, fixtures) {
 async function upsertGoalEvents(fixtureId, events) {
   if (!supabase || events.length === 0) return;
 
-  // id: fixture_id + minute + team_id + type の複合キー（文字列）
-  const rows = events.map(event => ({
-    id:           `${fixtureId}_${event.time.elapsed ?? 0}_${event.team.id}_${event.type}`,
+  // id: fixture_id + index の複合キー（同一試合内の重複を防ぐ）
+  const rows = events.map((event, i) => ({
+    id:           `${fixtureId}_${i}`,
     fixture_id:   fixtureId,
     team_id:      event.team.id,
     minute:       event.time.elapsed,
