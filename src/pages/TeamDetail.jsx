@@ -5,6 +5,7 @@ import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Legend,
 } from "recharts";
 import { useTeamData } from "../hooks/useTeamData";
+import ScorerTracker from "../components/ScorerTracker";
 
 // ── チーム固有情報（データ対応済みチームのみ） ──────────────────
 const TEAM_INFO = {
@@ -68,6 +69,7 @@ export default function TeamDetail() {
   const teamId = Number(teamIdStr);
   const info   = TEAM_INFO[teamId];
 
+  const [mainView, setMainView] = useState("chart");
   const [season,   setSeason]   = useState(2024);
   const [dataType, setDataType] = useState("conceded");
   const [venue,    setVenue]    = useState("all");
@@ -120,7 +122,7 @@ export default function TeamDetail() {
     : getTotal(primaryData, dataType, venue);
   const othTotal = isBoth ? null : getTotal(otherData, dataType, venue);
 
-  const chartData = PERIOD_KEYS.map((k, i) => {
+  const chartData = PERIOD_KEYS.map((_k, i) => {
     const e = { period: PERIOD_LABELS[i] };
     if (isBoth) {
       e["得点"] = priScored?.[i]   ?? 0;
@@ -134,7 +136,7 @@ export default function TeamDetail() {
 
   const priSum = Array.isArray(priVals) ? priVals.reduce((s, v) => s + v, 0) : 0;
   const othSum = Array.isArray(othVals) ? othVals.reduce((s, v) => s + v, 0) : 0;
-  const pctData = PERIOD_KEYS.map((k, i) => ({
+  const pctData = PERIOD_KEYS.map((_k, i) => ({
     period: PERIOD_LABELS[i],
     [primaryLabel]: priSum > 0 ? +((priVals?.[i] ?? 0) / priSum * 100).toFixed(1) : 0,
     ...(othVals ? { [otherLabel]: othSum > 0 ? +((othVals[i] ?? 0) / othSum * 100).toFixed(1) : 0 } : {}),
@@ -173,6 +175,32 @@ export default function TeamDetail() {
             <div style={{ fontSize: 10, color: "#555", marginTop: 6 }}>PL シーズン比較</div>
           </div>
         </div>
+
+        {/* ── メインビュータブ ── */}
+        <div style={{ display: "flex", gap: 4, marginBottom: 20 }}>
+          {[["chart", "時間帯分析"], ["scorers", "得点者"]].map(([v, label]) => {
+            const active = mainView === v;
+            return (
+              <button key={v} onClick={() => setMainView(v)} style={{
+                padding: "7px 18px", borderRadius: 6, fontSize: 11, cursor: "pointer",
+                fontFamily: "'Space Mono', monospace",
+                border: active ? `1px solid ${TEAM_COLOR}` : "1px solid rgba(255,255,255,0.12)",
+                background: active ? `${TEAM_COLOR}22` : "transparent",
+                color: active ? TEAM_COLOR : "#666",
+                fontWeight: active ? 700 : 400,
+                letterSpacing: "0.04em",
+              }}>{label}</button>
+            );
+          })}
+        </div>
+
+        {/* ── 得点者ビュー ── */}
+        {mainView === "scorers" && (
+          <ScorerTracker teamId={teamId} />
+        )}
+
+        {/* ── チャートビュー ── */}
+        {mainView === "chart" && (<>
 
         {/* ── シーズンタブ + 直近フォーム ── */}
         <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20, flexWrap: "wrap" }}>
@@ -335,6 +363,8 @@ export default function TeamDetail() {
         <div style={{ fontSize: 9, color: "#2d2d2d", lineHeight: 1.8 }}>
           ※ データ：api-sports.io より取得（PL FINISHEDを集計・ビルド時生成）
         </div>
+
+        </>)}
 
       </div>
     </div>

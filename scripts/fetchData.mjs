@@ -170,6 +170,36 @@ async function upsertGoalEvents(fixtureId, events) {
   }
 }
 
+// ── 得点者データ取得 ─────────────────────────────────────────
+
+async function fetchScorers(teamId, season) {
+  const rows = [];
+  let page = 1;
+  while (page <= 3) {
+    if (page > 1) await wait(7000);
+    const res = await apiFetch(
+      `/players?team=${teamId}&season=${season}&league=39&page=${page}`
+    );
+    for (const item of res.response) {
+      const stats = item.statistics?.[0];
+      rows.push({
+        id:          item.player.id,
+        name:        item.player.name,
+        photo:       item.player.photo,
+        goals:       stats?.goals?.total    ?? 0,
+        assists:     stats?.goals?.assists  ?? 0,
+        appearances: stats?.games?.appearences ?? 0,
+      });
+    }
+    if (res.paging.current >= res.paging.total) break;
+    page++;
+  }
+  return rows
+    .filter(r => r.goals > 0)
+    .sort((a, b) => b.goals - a.goals)
+    .slice(0, 15);
+}
+
 // ── イベントAPIでの集計 ───────────────────────────────────────
 
 async function fetchByEvents(teamId, fixtures) {
@@ -279,46 +309,55 @@ async function fetchTeamData(teamId, slug, season) {
   });
 
   // イベントデータ取得を試みる
-  let evCounts;
+  let coreData;
   try {
     console.log(`[${slug}-${season}] Fetching events for ${fixtures.length} fixtures...`);
-    evCounts = await fetchByEvents(teamId, fixtures);
+    const evCounts = await fetchByEvents(teamId, fixtures);
+
+    // ── 集計まとめ ──
+    const sumAll = (c) => Object.values(c).reduce((s, v) => s + v, 0);
+
+    const scoredAll    = countsToObj(evCounts.scored.all);
+    const concededAll  = countsToObj(evCounts.conceded.all);
+    const scoredHome   = countsToObj(evCounts.scored.home);
+    const concededHome = countsToObj(evCounts.conceded.home);
+    const scoredAway   = countsToObj(evCounts.scored.away);
+    const concededAway = countsToObj(evCounts.conceded.away);
+
+    coreData = {
+      teamId,
+      season,
+      byTimeAvailable: true,
+      recentForm,
+      scored:   { total: sumAll(scoredAll),   byTime: scoredAll   },
+      conceded: { total: sumAll(concededAll), byTime: concededAll },
+      home: {
+        scored:   { total: sumAll(scoredHome),   byTime: scoredHome   },
+        conceded: { total: sumAll(concededHome), byTime: concededHome },
+      },
+      away: {
+        scored:   { total: sumAll(scoredAway),   byTime: scoredAway   },
+        conceded: { total: sumAll(concededAway), byTime: concededAway },
+      },
+      byPeriod: PERIOD_KEYS.map(k => ({ time: k, goals: concededAll[k] })),
+    };
   } catch (err) {
     console.warn(`[${slug}-${season}] Events fetch failed (${err.message}), falling back to score only`);
-    return fetchByScore(teamId, fixtures);
+    coreData = fetchByScore(teamId, fixtures);
   }
 
-  // ── 集計まとめ ──
-  const sumAll = (c) => Object.values(c).reduce((s, v) => s + v, 0);
+  // 得点者データ取得（イベント取得成否に関わらず実行）
+  let scorers = [];
+  try {
+    await wait(7000);
+    console.log(`[${slug}-${season}] Fetching scorers...`);
+    scorers = await fetchScorers(teamId, season);
+    console.log(`[${slug}-${season}] Found ${scorers.length} scorers`);
+  } catch (err) {
+    console.warn(`[${slug}-${season}] Scorers fetch failed: ${err.message}`);
+  }
 
-  const scoredAll    = countsToObj(evCounts.scored.all);
-  const concededAll  = countsToObj(evCounts.conceded.all);
-  const scoredHome   = countsToObj(evCounts.scored.home);
-  const concededHome = countsToObj(evCounts.conceded.home);
-  const scoredAway   = countsToObj(evCounts.scored.away);
-  const concededAway = countsToObj(evCounts.conceded.away);
-
-  return {
-    teamId,
-    season,
-    byTimeAvailable: true,
-    recentForm,
-    // 全試合
-    scored:   { total: sumAll(scoredAll),   byTime: scoredAll   },
-    conceded: { total: sumAll(concededAll), byTime: concededAll },
-    // ホームのみ
-    home: {
-      scored:   { total: sumAll(scoredHome),   byTime: scoredHome   },
-      conceded: { total: sumAll(concededHome), byTime: concededHome },
-    },
-    // アウェイのみ
-    away: {
-      scored:   { total: sumAll(scoredAway),   byTime: scoredAway   },
-      conceded: { total: sumAll(concededAway), byTime: concededAway },
-    },
-    // 後方互換（useTeamGoals の byPeriod フォーマット）
-    byPeriod: PERIOD_KEYS.map(k => ({ time: k, goals: concededAll[k] })),
-  };
+  return { ...coreData, scorers };
 }
 
 // ── エントリポイント ─────────────────────────────────────────
