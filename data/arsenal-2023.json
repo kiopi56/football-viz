@@ -2,37 +2,107 @@
   "teamId": 42,
   "season": 2023,
   "byTimeAvailable": true,
-  "recentForm": [],
-  "_note": "2023-24 conceded byTime from FBref (38 games, 29 conceded). scored not available.",
+  "recentForm": [
+    "W",
+    "W",
+    "W",
+    "W",
+    "W"
+  ],
   "scored": {
-    "total": null,
-    "byTime": null
+    "total": 86,
+    "byTime": {
+      "0-15": 10,
+      "16-30": 11,
+      "31-45": 16,
+      "46-60": 13,
+      "61-75": 16,
+      "76-90": 20
+    }
   },
   "conceded": {
-    "total": 29,
+    "total": 28,
     "byTime": {
-      "0-15":  3,
+      "0-15": 4,
       "16-30": 4,
-      "31-45": 5,
-      "46-60": 5,
-      "61-75": 5,
-      "76-90": 7
+      "31-45": 3,
+      "46-60": 7,
+      "61-75": 2,
+      "76-90": 8
     }
   },
   "home": {
-    "scored":   { "total": null, "byTime": null },
-    "conceded": { "total": null, "byTime": null }
+    "scored": {
+      "total": 45,
+      "byTime": {
+        "0-15": 5,
+        "16-30": 6,
+        "31-45": 5,
+        "46-60": 8,
+        "61-75": 9,
+        "76-90": 12
+      }
+    },
+    "conceded": {
+      "total": 15,
+      "byTime": {
+        "0-15": 2,
+        "16-30": 1,
+        "31-45": 3,
+        "46-60": 3,
+        "61-75": 0,
+        "76-90": 6
+      }
+    }
   },
   "away": {
-    "scored":   { "total": null, "byTime": null },
-    "conceded": { "total": null, "byTime": null }
+    "scored": {
+      "total": 41,
+      "byTime": {
+        "0-15": 5,
+        "16-30": 5,
+        "31-45": 11,
+        "46-60": 5,
+        "61-75": 7,
+        "76-90": 8
+      }
+    },
+    "conceded": {
+      "total": 13,
+      "byTime": {
+        "0-15": 2,
+        "16-30": 3,
+        "31-45": 0,
+        "46-60": 4,
+        "61-75": 2,
+        "76-90": 2
+      }
+    }
   },
   "byPeriod": [
-    { "time": "0-15",  "goals": 3 },
-    { "time": "16-30", "goals": 4 },
-    { "time": "31-45", "goals": 5 },
-    { "time": "46-60", "goals": 5 },
-    { "time": "61-75", "goals": 5 },
-    { "time": "76-90", "goals": 7 }
+    {
+      "time": "0-15",
+      "goals": 4
+    },
+    {
+      "time": "16-30",
+      "goals": 4
+    },
+    {
+      "time": "31-45",
+      "goals": 3
+    },
+    {
+      "time": "46-60",
+      "goals": 7
+    },
+    {
+      "time": "61-75",
+      "goals": 2
+    },
+    {
+      "time": "76-90",
+      "goals": 8
+    }
   ]
 }

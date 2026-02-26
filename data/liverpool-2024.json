@@ -2,15 +2,28 @@
   "teamId": 40,
   "season": 2024,
   "byTimeAvailable": true,
-  "recentForm": [],
+  "recentForm": [
+    "D",
+    "L",
+    "D",
+    "L",
+    "W"
+  ],
   "scored": {
-    "total": null,
-    "byTime": null
+    "total": 85,
+    "byTime": {
+      "0-15": 9,
+      "16-30": 16,
+      "31-45": 15,
+      "46-60": 12,
+      "61-75": 17,
+      "76-90": 16
+    }
   },
   "conceded": {
     "total": 39,
     "byTime": {
-      "0-15":  9,
+      "0-15": 9,
       "16-30": 1,
       "31-45": 10,
       "46-60": 5,
@@ -19,19 +32,175 @@
     }
   },
   "home": {
-    "scored":   { "total": null, "byTime": null },
-    "conceded": { "total": null, "byTime": null }
+    "scored": {
+      "total": 41,
+      "byTime": {
+        "0-15": 5,
+        "16-30": 9,
+        "31-45": 6,
+        "46-60": 7,
+        "61-75": 7,
+        "76-90": 7
+      }
+    },
+    "conceded": {
+      "total": 15,
+      "byTime": {
+        "0-15": 5,
+        "16-30": 0,
+        "31-45": 1,
+        "46-60": 3,
+        "61-75": 3,
+        "76-90": 3
+      }
+    }
   },
   "away": {
-    "scored":   { "total": null, "byTime": null },
-    "conceded": { "total": null, "byTime": null }
+    "scored": {
+      "total": 44,
+      "byTime": {
+        "0-15": 4,
+        "16-30": 7,
+        "31-45": 9,
+        "46-60": 5,
+        "61-75": 10,
+        "76-90": 9
+      }
+    },
+    "conceded": {
+      "total": 24,
+      "byTime": {
+        "0-15": 4,
+        "16-30": 1,
+        "31-45": 9,
+        "46-60": 2,
+        "61-75": 3,
+        "76-90": 5
+      }
+    }
   },
   "byPeriod": [
-    { "time": "0-15",  "goals": 9  },
-    { "time": "16-30", "goals": 1  },
-    { "time": "31-45", "goals": 10 },
-    { "time": "46-60", "goals": 5  },
-    { "time": "61-75", "goals": 6  },
-    { "time": "76-90", "goals": 8  }
+    {
+      "time": "0-15",
+      "goals": 9
+    },
+    {
+      "time": "16-30",
+      "goals": 1
+    },
+    {
+      "time": "31-45",
+      "goals": 10
+    },
+    {
+      "time": "46-60",
+      "goals": 5
+    },
+    {
+      "time": "61-75",
+      "goals": 6
+    },
+    {
+      "time": "76-90",
+      "goals": 8
+    }
+  ],
+  "scorers": [
+    {
+      "id": 306,
+      "name": "Mohamed Salah",
+      "photo": "https://media.api-sports.io/football/players/306.png",
+      "goals": 29,
+      "assists": 18,
+      "appearances": 38
+    },
+    {
+      "id": 2489,
+      "name": "L. Díaz",
+      "photo": "https://media.api-sports.io/football/players/2489.png",
+      "goals": 13,
+      "assists": 5,
+      "appearances": 36
+    },
+    {
+      "id": 247,
+      "name": "C. Gakpo",
+      "photo": "https://media.api-sports.io/football/players/247.png",
+      "goals": 10,
+      "assists": 4,
+      "appearances": 35
+    },
+    {
+      "id": 1096,
+      "name": "D. Szoboszlai",
+      "photo": "https://media.api-sports.io/football/players/1096.png",
+      "goals": 6,
+      "assists": 6,
+      "appearances": 36
+    },
+    {
+      "id": 2678,
+      "name": "Diogo Jota",
+      "photo": "https://media.api-sports.io/football/players/2678.png",
+      "goals": 6,
+      "assists": 3,
+      "appearances": 26
+    },
+    {
+      "id": 6716,
+      "name": "A. Mac Allister",
+      "photo": "https://media.api-sports.io/football/players/6716.png",
+      "goals": 5,
+      "assists": 5,
+      "appearances": 35
+    },
+    {
+      "id": 51617,
+      "name": "D. Núñez",
+      "photo": "https://media.api-sports.io/football/players/51617.png",
+      "goals": 5,
+      "assists": 2,
+      "appearances": 30
+    },
+    {
+      "id": 290,
+      "name": "V. van Dijk",
+      "photo": "https://media.api-sports.io/football/players/290.png",
+      "goals": 3,
+      "assists": 1,
+      "appearances": 38
+    },
+    {
+      "id": 293,
+      "name": "C. Jones",
+      "photo": "https://media.api-sports.io/football/players/293.png",
+      "goals": 3,
+      "assists": 3,
+      "appearances": 34
+    },
+    {
+      "id": 283,
+      "name": "T. Alexander-Arnold",
+      "photo": "https://media.api-sports.io/football/players/283.png",
+      "goals": 3,
+      "assists": 6,
+      "appearances": 33
+    },
+    {
+      "id": 1145,
+      "name": "I. Konaté",
+      "photo": "https://media.api-sports.io/football/players/1145.png",
+      "goals": 1,
+      "assists": 2,
+      "appearances": 32
+    },
+    {
+      "id": 19035,
+      "name": "H. Elliott",
+      "photo": "https://media.api-sports.io/football/players/19035.png",
+      "goals": 1,
+      "assists": 2,
+      "appearances": 18
+    }
   ]
 }
