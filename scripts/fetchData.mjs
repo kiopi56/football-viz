@@ -357,7 +357,24 @@ async function fetchTeamData(teamId, slug, season) {
     console.warn(`[${slug}-${season}] Scorers fetch failed: ${err.message}`);
   }
 
-  return { ...coreData, scorers };
+  // fixtures を Supabase と同じ shape で JSON にも保存（フォールバック用）
+  const fixturesForJson = fixtures.map(fix => ({
+    id:             fix.fixture.id,
+    season,
+    team_id:        teamId,
+    match_date:     fix.fixture.date,
+    home_team_id:   fix.teams.home.id,
+    away_team_id:   fix.teams.away.id,
+    home_team_name: fix.teams.home.name,
+    away_team_name: fix.teams.away.name,
+    goals_home:     fix.goals.home,
+    goals_away:     fix.goals.away,
+    ht_home:        fix.score?.halftime?.home ?? null,
+    ht_away:        fix.score?.halftime?.away ?? null,
+    status:         fix.fixture.status.short,
+  }));
+
+  return { ...coreData, scorers, fixtures: fixturesForJson };
 }
 
 // ── エントリポイント ─────────────────────────────────────────

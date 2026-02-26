@@ -75,3 +75,74 @@ export async function fetchRecentFixtures(teamId, limit = 3) {
   if (error) throw error;
   return data ?? [];
 }
+
+// ── JSON フォールバック ────────────────────────────────────────
+
+const SLUGS    = { 40: "liverpool", 42: "arsenal" };
+const SEASONS  = [2024, 2023, 2022];
+const BASE     = import.meta.env.BASE_URL ?? "/";
+
+/** JSON から fixtures 配列を取得 */
+async function loadJsonFixtures(teamId, season) {
+  const slug = SLUGS[teamId];
+  if (!slug) return [];
+  try {
+    const res = await fetch(`${BASE}data/${slug}-${season}.json`);
+    if (!res.ok) return [];
+    const json = await res.json();
+    return json.fixtures ?? [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Supabase → JSON の順で試合一覧を取得
+ * Supabase が空または失敗した場合に JSON にフォールバック
+ */
+export async function fetchFixturesWithFallback(teamId, season) {
+  try {
+    const data = await fetchFixtures(teamId, season);
+    if (data.length > 0) return data;
+  } catch { /* fall through */ }
+
+  return loadJsonFixtures(teamId, season);
+}
+
+/**
+ * Supabase → 全 JSON の順で単一試合を検索
+ * Supabase で見つからない場合は全チーム × 全シーズン JSON を検索
+ */
+export async function fetchFixtureWithFallback(fixtureId) {
+  // 1. Supabase
+  try {
+    const data = await fetchFixture(fixtureId);
+    if (data) return data;
+  } catch { /* fall through */ }
+
+  // 2. 全 JSON を並列検索
+  const searches = Object.keys(SLUGS).flatMap(tid =>
+    SEASONS.map(async season => {
+      const list = await loadJsonFixtures(Number(tid), season);
+      return list.find(f => f.id === fixtureId) ?? null;
+    })
+  );
+  const results = await Promise.all(searches);
+  return results.find(r => r !== null) ?? null;
+}
+
+/**
+ * Supabase → JSON の順で直近 n 試合を取得
+ */
+export async function fetchRecentFixturesWithFallback(teamId, limit = 3) {
+  try {
+    const data = await fetchRecentFixtures(teamId, limit);
+    if (data.length > 0) return data;
+  } catch { /* fall through */ }
+
+  // JSON から全シーズン横断で収集し日付降順に並べる
+  const all = (await Promise.all(SEASONS.map(s => loadJsonFixtures(teamId, s)))).flat();
+  return all
+    .sort((a, b) => new Date(b.match_date) - new Date(a.match_date))
+    .slice(0, limit);
+}

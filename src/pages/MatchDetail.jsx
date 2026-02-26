@@ -16,7 +16,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
 } from "recharts";
 import {
-  fetchFixture, fetchGoalEvents, resolveTeamId,
+  fetchFixtureWithFallback, fetchGoalEvents, resolveTeamId,
 } from "../lib/supabase";
 import { useTeamData } from "../hooks/useTeamData";
 
@@ -126,7 +126,7 @@ export default function MatchDetail() {
   useEffect(() => {
     if (!id) return;
     setLoading(true); setLoadErr(null);
-    Promise.all([fetchFixture(id), fetchGoalEvents(id)])
+    Promise.all([fetchFixtureWithFallback(id), fetchGoalEvents(id)])
       .then(([fix, evts]) => { setFixture(fix); setGoals(evts); })
       .catch(e => setLoadErr(e.message))
       .finally(() => setLoading(false));

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import StatsHighlight from "../components/StatsHighlight";
-import { fetchRecentFixtures } from "../lib/supabase";
+import { fetchRecentFixturesWithFallback } from "../lib/supabase";
 
 // チームID → JSONスラッグ（fetch-data で生成したファイル名と一致）
 const SLUG_MAP = { 40: "liverpool", 42: "arsenal" };
@@ -152,7 +152,7 @@ export default function Home() {
       .catch(() => setLoading(false));
 
     // Liverpool(40) + Arsenal(42) の直近3試合ずつ取得
-    Promise.all([fetchRecentFixtures(40, 3), fetchRecentFixtures(42, 3)])
+    Promise.all([fetchRecentFixturesWithFallback(40, 3), fetchRecentFixturesWithFallback(42, 3)])
       .then(([liv, ars]) => setRecentMatches([...liv, ...ars].sort((a, b) =>
         new Date(b.match_date) - new Date(a.match_date)
       )))

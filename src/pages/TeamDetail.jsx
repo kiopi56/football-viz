@@ -6,7 +6,7 @@ import {
 } from "recharts";
 import { useTeamData } from "../hooks/useTeamData";
 import ScorerTracker from "../components/ScorerTracker";
-import { fetchFixtures } from "../lib/supabase";
+import { fetchFixturesWithFallback } from "../lib/supabase";
 
 // ── チーム固有情報（データ対応済みチームのみ） ──────────────────
 const TEAM_INFO = {
@@ -83,6 +83,16 @@ export default function TeamDetail() {
   const { data: data2023, loading: l2023 } = useTeamData(teamId || null, 2023);
   const { data: data2022, loading: l2022 } = useTeamData(teamId || null, 2022);
 
+  // fixtures をシーズン切り替えのたびに取得（早期 return より前に置く）
+  useEffect(() => {
+    if (!teamId) return;
+    setFixtureLoad(true);
+    fetchFixturesWithFallback(teamId, season)
+      .then(setFixtures)
+      .catch(() => setFixtures([]))
+      .finally(() => setFixtureLoad(false));
+  }, [teamId, season]);
+
   // チーム未対応
   if (!info) {
     return (
@@ -106,16 +116,6 @@ export default function TeamDetail() {
   }
 
   const TEAM_COLOR = info.color;
-
-  // fixtures をシーズン切り替えのたびに取得
-  useEffect(() => {
-    if (!teamId) return;
-    setFixtureLoad(true);
-    fetchFixtures(teamId, season)
-      .then(setFixtures)
-      .catch(() => setFixtures([]))
-      .finally(() => setFixtureLoad(false));
-  }, [teamId, season]);
 
   // 3シーズン対応: 選択シーズン → 隣のシーズンと比較
   const dataMap = { 2024: data2024, 2023: data2023, 2022: data2022 };
