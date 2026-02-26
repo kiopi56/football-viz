@@ -2,7 +2,8 @@ import { HashRouter, Routes, Route, NavLink, Navigate } from "react-router-dom";
 import Home        from "./pages/Home";
 import TeamDetail  from "./pages/TeamDetail";
 import Compare     from "./pages/Compare";
-import MatchDetail from "./pages/MatchDetail";
+import MatchDetail  from "./pages/MatchDetail";
+import PlayerDetail from "./pages/PlayerDetail";
 
 const NAV_BG = "#080c10";
 
@@ -79,7 +80,8 @@ export default function App() {
       <Routes>
         <Route path="/"                  element={<Home />} />
         <Route path="/team/:teamId"      element={<TeamDetail />} />
-        <Route path="/match/:fixtureId"  element={<MatchDetail />} />
+        <Route path="/match/:fixtureId"   element={<MatchDetail />} />
+        <Route path="/player/:playerId"   element={<PlayerDetail />} />
         <Route path="/compare"           element={<Compare />} />
         {/* 後方互換：旧URLを /team/:id にリダイレクト */}
         <Route path="/liverpool" element={<Navigate to="/team/40" replace />} />

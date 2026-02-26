@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTeamData } from "../hooks/useTeamData";
 
 const SEASONS      = [2022, 2023, 2024];
@@ -33,7 +34,8 @@ export default function ScorerTracker({ teamId }) {
   const { data: data2023, loading: l2023 } = useTeamData(teamId, 2023);
   const { data: data2024, loading: l2024 } = useTeamData(teamId, 2024);
   const [tooltip, setTooltip] = useState(null);
-  const svgRef = useRef(null);
+  const svgRef   = useRef(null);
+  const navigate = useNavigate();
 
   if (l2022 || l2023 || l2024) {
     return (
@@ -196,7 +198,8 @@ export default function ScorerTracker({ teamId }) {
               return (
                 <g key={si} style={{ cursor: "pointer" }}
                   onMouseMove={e => handleMouseMove(e, { ...pt, name: player.name, color })}
-                  onMouseLeave={() => setTooltip(null)}>
+                  onMouseLeave={() => setTooltip(null)}
+                  onClick={() => navigate(`/player/${player.id}`)}>
                   {/* 外枠 */}
                   <circle cx={pt.x} cy={pt.y} r={r + 2}
                     fill="none" stroke={color} strokeWidth={1.5} strokeOpacity={0.35} />
@@ -246,6 +249,7 @@ export default function ScorerTracker({ teamId }) {
               <span>{tooltip.assists}A</span>
               <span>{tooltip.appearances}試</span>
             </div>
+            <div style={{ fontSize: 8, color: "#444", marginTop: 6 }}>クリックで詳細 →</div>
           </div>
         )}
       </div>
