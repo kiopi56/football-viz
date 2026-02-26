@@ -2,10 +2,9 @@
  * scripts/fetchData.mjs
  *
  * ビルド前に実行するデータ取得スクリプト。
- * api-sports.io から Liverpool / Arsenal の試合イベントデータを取得し、
- * 時間帯別得失点・ホーム/アウェイ別・直近フォームを集計して
- * public/data/ に JSON として保存する。
- * 同時に Supabase の fixtures / goal_events テーブルにも upsert する。
+ * api-sports.io から Liverpool / Arsenal の fixtures と scorers を取得し、
+ * スコアベースで得失点集計して public/data/ に JSON として保存する。
+ * 同時に Supabase の fixtures テーブルにも upsert する。
  *
  * 実行例:
  *   node scripts/fetchData.mjs              # 2024シーズン（デフォルト）
@@ -14,7 +13,7 @@
  * 環境変数（.env から自動読み込み）:
  *   VITE_APISPORTS_KEY
  *   VITE_SUPABASE_URL
- *   VITE_SUPABASE_ANON_KEY
+ *   VITE_SUPABASE_SERVICE_KEY
  *
  * 出力ファイル:
  *   public/data/{slug}-{season}.json  ← チーム詳細データ
@@ -74,9 +73,6 @@ const TEAMS = [
   { id: 42, slug: "arsenal",   season: SEASON },
 ];
 
-// 6時間帯定義
-const PERIOD_KEYS = ["0-15", "16-30", "31-45", "46-60", "61-75", "76-90"];
-
 // ── ユーティリティ ───────────────────────────────────────────
 
 async function apiFetch(path) {
@@ -95,23 +91,6 @@ async function apiFetch(path) {
 }
 
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-function getPeriodIndex(elapsed) {
-  if (elapsed <= 15) return 0;
-  if (elapsed <= 30) return 1;
-  if (elapsed <= 45) return 2;
-  if (elapsed <= 60) return 3;
-  if (elapsed <= 75) return 4;
-  return 5;
-}
-
-/** カウント配列 [0,0,0,0,0,0] を初期化して返す */
-function zeroCounts() { return [0, 0, 0, 0, 0, 0]; }
-
-/** counts 配列 → { "0-15": N, ... } オブジェクト */
-function countsToObj(counts) {
-  return Object.fromEntries(PERIOD_KEYS.map((k, i) => [k, counts[i]]));
-}
 
 // ── Supabase: fixtures テーブルへ upsert ─────────────────────────
 
@@ -145,31 +124,6 @@ async function upsertFixtures(teamId, season, fixtures) {
   }
 }
 
-// ── Supabase: goal_events テーブルへ upsert ──────────────────────
-
-async function upsertGoalEvents(fixtureId, events) {
-  if (!supabase || events.length === 0) return;
-
-  // id: fixture_id + index の複合キー（同一試合内の重複を防ぐ）
-  const rows = events.map((event, i) => ({
-    id:           `${fixtureId}_${i}`,
-    fixture_id:   fixtureId,
-    team_id:      event.team.id,
-    minute:       event.time.elapsed,
-    extra_minute: event.time.extra ?? null,
-    type:         event.type,
-    detail:       event.detail,
-  }));
-
-  const { error } = await supabase
-    .from("goal_events")
-    .upsert(rows, { onConflict: "id" });
-
-  if (error) {
-    console.warn(`  [supabase] goal_events upsert error (fixture ${fixtureId}): ${error.message}`);
-  }
-}
-
 // ── 得点者データ取得 ─────────────────────────────────────────
 
 async function fetchScorers(teamId, season) {
@@ -200,51 +154,7 @@ async function fetchScorers(teamId, season) {
     .slice(0, 15);
 }
 
-// ── イベントAPIでの集計 ───────────────────────────────────────
-
-async function fetchByEvents(teamId, fixtures) {
-  // scored/conceded × all/home/away の counts
-  const counts = {
-    scored:   { all: zeroCounts(), home: zeroCounts(), away: zeroCounts() },
-    conceded: { all: zeroCounts(), home: zeroCounts(), away: zeroCounts() },
-  };
-
-  for (let i = 0; i < fixtures.length; i++) {
-    const fix = fixtures[i];
-    const fixtureId = fix.fixture.id;
-    const isHome = fix.teams.home.id === teamId;
-
-    await wait(7000); // 10 req/min 対策
-
-    const eventsRes = await apiFetch(`/fixtures/events?fixture=${fixtureId}`);
-    const events    = eventsRes.response;
-
-    // Supabase に全イベントを保存
-    await upsertGoalEvents(fixtureId, events);
-
-    for (const event of events) {
-      if (event.type !== "Goal") continue;
-      if (event.detail !== "Normal Goal" && event.detail !== "Penalty") continue;
-
-      const elapsed   = event.time.elapsed;
-      const idx       = getPeriodIndex(elapsed);
-      const isOurGoal = event.team.id === teamId;
-      const venue     = isHome ? "home" : "away";
-
-      if (isOurGoal) {
-        counts.scored.all[idx]++;
-        counts.scored[venue][idx]++;
-      } else {
-        counts.conceded.all[idx]++;
-        counts.conceded[venue][idx]++;
-      }
-    }
-  }
-
-  return counts;
-}
-
-// ── score.halftime / fulltime からの集計（イベントが取れない場合） ──
+// ── score.halftime / fulltime からの集計 ──────────────────────
 
 function fetchByScore(teamId, fixtures) {
   let scoredTotal = 0, concededTotal = 0;
@@ -300,51 +210,8 @@ async function fetchTeamData(teamId, slug, season) {
   // Supabase: fixtures テーブルへ保存
   await upsertFixtures(teamId, season, fixtures);
 
-  // 直近5試合フォーム（新しい順）
-  const recentForm = fixtures.slice(0, 5).map(fix => {
-    const isHome = fix.teams.home.id === teamId;
-    const scored   = isHome ? (fix.goals.home ?? 0) : (fix.goals.away ?? 0);
-    const conceded = isHome ? (fix.goals.away ?? 0) : (fix.goals.home ?? 0);
-    return scored > conceded ? "W" : scored < conceded ? "L" : "D";
-  });
-
-  // イベントデータ取得を試みる
-  let coreData;
-  try {
-    console.log(`[${slug}-${season}] Fetching events for ${fixtures.length} fixtures...`);
-    const evCounts = await fetchByEvents(teamId, fixtures);
-
-    // ── 集計まとめ ──
-    const sumAll = (c) => Object.values(c).reduce((s, v) => s + v, 0);
-
-    const scoredAll    = countsToObj(evCounts.scored.all);
-    const concededAll  = countsToObj(evCounts.conceded.all);
-    const scoredHome   = countsToObj(evCounts.scored.home);
-    const concededHome = countsToObj(evCounts.conceded.home);
-    const scoredAway   = countsToObj(evCounts.scored.away);
-    const concededAway = countsToObj(evCounts.conceded.away);
-
-    coreData = {
-      teamId,
-      season,
-      byTimeAvailable: true,
-      recentForm,
-      scored:   { total: sumAll(scoredAll),   byTime: scoredAll   },
-      conceded: { total: sumAll(concededAll), byTime: concededAll },
-      home: {
-        scored:   { total: sumAll(scoredHome),   byTime: scoredHome   },
-        conceded: { total: sumAll(concededHome), byTime: concededHome },
-      },
-      away: {
-        scored:   { total: sumAll(scoredAway),   byTime: scoredAway   },
-        conceded: { total: sumAll(concededAway), byTime: concededAway },
-      },
-      byPeriod: PERIOD_KEYS.map(k => ({ time: k, goals: concededAll[k] })),
-    };
-  } catch (err) {
-    console.warn(`[${slug}-${season}] Events fetch failed (${err.message}), falling back to score only`);
-    coreData = fetchByScore(teamId, fixtures);
-  }
+  // スコアベースで集計（events API は使用しない）
+  const coreData = { teamId, season, ...fetchByScore(teamId, fixtures) };
 
   // 得点者データ取得（イベント取得成否に関わらず実行）
   let scorers = [];
