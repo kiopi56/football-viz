@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import StatsHighlight from "../components/StatsHighlight";
+import { fetchRecentFixtures } from "../lib/supabase";
 
 // チームID → JSONスラッグ（fetch-data で生成したファイル名と一致）
 const SLUG_MAP = { 40: "liverpool", 42: "arsenal" };
@@ -126,8 +127,9 @@ function SectionHeader({ label }) {
 
 export default function Home() {
   const [teams,    setTeams]    = useState([]);
-  const [teamData, setTeamData] = useState({});  // { teamId: JSON }
-  const [loading,  setLoading]  = useState(true);
+  const [teamData,      setTeamData]      = useState({});  // { teamId: JSON }
+  const [loading,       setLoading]       = useState(true);
+  const [recentMatches, setRecentMatches] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -148,6 +150,13 @@ export default function Home() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
+
+    // Liverpool(40) + Arsenal(42) の直近3試合ずつ取得
+    Promise.all([fetchRecentFixtures(40, 3), fetchRecentFixtures(42, 3)])
+      .then(([liv, ars]) => setRecentMatches([...liv, ...ars].sort((a, b) =>
+        new Date(b.match_date) - new Date(a.match_date)
+      )))
+      .catch(() => {});
   }, []);
 
   return (
@@ -252,6 +261,61 @@ export default function Home() {
           <span><span style={{ color: "#22c55e" }}>▲</span> 得点 / <span style={{ color: "#c8102e" }}>▼</span> 失点（2024-25）</span>
         </div>
       </section>
+
+      {/* ════════════════════════════════════════
+          最新試合
+      ════════════════════════════════════════ */}
+      {recentMatches.length > 0 && (
+        <section style={{ padding: "0 48px 72px", maxWidth: 1100, margin: "0 auto" }}>
+          <SectionHeader label="最新試合 — Liverpool / Arsenal" />
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 10 }}>
+            {recentMatches.map(fix => {
+              const isLiv    = fix.home_team_id === 40 || fix.away_team_id === 40;
+              const teamId   = isLiv ? 40 : 42;
+              const color    = isLiv ? "#C8102E" : "#EF0107";
+              const isHome   = fix.home_team_id === teamId;
+              const scored   = isHome ? fix.goals_home : fix.goals_away;
+              const conceded = isHome ? fix.goals_away  : fix.goals_home;
+              const opponent = isHome ? fix.away_team_name : fix.home_team_name;
+              const result   = scored > conceded ? "W" : scored < conceded ? "L" : "D";
+              const rColor   = result === "W" ? "#22c55e" : result === "L" ? "#ef4444" : "#666";
+              const dateStr  = new Date(fix.match_date).toLocaleDateString("ja-JP",
+                { month: "2-digit", day: "2-digit" });
+              return (
+                <Link key={fix.id} to={`/match/${fix.id}`} style={{ textDecoration: "none" }}>
+                  <div style={{
+                    background: "#0e1318", border: `1px solid #1e2830`,
+                    borderLeft: `3px solid ${color}`,
+                    borderRadius: 8, padding: "14px 16px",
+                    fontFamily: "'Barlow', sans-serif",
+                    transition: "background 0.15s, border-color 0.15s",
+                  }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "#111d28"; e.currentTarget.style.borderColor = `${color}`; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "#0e1318"; e.currentTarget.style.borderColor = "#1e2830"; }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                      <span style={{ fontSize: 10, color: "#555" }}>{dateStr}</span>
+                      <span style={{ fontSize: 9, padding: "2px 7px", borderRadius: 3,
+                        background: `${rColor}22`, color: rColor, border: `1px solid ${rColor}44`,
+                        fontWeight: 700 }}>{result}</span>
+                    </div>
+                    <div style={{ fontSize: 12, color: color, fontWeight: 600, marginBottom: 3 }}>
+                      {isLiv ? "Liverpool" : "Arsenal"} <span style={{ color: "#555", fontSize: 10 }}>vs</span> {opponent}
+                    </div>
+                    <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 26,
+                      letterSpacing: "0.04em", color: "#fff" }}>
+                      {scored}<span style={{ color: "#333" }}>–</span>{conceded}
+                    </div>
+                    <div style={{ fontSize: 9, color: "#555", marginTop: 4 }}>
+                      {isHome ? "HOME" : "AWAY"} · 詳細を見る →
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* ════════════════════════════════════════
           注目スタッツ

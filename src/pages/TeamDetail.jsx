@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
@@ -6,6 +6,7 @@ import {
 } from "recharts";
 import { useTeamData } from "../hooks/useTeamData";
 import ScorerTracker from "../components/ScorerTracker";
+import { fetchFixtures } from "../lib/supabase";
 
 // ── チーム固有情報（データ対応済みチームのみ） ──────────────────
 const TEAM_INFO = {
@@ -75,6 +76,9 @@ export default function TeamDetail() {
   const [venue,    setVenue]    = useState("all");
   const [view,     setView]     = useState("compare");
 
+  const [fixtures,    setFixtures]    = useState([]);
+  const [fixtureLoad, setFixtureLoad] = useState(false);
+
   const { data: data2024, loading: l2024 } = useTeamData(teamId || null, 2024);
   const { data: data2023, loading: l2023 } = useTeamData(teamId || null, 2023);
   const { data: data2022, loading: l2022 } = useTeamData(teamId || null, 2022);
@@ -102,6 +106,16 @@ export default function TeamDetail() {
   }
 
   const TEAM_COLOR = info.color;
+
+  // fixtures をシーズン切り替えのたびに取得
+  useEffect(() => {
+    if (!teamId) return;
+    setFixtureLoad(true);
+    fetchFixtures(teamId, season)
+      .then(setFixtures)
+      .catch(() => setFixtures([]))
+      .finally(() => setFixtureLoad(false));
+  }, [teamId, season]);
 
   // 3シーズン対応: 選択シーズン → 隣のシーズンと比較
   const dataMap = { 2024: data2024, 2023: data2023, 2022: data2022 };
@@ -362,6 +376,64 @@ export default function TeamDetail() {
 
         <div style={{ fontSize: 9, color: "#2d2d2d", lineHeight: 1.8 }}>
           ※ データ：api-sports.io より取得（PL FINISHEDを集計・ビルド時生成）
+        </div>
+
+        {/* ── 試合一覧 ── */}
+        <div style={{ marginTop: 28 }}>
+          <div style={{ fontSize: 10, color: "#555", letterSpacing: "0.1em",
+            textTransform: "uppercase", marginBottom: 12 }}>
+            試合一覧 — {season}-{String(season + 1).slice(-2)}
+          </div>
+          {fixtureLoad && (
+            <div style={{ fontSize: 11, color: "#333", padding: "12px 0" }}>読み込み中...</div>
+          )}
+          {!fixtureLoad && fixtures.length === 0 && (
+            <div style={{ fontSize: 11, color: "#333", padding: "12px 0" }}>
+              データなし（Supabase に試合データがありません）
+            </div>
+          )}
+          {!fixtureLoad && fixtures.length > 0 && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              {fixtures.map(fix => {
+                const isHome    = fix.home_team_id === teamId;
+                const scored    = isHome ? fix.goals_home : fix.goals_away;
+                const conceded  = isHome ? fix.goals_away  : fix.goals_home;
+                const opponent  = isHome ? fix.away_team_name : fix.home_team_name;
+                const result    = scored > conceded ? "W" : scored < conceded ? "L" : "D";
+                const rColor    = result === "W" ? "#22c55e" : result === "L" ? "#ef4444" : "#666";
+                const dateStr   = new Date(fix.match_date).toLocaleDateString("ja-JP",
+                  { month: "2-digit", day: "2-digit" });
+                return (
+                  <Link key={fix.id} to={`/match/${fix.id}`} style={{ textDecoration: "none" }}>
+                    <div style={{
+                      display: "flex", alignItems: "center", gap: 10,
+                      padding: "9px 14px",
+                      background: "rgba(255,255,255,0.02)",
+                      border: "1px solid rgba(255,255,255,0.06)",
+                      borderRadius: 7, fontSize: 11, color: "#aaa",
+                      transition: "background 0.15s, border-color 0.15s",
+                    }}
+                      onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.borderColor = `${TEAM_COLOR}44`; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.02)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; }}
+                    >
+                      <span style={{ fontSize: 9, color: "#444", minWidth: 34 }}>{dateStr}</span>
+                      <span style={{ fontSize: 9, color: "#333", minWidth: 22 }}>{isHome ? "H" : "A"}</span>
+                      <span style={{ flex: 1, color: "#ccc" }}>{opponent}</span>
+                      <span style={{ fontWeight: 700, color: TEAM_COLOR, minWidth: 30, textAlign: "center" }}>
+                        {scored}–{conceded}
+                      </span>
+                      <span style={{ fontSize: 9, fontWeight: 700, padding: "2px 7px",
+                        borderRadius: 3, background: `${rColor}22`, color: rColor,
+                        border: `1px solid ${rColor}44`, minWidth: 22, textAlign: "center" }}>
+                        {result}
+                      </span>
+                      <span style={{ fontSize: 9, color: "#333" }}>→</span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         </>)}
