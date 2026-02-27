@@ -1,109 +1,41 @@
 {
   "teamId": 40,
   "season": 2024,
-  "byTimeAvailable": true,
+  "byTimeAvailable": false,
+  "scored": {
+    "total": 86,
+    "byTime": null
+  },
+  "conceded": {
+    "total": 41,
+    "byTime": null
+  },
+  "home": {
+    "scored": {
+      "total": null,
+      "byTime": null
+    },
+    "conceded": {
+      "total": null,
+      "byTime": null
+    }
+  },
+  "away": {
+    "scored": {
+      "total": null,
+      "byTime": null
+    },
+    "conceded": {
+      "total": null,
+      "byTime": null
+    }
+  },
   "recentForm": [
     "D",
     "L",
     "D",
     "L",
     "W"
-  ],
-  "scored": {
-    "total": 85,
-    "byTime": {
-      "0-15": 9,
-      "16-30": 16,
-      "31-45": 15,
-      "46-60": 12,
-      "61-75": 17,
-      "76-90": 16
-    }
-  },
-  "conceded": {
-    "total": 39,
-    "byTime": {
-      "0-15": 9,
-      "16-30": 1,
-      "31-45": 10,
-      "46-60": 5,
-      "61-75": 6,
-      "76-90": 8
-    }
-  },
-  "home": {
-    "scored": {
-      "total": 41,
-      "byTime": {
-        "0-15": 5,
-        "16-30": 9,
-        "31-45": 6,
-        "46-60": 7,
-        "61-75": 7,
-        "76-90": 7
-      }
-    },
-    "conceded": {
-      "total": 15,
-      "byTime": {
-        "0-15": 5,
-        "16-30": 0,
-        "31-45": 1,
-        "46-60": 3,
-        "61-75": 3,
-        "76-90": 3
-      }
-    }
-  },
-  "away": {
-    "scored": {
-      "total": 44,
-      "byTime": {
-        "0-15": 4,
-        "16-30": 7,
-        "31-45": 9,
-        "46-60": 5,
-        "61-75": 10,
-        "76-90": 9
-      }
-    },
-    "conceded": {
-      "total": 24,
-      "byTime": {
-        "0-15": 4,
-        "16-30": 1,
-        "31-45": 9,
-        "46-60": 2,
-        "61-75": 3,
-        "76-90": 5
-      }
-    }
-  },
-  "byPeriod": [
-    {
-      "time": "0-15",
-      "goals": 9
-    },
-    {
-      "time": "16-30",
-      "goals": 1
-    },
-    {
-      "time": "31-45",
-      "goals": 10
-    },
-    {
-      "time": "46-60",
-      "goals": 5
-    },
-    {
-      "time": "61-75",
-      "goals": 6
-    },
-    {
-      "time": "76-90",
-      "goals": 8
-    }
   ],
   "scorers": [
     {
@@ -201,6 +133,578 @@
       "goals": 1,
       "assists": 2,
       "appearances": 18
+    }
+  ],
+  "fixtures": [
+    {
+      "id": 1208396,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2025-05-25T15:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 52,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Crystal Palace",
+      "goals_home": 1,
+      "goals_away": 1,
+      "ht_home": 0,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1208386,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2025-05-19T19:00:00+00:00",
+      "home_team_id": 51,
+      "away_team_id": 40,
+      "home_team_name": "Brighton",
+      "away_team_name": "Liverpool",
+      "goals_home": 3,
+      "goals_away": 2,
+      "ht_home": 1,
+      "ht_away": 2,
+      "status": "FT"
+    },
+    {
+      "id": 1208376,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2025-05-11T15:30:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 42,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Arsenal",
+      "goals_home": 2,
+      "goals_away": 2,
+      "ht_home": 2,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1208367,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2025-05-04T15:30:00+00:00",
+      "home_team_id": 49,
+      "away_team_id": 40,
+      "home_team_name": "Chelsea",
+      "away_team_name": "Liverpool",
+      "goals_home": 3,
+      "goals_away": 1,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1208357,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2025-04-27T15:30:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 47,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Tottenham",
+      "goals_home": 5,
+      "goals_away": 1,
+      "ht_home": 3,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1208349,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2025-04-20T15:30:00+00:00",
+      "home_team_id": 46,
+      "away_team_id": 40,
+      "home_team_name": "Leicester",
+      "away_team_name": "Liverpool",
+      "goals_home": 0,
+      "goals_away": 1,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1208337,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2025-04-13T13:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 48,
+      "home_team_name": "Liverpool",
+      "away_team_name": "West Ham",
+      "goals_home": 2,
+      "goals_away": 1,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1208327,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2025-04-06T13:00:00+00:00",
+      "home_team_id": 36,
+      "away_team_id": 40,
+      "home_team_name": "Fulham",
+      "away_team_name": "Liverpool",
+      "goals_home": 3,
+      "goals_away": 2,
+      "ht_home": 3,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1208322,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2025-04-02T19:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 45,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Everton",
+      "goals_home": 1,
+      "goals_away": 0,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1208297,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2025-03-08T15:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 41,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Southampton",
+      "goals_home": 3,
+      "goals_away": 1,
+      "ht_home": 0,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1208291,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2025-02-26T20:15:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 34,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Newcastle",
+      "goals_home": 2,
+      "goals_away": 0,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1208280,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2025-02-23T16:30:00+00:00",
+      "home_team_id": 50,
+      "away_team_id": 40,
+      "home_team_name": "Manchester City",
+      "away_team_name": "Liverpool",
+      "goals_home": 0,
+      "goals_away": 2,
+      "ht_home": 0,
+      "ht_away": 2,
+      "status": "FT"
+    },
+    {
+      "id": 1208305,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2025-02-19T19:30:00+00:00",
+      "home_team_id": 66,
+      "away_team_id": 40,
+      "home_team_name": "Aston Villa",
+      "away_team_name": "Liverpool",
+      "goals_home": 2,
+      "goals_away": 2,
+      "ht_home": 2,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1208268,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2025-02-16T14:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 39,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Wolves",
+      "goals_home": 2,
+      "goals_away": 1,
+      "ht_home": 2,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1208166,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2025-02-12T19:30:00+00:00",
+      "home_team_id": 45,
+      "away_team_id": 40,
+      "home_team_name": "Everton",
+      "away_team_name": "Liverpool",
+      "goals_home": 2,
+      "goals_away": 2,
+      "ht_home": 1,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1208253,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2025-02-01T15:00:00+00:00",
+      "home_team_id": 35,
+      "away_team_id": 40,
+      "home_team_name": "Bournemouth",
+      "away_team_name": "Liverpool",
+      "goals_home": 0,
+      "goals_away": 2,
+      "ht_home": 0,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1208248,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2025-01-25T15:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 57,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Ipswich",
+      "goals_home": 4,
+      "goals_away": 1,
+      "ht_home": 3,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1208234,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2025-01-18T15:00:00+00:00",
+      "home_team_id": 55,
+      "away_team_id": 40,
+      "home_team_name": "Brentford",
+      "away_team_name": "Liverpool",
+      "goals_home": 0,
+      "goals_away": 2,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1208228,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2025-01-14T20:00:00+00:00",
+      "home_team_id": 65,
+      "away_team_id": 40,
+      "home_team_name": "Nottingham Forest",
+      "away_team_name": "Liverpool",
+      "goals_home": 1,
+      "goals_away": 1,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1208218,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2025-01-05T16:30:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 33,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Manchester United",
+      "goals_home": 2,
+      "goals_away": 2,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1208212,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2024-12-29T17:15:00+00:00",
+      "home_team_id": 48,
+      "away_team_id": 40,
+      "home_team_name": "West Ham",
+      "away_team_name": "Liverpool",
+      "goals_home": 0,
+      "goals_away": 5,
+      "ht_home": 0,
+      "ht_away": 3,
+      "status": "FT"
+    },
+    {
+      "id": 1208197,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2024-12-26T20:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 46,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Leicester",
+      "goals_home": 3,
+      "goals_away": 1,
+      "ht_home": 1,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1208191,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2024-12-22T16:30:00+00:00",
+      "home_team_id": 47,
+      "away_team_id": 40,
+      "home_team_name": "Tottenham",
+      "away_team_name": "Liverpool",
+      "goals_home": 3,
+      "goals_away": 6,
+      "ht_home": 1,
+      "ht_away": 3,
+      "status": "FT"
+    },
+    {
+      "id": 1208177,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2024-12-14T15:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 36,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Fulham",
+      "goals_home": 2,
+      "goals_away": 2,
+      "ht_home": 0,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1208161,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2024-12-04T19:30:00+00:00",
+      "home_team_id": 34,
+      "away_team_id": 40,
+      "home_team_name": "Newcastle",
+      "away_team_name": "Liverpool",
+      "goals_home": 3,
+      "goals_away": 3,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1208147,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2024-12-01T16:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 50,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Manchester City",
+      "goals_home": 2,
+      "goals_away": 0,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1208142,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2024-11-24T14:00:00+00:00",
+      "home_team_id": 41,
+      "away_team_id": 40,
+      "home_team_name": "Southampton",
+      "away_team_name": "Liverpool",
+      "goals_home": 2,
+      "goals_away": 3,
+      "ht_home": 1,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1208127,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2024-11-09T20:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 66,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Aston Villa",
+      "goals_home": 2,
+      "goals_away": 0,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1208116,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2024-11-02T15:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 51,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Brighton",
+      "goals_home": 2,
+      "goals_away": 1,
+      "ht_home": 0,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1208103,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2024-10-27T15:30:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 40,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Liverpool",
+      "goals_home": 2,
+      "goals_away": 2,
+      "ht_home": 2,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1208094,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2024-10-20T15:30:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 49,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Chelsea",
+      "goals_home": 2,
+      "goals_away": 1,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1208086,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2024-10-05T11:30:00+00:00",
+      "home_team_id": 52,
+      "away_team_id": 40,
+      "home_team_name": "Crystal Palace",
+      "away_team_name": "Liverpool",
+      "goals_home": 0,
+      "goals_away": 1,
+      "ht_home": 0,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1208080,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2024-09-28T16:30:00+00:00",
+      "home_team_id": 39,
+      "away_team_id": 40,
+      "home_team_name": "Wolves",
+      "away_team_name": "Liverpool",
+      "goals_home": 1,
+      "goals_away": 2,
+      "ht_home": 0,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1208066,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2024-09-21T14:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 35,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Bournemouth",
+      "goals_home": 3,
+      "goals_away": 0,
+      "ht_home": 3,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1208056,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2024-09-14T14:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 65,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Nottingham Forest",
+      "goals_home": 0,
+      "goals_away": 1,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1208047,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2024-09-01T15:00:00+00:00",
+      "home_team_id": 33,
+      "away_team_id": 40,
+      "home_team_name": "Manchester United",
+      "away_team_name": "Liverpool",
+      "goals_home": 0,
+      "goals_away": 3,
+      "ht_home": 0,
+      "ht_away": 2,
+      "status": "FT"
+    },
+    {
+      "id": 1208036,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2024-08-25T15:30:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 55,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Brentford",
+      "goals_home": 2,
+      "goals_away": 0,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1208022,
+      "season": 2024,
+      "team_id": 40,
+      "match_date": "2024-08-17T11:30:00+00:00",
+      "home_team_id": 57,
+      "away_team_id": 40,
+      "home_team_name": "Ipswich",
+      "away_team_name": "Liverpool",
+      "goals_home": 0,
+      "goals_away": 2,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
     }
   ]
 }
