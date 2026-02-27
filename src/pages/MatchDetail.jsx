@@ -3,10 +3,10 @@
  *
  * 試合単体の詳細ページ。
  * - Supabase から fixture / goal_events を取得
- * - Anthropic API（claude-sonnet-4-20250514）でナラティブを生成
+ * - Gemini API（gemini-1.5-flash）でナラティブを生成
  * - useTeamData で 3 シーズン分の byTime データを読み込み
  *
- * ⚠️ VITE_ANTHROPIC_API_KEY はビルドバンドルに含まれます。
+ * ⚠️ VITE_GEMINI_API_KEY はビルドバンドルに含まれます。
  *    個人・デモ用途以外では Supabase Edge Function 等のサーバーサイドを経由してください。
  */
 
@@ -46,32 +46,28 @@ function fmtDate(iso) {
   });
 }
 
-// ── Anthropic API 呼び出し ────────────────────────────────────
+// ── Gemini API 呼び出し ───────────────────────────────────────
 async function generateNarrative(prompt) {
-  const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
-  if (!apiKey) throw new Error("VITE_ANTHROPIC_API_KEY が設定されていません");
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!apiKey) throw new Error("VITE_GEMINI_API_KEY が設定されていません");
 
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "x-api-key":                           apiKey,
-      "anthropic-version":                   "2023-06-01",
-      "content-type":                        "application/json",
-      "anthropic-dangerous-direct-browser-access": "true",
-    },
-    body: JSON.stringify({
-      model:      "claude-sonnet-4-20250514",
-      max_tokens: 1024,
-      messages:   [{ role: "user", content: prompt }],
-    }),
-  });
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+    {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+      }),
+    }
+  );
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err?.error?.message ?? `HTTP ${res.status}`);
   }
   const json = await res.json();
-  return json.content?.[0]?.text ?? "";
+  return json.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
 }
 
 // ── サブコンポーネント ────────────────────────────────────────
@@ -357,7 +353,7 @@ ${historyStr}
                   <div style={{ fontSize: 10, color: "#555", letterSpacing: "0.1em", textTransform: "uppercase" }}>
                     AI ナラティブ分析
                   </div>
-                  <div style={{ fontSize: 9, color: "#333", marginTop: 2 }}>claude-sonnet-4-20250514</div>
+                  <div style={{ fontSize: 9, color: "#333", marginTop: 2 }}>gemini-1.5-flash</div>
                 </div>
                 <button
                   onClick={handleGenerateNarrative}
