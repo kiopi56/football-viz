@@ -3,7 +3,7 @@
  *
  * 試合単体の詳細ページ。
  * - Supabase から fixture / goal_events を取得
- * - Gemini API（gemini-1.5-flash）でナラティブを生成
+ * - Gemini API（gemini-2.0-flash）でナラティブを生成
  * - useTeamData で 3 シーズン分の byTime データを読み込み
  *
  * ⚠️ VITE_GEMINI_API_KEY はビルドバンドルに含まれます。
@@ -52,7 +52,7 @@ async function generateNarrative(prompt) {
   if (!apiKey) throw new Error("VITE_GEMINI_API_KEY が設定されていません");
 
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
     {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -353,7 +353,7 @@ ${historyStr}
                   <div style={{ fontSize: 10, color: "#555", letterSpacing: "0.1em", textTransform: "uppercase" }}>
                     AI ナラティブ分析
                   </div>
-                  <div style={{ fontSize: 9, color: "#333", marginTop: 2 }}>gemini-1.5-flash</div>
+                  <div style={{ fontSize: 9, color: "#333", marginTop: 2 }}>gemini-2.0-flash</div>
                 </div>
                 <button
                   onClick={handleGenerateNarrative}
