@@ -1,0 +1,31 @@
+name: Fetch Press Comments
+
+on:
+  schedule:
+    # 毎週月・火・水の 09:00 JST（= 00:00 UTC）
+    - cron: "0 0 * * 1"
+    - cron: "0 0 * * 2"
+    - cron: "0 0 * * 3"
+  workflow_dispatch:  # 手動実行も可能
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 supabase
+
+      - name: Run fetchPressComments.py
+        env:
+          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: python scripts/fetchPressComments.py
