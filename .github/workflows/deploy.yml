@@ -31,12 +31,16 @@ jobs:
       - name: Fetch football data
         run: npm run fetch-data
         env:
-          VITE_APISPORTS_KEY: ${{ secrets.VITE_APISPORTS_KEY }}
+          FOOTBALL_DATA_API_KEY:    ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          VITE_SUPABASE_URL:        ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_SERVICE_KEY: ${{ secrets.VITE_SUPABASE_SERVICE_KEY }}
 
       - name: Build
         run: npm run build
         env:
-          VITE_APISPORTS_KEY: ${{ secrets.VITE_APISPORTS_KEY }}
+          VITE_SUPABASE_URL:      ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_GEMINI_API_KEY:    ${{ secrets.VITE_GEMINI_API_KEY }}
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
