@@ -1,46 +1,227 @@
-import { useState } from "react";
-import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend,
-} from "recharts";
-import TeamSelector from "../components/TeamSelector";
-import { useTeamData } from "../hooks/useTeamData";
+import { useState, useEffect } from "react";
 
-// チームカラーマップ（api-sports チームID → クラブカラー）
-const TEAM_COLORS = {
-  33: "#DA291C", 34: "#00A4E4", 35: "#DA020E", 36: "#CC0000",
-  39: "#FDB913", 40: "#C8102E", 41: "#D71920", 42: "#EF0107",
-  45: "#274488", 46: "#003090", 47: "#132257", 48: "#7A263A",
-  49: "#034694", 50: "#6CABDD", 51: "#0057B8", 52: "#C4122E",
-  55: "#E03A3E", 57: "#0044A9", 65: "#DD0000", 66: "#95BFE5",
+// ── カラー定数 ────────────────────────────────────────────────
+const C = {
+  bg:      "#080c10",
+  surface: "#0e1318",
+  surface2:"#131a22",
+  border:  "#1e2830",
+  text:    "#e8edf2",
+  muted:   "#5a6a78",
+  muted2:  "#3a4a58",
+  accent:  "#00ff85",
+  gold:    "#f0b429",
+  blue:    "#6cabdd",
 };
-const FALLBACK_COLORS = ["#4e9af1", "#f59e0b"];
-const getTeamColor = (id, slot) => TEAM_COLORS[id] ?? FALLBACK_COLORS[slot % 2];
 
-const PERIOD_KEYS   = ["0-15", "16-30", "31-45", "46-60", "61-75", "76-90"];
-const PERIOD_LABELS = ["0–15'", "16–30'", "31–45'", "46–60'", "61–75'", "76–90'"];
-const PERIOD_COLORS = ["#22c55e", "#84cc16", "#eab308", "#f97316", "#ef4444", "#a855f7"];
+const TEAMS = [
+  { id: 40, name: "Liverpool", slug: "liverpool", color: "#C8102E", short: "LIV" },
+  { id: 42, name: "Arsenal",   slug: "arsenal",   color: "#EF0107", short: "ARS" },
+];
 
-function getByTime(data, metric) {
-  if (!data?.byTimeAvailable) return null;
-  if (!data[metric]?.byTime) return null;
-  return PERIOD_KEYS.map(k => data[metric].byTime[k] ?? 0);
+const SEASONS = [
+  { key: 2024, label: "2024-25" },
+  { key: 2023, label: "2023-24" },
+  { key: 2022, label: "2022-23" },
+  { key: "all", label: "3シーズン比較" },
+];
+
+const BASE = import.meta.env.BASE_URL ?? "/";
+
+// ── データ取得 ────────────────────────────────────────────────
+
+async function loadJson(slug, season) {
+  try {
+    const res = await fetch(`${BASE}data/${slug}-${season}.json`);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
 }
 
-function ToggleGroup({ options, value, onChange, activeColor = "#aaa" }) {
+async function loadTeamData(slug, season) {
+  if (season === "all") {
+    const jsons = await Promise.all([2022, 2023, 2024].map(s => loadJson(slug, s)));
+    const valid  = jsons.filter(Boolean);
+    if (!valid.length) return null;
+    return {
+      teamId:     valid[0].teamId,
+      fixtures:   valid.flatMap(j => j.fixtures ?? []),
+      scored:     { total: valid.reduce((a, j) => a + (j.scored?.total  ?? 0), 0) },
+      conceded:   { total: valid.reduce((a, j) => a + (j.conceded?.total ?? 0), 0) },
+      recentForm: valid[valid.length - 1]?.recentForm ?? [],
+    };
+  }
+  return loadJson(slug, season);
+}
+
+// ── スタッツ計算 ───────────────────────────────────────────────
+
+function sum(arr) { return arr.reduce((a, b) => a + b, 0); }
+
+function calcStats(json) {
+  if (!json) return null;
+  const teamId   = json.teamId;
+  const fixtures = json.fixtures ?? [];
+  const scored   = json.scored?.total   ?? 0;
+  const conceded = json.conceded?.total ?? 0;
+
+  const homeFx = fixtures.filter(f => f.home_team_id === teamId);
+  const awayFx = fixtures.filter(f => f.away_team_id === teamId);
+
+  const homeScored   = sum(homeFx.map(f => f.goals_home ?? 0));
+  const homeConceded = sum(homeFx.map(f => f.goals_away ?? 0));
+  const awayScored   = sum(awayFx.map(f => f.goals_away ?? 0));
+  const awayConceded = sum(awayFx.map(f => f.goals_home ?? 0));
+
+  const homeWins   = homeFx.filter(f => (f.goals_home ?? 0) > (f.goals_away ?? 0)).length;
+  const homeLosses = homeFx.filter(f => (f.goals_home ?? 0) < (f.goals_away ?? 0)).length;
+  const homeDraws  = homeFx.length - homeWins - homeLosses;
+  const awayWins   = awayFx.filter(f => (f.goals_away ?? 0) > (f.goals_home ?? 0)).length;
+  const awayLosses = awayFx.filter(f => (f.goals_away ?? 0) < (f.goals_home ?? 0)).length;
+  const awayDraws  = awayFx.length - awayWins - awayLosses;
+
+  const htConceded = sum(fixtures.map(f =>
+    f.home_team_id === teamId ? (f.ht_away ?? 0) : (f.ht_home ?? 0)
+  ));
+  const htScored = sum(fixtures.map(f =>
+    f.home_team_id === teamId ? (f.ht_home ?? 0) : (f.ht_away ?? 0)
+  ));
+  const shConceded  = conceded - htConceded;
+  const shScored    = scored   - htScored;
+  const sh_rate     = conceded > 0 ? Math.round((shConceded / conceded) * 100) : 0;
+  const peakPeriod  = shConceded >= htConceded ? "後半" : "前半";
+
+  return {
+    scored, conceded, diff: scored - conceded,
+    homeScored, homeConceded, awayScored, awayConceded,
+    homeWins, homeDraws, homeLosses,
+    awayWins, awayDraws, awayLosses,
+    htScored, htConceded, shScored, shConceded,
+    sh_rate, peakPeriod,
+    recentForm: json.recentForm ?? [],
+    games: fixtures.length,
+  };
+}
+
+// ── Gemini API ────────────────────────────────────────────────
+
+async function generateNarrative(prompt) {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!apiKey) throw new Error("VITE_GEMINI_API_KEY が設定されていません");
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+    {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+    }
+  );
+  const json = await res.json();
+  return json.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+}
+
+// ── サブコンポーネント ──────────────────────────────────────────
+
+function SectionHeader({ label, color = C.accent }) {
   return (
-    <div style={{ display: "flex", gap: 4 }}>
-      {options.map(([v, label]) => {
-        const active = value === v;
-        return (
-          <button key={v} onClick={() => onChange(v)} style={{
-            padding: "5px 12px", borderRadius: 4, fontSize: 11, cursor: "pointer",
-            fontFamily: "'Space Mono', monospace",
-            border: active ? `1px solid ${activeColor}` : "1px solid rgba(255,255,255,0.12)",
-            background: active ? `${activeColor}22` : "transparent",
-            color: active ? activeColor : "#888",
-          }}>{label}</button>
-        );
-      })}
+    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+      <div style={{ width: 4, height: 16, background: color, borderRadius: 2, flexShrink: 0 }} />
+      <span style={{
+        fontFamily: "'Bebas Neue', sans-serif",
+        fontSize: 15, letterSpacing: "0.12em", color: C.text,
+      }}>{label}</span>
+    </div>
+  );
+}
+
+function FormBadge({ result }) {
+  const colors = { W: C.accent, D: C.gold, L: "#ef4444" };
+  const col = colors[result] ?? C.muted;
+  return (
+    <span style={{
+      display: "inline-flex", alignItems: "center", justifyContent: "center",
+      width: 22, height: 22, borderRadius: 3, fontSize: 10, fontWeight: 700,
+      background: `${col}22`, color: col, border: `1px solid ${col}55`,
+    }}>{result}</span>
+  );
+}
+
+function HalfBar({ label, valA, valB, colorA, colorB, maxVal }) {
+  const pctA = maxVal > 0 ? (valA / maxVal) * 100 : 0;
+  const pctB = maxVal > 0 ? (valB / maxVal) * 100 : 0;
+  return (
+    <div style={{ marginBottom: 14 }}>
+      <div style={{
+        display: "flex", justifyContent: "space-between",
+        fontSize: 11, color: C.muted, marginBottom: 5,
+      }}>
+        <span style={{ color: colorA, fontWeight: 700, minWidth: 24 }}>{valA}</span>
+        <span style={{ letterSpacing: "0.06em" }}>{label}</span>
+        <span style={{ color: colorB, fontWeight: 700, minWidth: 24, textAlign: "right" }}>{valB}</span>
+      </div>
+      <div style={{ display: "flex", gap: 2, height: 8 }}>
+        {/* Left bar (A) — right-aligned */}
+        <div style={{ flex: 1, display: "flex", justifyContent: "flex-end", background: C.surface2 }}>
+          <div style={{
+            width: `${pctA}%`, background: colorA,
+            transition: "width 0.5s ease",
+          }} />
+        </div>
+        <div style={{ width: 2, background: C.border, flexShrink: 0 }} />
+        {/* Right bar (B) — left-aligned */}
+        <div style={{ flex: 1, background: C.surface2 }}>
+          <div style={{
+            width: `${pctB}%`, background: colorB,
+            transition: "width 0.5s ease",
+          }} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HARow({ label, a, b, teamA, teamB }) {
+  return (
+    <div style={{ marginBottom: 18 }}>
+      <div style={{
+        fontSize: 10, color: C.muted2, letterSpacing: "0.12em",
+        textTransform: "uppercase", marginBottom: 10,
+        paddingBottom: 6, borderBottom: `1px solid ${C.border}`,
+      }}>{label}</div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 24px 1fr", gap: 8, alignItems: "center" }}>
+        {/* Team A */}
+        <div>
+          <div style={{ fontSize: 10, color: teamA.color, marginBottom: 3, letterSpacing: "0.05em" }}>{teamA.short}</div>
+          <div style={{ fontFamily: "'Bebas Neue'", fontSize: 26, lineHeight: 1 }}>
+            {a.scored}
+            <span style={{ fontSize: 13, color: C.muted, margin: "0 4px" }}>/</span>
+            <span style={{ color: "#ef4444" }}>{a.conceded}</span>
+          </div>
+          <div style={{ fontSize: 10, color: C.muted, marginTop: 3 }}>
+            <span style={{ color: C.accent }}>{a.w}W</span>
+            {" "}{a.d}D{" "}
+            <span style={{ color: "#ef4444" }}>{a.l}L</span>
+          </div>
+        </div>
+        {/* Divider */}
+        <div style={{ width: 1, height: 44, background: C.border, margin: "0 auto" }} />
+        {/* Team B */}
+        <div>
+          <div style={{ fontSize: 10, color: teamB.color, marginBottom: 3, letterSpacing: "0.05em" }}>{teamB.short}</div>
+          <div style={{ fontFamily: "'Bebas Neue'", fontSize: 26, lineHeight: 1 }}>
+            {b.scored}
+            <span style={{ fontSize: 13, color: C.muted, margin: "0 4px" }}>/</span>
+            <span style={{ color: "#ef4444" }}>{b.conceded}</span>
+          </div>
+          <div style={{ fontSize: 10, color: C.muted, marginTop: 3 }}>
+            <span style={{ color: C.accent }}>{b.w}W</span>
+            {" "}{b.d}D{" "}
+            <span style={{ color: "#ef4444" }}>{b.l}L</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -48,190 +229,382 @@ function ToggleGroup({ options, value, onChange, activeColor = "#aaa" }) {
 // ── メインコンポーネント ──────────────────────────────────────
 
 export default function Compare() {
-  const [selectedIds, setSelectedIds] = useState([]);
-  const [allTeams, setAllTeams]       = useState([]);
-  const [metric, setMetric]           = useState("conceded"); // "conceded"|"scored"
+  const [teamAId, setTeamAId] = useState(40);
+  const [teamBId, setTeamBId] = useState(42);
+  const [season,  setSeason]  = useState(2024);
+  const [rawA,    setRawA]    = useState(null);
+  const [rawB,    setRawB]    = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const team0 = allTeams.find(t => t.id === selectedIds[0]) ?? null;
-  const team1 = allTeams.find(t => t.id === selectedIds[1]) ?? null;
+  const [narrative,   setNarrative]   = useState("");
+  const [generating,  setGenerating]  = useState(false);
+  const [genError,    setGenError]    = useState("");
 
-  const { data: data0, loading: loading0, error: error0 } = useTeamData(team0?.id ?? null, 2024);
-  const { data: data1, loading: loading1, error: error1 } = useTeamData(team1?.id ?? null, 2024);
+  const teamA = TEAMS.find(t => t.id === teamAId);
+  const teamB = TEAMS.find(t => t.id === teamBId);
 
-  const color0 = team0 ? getTeamColor(team0.id, 0) : FALLBACK_COLORS[0];
-  const color1 = team1 ? getTeamColor(team1.id, 1) : FALLBACK_COLORS[1];
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setNarrative("");
+    setGenError("");
 
-  const ready0 = !!team0 && !loading0 && data0 !== null;
-  const ready1 = !!team1 && !loading1 && data1 !== null;
-  const isAnyLoading = (!!team0 && loading0) || (!!team1 && loading1);
+    Promise.all([
+      loadTeamData(teamA.slug, season),
+      loadTeamData(teamB.slug, season),
+    ]).then(([a, b]) => {
+      if (!cancelled) { setRawA(a); setRawB(b); setLoading(false); }
+    });
 
-  const vals0 = ready0 ? getByTime(data0, metric) : null;
-  const vals1 = ready1 ? getByTime(data1, metric) : null;
+    return () => { cancelled = true; };
+  }, [teamAId, teamBId, season]);
 
-  const total0 = ready0 ? (data0[metric]?.total ?? null) : null;
-  const total1 = ready1 ? (data1[metric]?.total ?? null) : null;
+  const statsA = calcStats(rawA);
+  const statsB = calcStats(rawB);
 
-  const chartData = PERIOD_KEYS.map((k, i) => {
-    const e = { period: PERIOD_LABELS[i] };
-    if (vals0 && team0) e[team0.shortName] = vals0[i];
-    if (vals1 && team1) e[team1.shortName] = vals1[i];
-    return e;
-  });
+  const seasonLabel = SEASONS.find(s => s.key === season)?.label ?? String(season);
 
-  const metricLabel = metric === "conceded" ? "失点" : "得点";
-  const metricColor = metric === "conceded" ? "#ef4444" : "#22c55e";
+  const handleGenerate = async () => {
+    if (!statsA || !statsB) return;
+    setGenerating(true);
+    setNarrative("");
+    setGenError("");
+
+    const prompt = `あなたはプレミアリーグの戦術アナリストです。以下のデータを基に、${teamA.name}と${teamB.name}の${seasonLabel}シーズンを比較分析してください。日本語で、以下の3パートに分けて記述してください：
+
+【得点パターン】
+${teamA.name}：総得点${statsA.scored}点（前半${statsA.htScored}・後半${statsA.shScored}）、ホーム${statsA.homeScored}・アウェイ${statsA.awayScored}
+${teamB.name}：総得点${statsB.scored}点（前半${statsB.htScored}・後半${statsB.shScored}）、ホーム${statsB.homeScored}・アウェイ${statsB.awayScored}
+
+【失点構造】
+${teamA.name}：総失点${statsA.conceded}点（前半${statsA.htConceded}・後半${statsA.shConceded}、後半失点率${statsA.sh_rate}%、最多失点帯：${statsA.peakPeriod}）
+${teamB.name}：総失点${statsB.conceded}点（前半${statsB.htConceded}・後半${statsB.shConceded}、後半失点率${statsB.sh_rate}%、最多失点帯：${statsB.peakPeriod}）
+
+【総合評価】
+得失点差：${teamA.name} ${statsA.diff >= 0 ? "+" : ""}${statsA.diff} vs ${teamB.name} ${statsB.diff >= 0 ? "+" : ""}${statsB.diff}
+ホーム勝率：${teamA.name} ${Math.round(statsA.homeWins / Math.max(statsA.homeWins + statsA.homeDraws + statsA.homeLosses, 1) * 100)}% vs ${teamB.name} ${Math.round(statsB.homeWins / Math.max(statsB.homeWins + statsB.homeDraws + statsB.homeLosses, 1) * 100)}%
+
+各パートは150字程度で具体的かつ簡潔にまとめてください。`.trim();
+
+    try {
+      const text = await generateNarrative(prompt);
+      setNarrative(text);
+    } catch (e) {
+      setGenError(e.message);
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const maxHalf = Math.max(
+    statsA?.htScored ?? 0, statsA?.shScored ?? 0,
+    statsA?.htConceded ?? 0, statsA?.shConceded ?? 0,
+    statsB?.htScored ?? 0, statsB?.shScored ?? 0,
+    statsB?.htConceded ?? 0, statsB?.shConceded ?? 0,
+    1
+  );
 
   return (
-    <div style={{ minHeight: "100vh", background: "#03060F", color: "#fff",
-      fontFamily: "'Space Mono', monospace", padding: "28px 20px", boxSizing: "border-box" }}>
-      <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Anton&display=swap" rel="stylesheet" />
+    <div style={{
+      minHeight: "100vh", background: C.bg, color: C.text,
+      fontFamily: "'Barlow Condensed', 'Space Mono', monospace",
+      boxSizing: "border-box",
+    }}>
+      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&display=swap" rel="stylesheet" />
 
-      <div style={{ maxWidth: 880, margin: "0 auto" }}>
-
-        {/* ── Header ── */}
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 20, marginBottom: 28 }}>
-          <div style={{ width: 6, background: "#555", alignSelf: "stretch", borderRadius: 3, flexShrink: 0 }} />
+      {/* ── ヘッダー ── */}
+      <div style={{ borderBottom: `1px solid ${C.border}`, padding: "20px 28px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", alignItems: "center", gap: 14 }}>
+          <div style={{ width: 4, height: 28, background: C.blue, flexShrink: 0 }} />
           <div>
-            <div style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(24px,5vw,48px)", letterSpacing: "0.04em", lineHeight: 1 }}>
+            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 26, letterSpacing: "0.08em", lineHeight: 1 }}>
               TEAM COMPARISON
             </div>
-            <div style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(12px,2vw,20px)", letterSpacing: "0.1em", color: "#888", lineHeight: 1.3 }}>
-              時間帯別 得失点分析 — チーム間比較
-            </div>
-            <div style={{ fontSize: 10, color: "#555", marginTop: 6 }}>
-              2024-25 PL シーズン（全38試合・FINISHED）
-            </div>
+            <div style={{ fontSize: 12, color: C.muted, letterSpacing: "0.05em" }}>チーム間比較分析</div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "24px 28px" }}>
+
+        {/* ── コントロール ── */}
+        <div style={{
+          background: C.surface, border: `1px solid ${C.border}`,
+          padding: "16px 20px", marginBottom: 3,
+          display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap",
+        }}>
+          {/* Team A セレクト */}
+          <select
+            value={teamAId}
+            onChange={e => setTeamAId(Number(e.target.value))}
+            style={{
+              background: C.surface2, border: `1px solid ${C.border}`,
+              borderLeft: `3px solid ${teamA.color}`,
+              color: C.text, padding: "8px 14px", fontSize: 13,
+              fontFamily: "inherit", cursor: "pointer", outline: "none",
+            }}
+          >
+            {TEAMS.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+          </select>
+
+          <span style={{
+            fontFamily: "'Bebas Neue'", fontSize: 20,
+            color: C.muted2, letterSpacing: "0.1em",
+          }}>VS</span>
+
+          {/* Team B セレクト */}
+          <select
+            value={teamBId}
+            onChange={e => setTeamBId(Number(e.target.value))}
+            style={{
+              background: C.surface2, border: `1px solid ${C.border}`,
+              borderLeft: `3px solid ${teamB.color}`,
+              color: C.text, padding: "8px 14px", fontSize: 13,
+              fontFamily: "inherit", cursor: "pointer", outline: "none",
+            }}
+          >
+            {TEAMS.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+          </select>
+
+          {/* シーズン選択 */}
+          <div style={{ display: "flex", gap: 2, marginLeft: "auto" }}>
+            {SEASONS.map(s => {
+              const active = season === s.key;
+              return (
+                <button
+                  key={s.key}
+                  onClick={() => setSeason(s.key)}
+                  style={{
+                    padding: "7px 13px", fontSize: 11, fontFamily: "inherit",
+                    cursor: "pointer", letterSpacing: "0.04em",
+                    background: active ? `${C.accent}18` : C.surface2,
+                    border: `1px solid ${active ? C.accent : C.border}`,
+                    color:  active ? C.accent : C.muted,
+                  }}
+                >{s.label}</button>
+              );
+            })}
           </div>
         </div>
 
-        {/* ── TeamSelector ── */}
-        <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 12, padding: "16px", marginBottom: 24 }}>
-          <TeamSelector
-            selectedIds={selectedIds}
-            onChange={setSelectedIds}
-            onTeamsLoaded={setAllTeams}
-          />
-        </div>
-
-        {/* 未選択時プロンプト */}
-        {selectedIds.length === 0 && (
-          <div style={{ textAlign: "center", padding: "48px 20px", color: "#333", fontSize: 12, letterSpacing: "0.05em" }}>
-            上のグリッドからチームを選択してください
+        {/* ── ローディング ── */}
+        {loading && (
+          <div style={{ textAlign: "center", padding: "80px 0", color: C.muted2, fontSize: 12, letterSpacing: "0.12em" }}>
+            LOADING...
           </div>
         )}
 
-        {selectedIds.length > 0 && (
+        {!loading && statsA && statsB && (
           <>
-            {/* ── 得点/失点切り替え ── */}
-            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
-              <ToggleGroup
-                options={[["conceded","失点比較"],["scored","得点比較"]]}
-                value={metric}
-                onChange={setMetric}
-                activeColor={metricColor}
-              />
-              {isAnyLoading && (
-                <span style={{ fontSize: 11, color: "#444" }}>データ取得中...</span>
-              )}
+            {/* ── スコアヒーロー ── */}
+            <div style={{
+              display: "grid", gridTemplateColumns: "1fr 100px 1fr",
+              background: C.surface, border: `1px solid ${C.border}`,
+              marginBottom: 3,
+            }}>
+              {/* Team A */}
+              <div style={{ padding: "28px 24px", borderRight: `1px solid ${C.border}` }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                  <div style={{ width: 3, height: 22, background: teamA.color, flexShrink: 0 }} />
+                  <span style={{
+                    fontFamily: "'Bebas Neue'", fontSize: 24,
+                    letterSpacing: "0.06em", color: teamA.color,
+                  }}>{teamA.name}</span>
+                </div>
+                <div style={{ fontFamily: "'Bebas Neue'", fontSize: 80, lineHeight: 1, color: C.text }}>
+                  {statsA.scored}
+                </div>
+                <div style={{ fontSize: 11, color: C.muted, marginTop: 4 }}>
+                  総得点 / {statsA.games}試合
+                </div>
+                <div style={{ display: "flex", gap: 4, marginTop: 14, flexWrap: "wrap" }}>
+                  {statsA.recentForm.slice(-5).map((r, i) => <FormBadge key={i} result={r} />)}
+                </div>
+              </div>
+
+              {/* センター */}
+              <div style={{
+                display: "flex", flexDirection: "column",
+                alignItems: "center", justifyContent: "center",
+              }}>
+                <div style={{
+                  fontFamily: "'Bebas Neue'", fontSize: 16,
+                  color: C.muted2, letterSpacing: "0.1em",
+                }}>VS</div>
+                <div style={{ fontSize: 10, color: C.muted2, marginTop: 8, textAlign: "center", letterSpacing: "0.04em" }}>
+                  {seasonLabel}
+                </div>
+              </div>
+
+              {/* Team B */}
+              <div style={{ padding: "28px 24px", borderLeft: `1px solid ${C.border}` }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                  <div style={{ width: 3, height: 22, background: teamB.color, flexShrink: 0 }} />
+                  <span style={{
+                    fontFamily: "'Bebas Neue'", fontSize: 24,
+                    letterSpacing: "0.06em", color: teamB.color,
+                  }}>{teamB.name}</span>
+                </div>
+                <div style={{ fontFamily: "'Bebas Neue'", fontSize: 80, lineHeight: 1, color: C.text }}>
+                  {statsB.scored}
+                </div>
+                <div style={{ fontSize: 11, color: C.muted, marginTop: 4 }}>
+                  総得点 / {statsB.games}試合
+                </div>
+                <div style={{ display: "flex", gap: 4, marginTop: 14, flexWrap: "wrap" }}>
+                  {statsB.recentForm.slice(-5).map((r, i) => <FormBadge key={i} result={r} />)}
+                </div>
+              </div>
             </div>
 
-            {/* 選択チームバッジ */}
-            <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+            {/* ── キースタッツ 4項目 ── */}
+            <div style={{
+              display: "grid", gridTemplateColumns: "repeat(4,1fr)",
+              gap: 3, marginBottom: 3,
+            }}>
               {[
-                { team: team0, color: color0, total: total0, loading: !!team0 && loading0 },
-                { team: team1, color: color1, total: total1, loading: !!team1 && loading1 },
-              ]
-                .filter(s => s.team !== null)
-                .map(({ team, color, total, loading }) => (
-                  <div key={team.id} style={{ display: "flex", alignItems: "center", gap: 10,
-                    background: "rgba(255,255,255,0.04)", border: `1px solid ${color}`,
-                    borderRadius: 10, padding: "10px 16px" }}>
-                    <img src={team.logo} width={24} height={24} style={{ objectFit: "contain" }} alt={team.name} />
-                    <div>
-                      <div style={{ fontSize: 12, fontWeight: 700, color }}>{team.shortName}</div>
-                      <div style={{ fontSize: 9, color: "#555", marginTop: 2 }}>
-                        {loading ? "Loading..." : `${metricLabel} ${total ?? "–"}`}
-                      </div>
+                { label: "総失点",      valA: statsA.conceded,    valB: statsB.conceded,    fmt: v => v,      lowerBetter: true },
+                { label: "得失点差",    valA: statsA.diff,        valB: statsB.diff,        fmt: v => v >= 0 ? `+${v}` : v },
+                { label: "後半失点率",  valA: statsA.sh_rate,     valB: statsB.sh_rate,     fmt: v => `${v}%`, lowerBetter: true },
+                { label: "最多失点帯",  valA: statsA.peakPeriod,  valB: statsB.peakPeriod,  noCompare: true },
+              ].map(({ label, valA, valB, fmt = v => v, lowerBetter, noCompare }) => {
+                let winA = false, winB = false;
+                if (!noCompare && typeof valA === "number") {
+                  if (lowerBetter) { winA = valA < valB; winB = valB < valA; }
+                  else             { winA = valA > valB; winB = valB > valA; }
+                }
+                return (
+                  <div key={label} style={{
+                    background: C.surface, border: `1px solid ${C.border}`,
+                    padding: "16px 16px 14px",
+                  }}>
+                    <div style={{ fontSize: 10, color: C.muted, letterSpacing: "0.08em", marginBottom: 10 }}>
+                      {label}
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+                      <div style={{
+                        fontFamily: "'Bebas Neue'", fontSize: 30,
+                        color: winA ? C.accent : C.text,
+                      }}>{fmt(valA)}</div>
+                      <div style={{ fontSize: 10, color: C.muted2 }}>vs</div>
+                      <div style={{
+                        fontFamily: "'Bebas Neue'", fontSize: 30,
+                        color: winB ? C.accent : C.text, textAlign: "right",
+                      }}>{fmt(valB)}</div>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: C.muted2, marginTop: 4 }}>
+                      <span>{teamA.short}</span>
+                      <span>{teamB.short}</span>
                     </div>
                   </div>
-                ))}
+                );
+              })}
             </div>
 
-            {/* エラー表示 */}
-            {(error0 || error1) && (
-              <div style={{ color: "#ef4444", fontSize: 12, marginBottom: 16 }}>
-                Error: データを取得できませんでした
-              </div>
-            )}
+            {/* ── メイングリッド ── */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 3, marginBottom: 3 }}>
 
-            {/* ── グラフ ── */}
-            {(vals0 || vals1) && (
-              <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 12, padding: "24px 16px", marginBottom: 20, height: 300 }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData} barGap={3} barCategoryGap="25%">
-                    <XAxis dataKey="period" tick={{ fill: "#888", fontSize: 11, fontFamily: "'Space Mono', monospace" }} axisLine={{ stroke: "rgba(255,255,255,0.08)" }} tickLine={false} />
-                    <YAxis allowDecimals={false} tick={{ fill: "#555", fontSize: 10 }} axisLine={false} tickLine={false} />
-                    <Tooltip
-                      contentStyle={{ background: "rgba(5,10,20,0.97)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 8, fontFamily: "'Space Mono', monospace", fontSize: 11 }}
-                      itemStyle={{ color: "#ccc" }} labelStyle={{ color: "#888", marginBottom: 4 }}
-                      cursor={{ fill: "rgba(255,255,255,0.03)" }}
-                    />
-                    <Legend formatter={v => <span style={{ fontSize: 11, color: "#ccc" }}>{v}</span>} />
-                    {vals0 && team0 && <Bar dataKey={team0.shortName} fill={color0} radius={[3,3,0,0]} />}
-                    {vals1 && team1 && <Bar dataKey={team1.shortName} fill={color1} fillOpacity={0.85} radius={[3,3,0,0]} />}
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            )}
-
-            {/* ── 時間帯別内訳テーブル ── */}
-            {(vals0 || vals1) && (
-              <>
-                <div style={{ fontSize: 10, color: "#555", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>
-                  時間帯別 内訳
+              {/* 時間帯別得点バー */}
+              <div style={{
+                background: C.surface, border: `1px solid ${C.border}`,
+                padding: "20px 20px",
+              }}>
+                <SectionHeader label="時間帯別 得点 / 失点" color={C.accent} />
+                <div style={{ fontSize: 10, color: C.muted2, marginBottom: 14, display: "flex", justifyContent: "space-between" }}>
+                  <span style={{ color: teamA.color }}>{teamA.short}</span>
+                  <span style={{ color: teamB.color }}>{teamB.short}</span>
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(6,1fr)", gap: 6, marginBottom: 12 }}>
-                  {PERIOD_KEYS.map((k, i) => (
-                    <div key={k} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderBottom: `2px solid ${PERIOD_COLORS[i]}`, borderRadius: 8, padding: "10px 6px", textAlign: "center" }}>
-                      <div style={{ fontSize: 9, color: "#666", marginBottom: 6 }}>{PERIOD_LABELS[i]}</div>
-                      {vals0 && (
-                        <div style={{ fontSize: 18, fontWeight: 700, color: color0 }}>{vals0[i]}</div>
-                      )}
-                      {vals0 && vals1 && (
-                        <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "4px 0" }} />
-                      )}
-                      {vals1 && (
-                        <div style={{ fontSize: vals0 ? 15 : 18, fontWeight: 700, color: color1 }}>{vals1[i]}</div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                {/* 凡例 */}
-                <div style={{ display: "flex", gap: 16, marginBottom: 28, fontSize: 10, color: "#555", flexWrap: "wrap" }}>
-                  {vals0 && team0 && (
-                    <span><span style={{ color: color0, fontWeight: 700 }}>■</span> {team0.shortName}（2024-25）</span>
-                  )}
-                  {vals1 && team1 && (
-                    <span><span style={{ color: color1, fontWeight: 700 }}>■</span> {team1.shortName}（2024-25）</span>
-                  )}
-                </div>
-              </>
-            )}
-
-            {/* データなし */}
-            {!vals0 && !vals1 && !isAnyLoading && (
-              <div style={{ textAlign: "center", padding: "32px 0", color: "#444", fontSize: 12 }}>
-                選択チームの時間帯データは取得できませんでした
+                <div style={{ fontSize: 10, color: C.muted, marginBottom: 8, letterSpacing: "0.06em" }}>SCORED</div>
+                <HalfBar label="前半" valA={statsA.htScored}   valB={statsB.htScored}   colorA={teamA.color} colorB={teamB.color} maxVal={maxHalf} />
+                <HalfBar label="後半" valA={statsA.shScored}   valB={statsB.shScored}   colorA={teamA.color} colorB={teamB.color} maxVal={maxHalf} />
+                <div style={{ height: 1, background: C.border, margin: "12px 0" }} />
+                <div style={{ fontSize: 10, color: C.muted, marginBottom: 8, letterSpacing: "0.06em" }}>CONCEDED</div>
+                <HalfBar label="前半" valA={statsA.htConceded} valB={statsB.htConceded} colorA={teamA.color} colorB={teamB.color} maxVal={maxHalf} />
+                <HalfBar label="後半" valA={statsA.shConceded} valB={statsB.shConceded} colorA={teamA.color} colorB={teamB.color} maxVal={maxHalf} />
               </div>
-            )}
+
+              {/* ホーム / アウェイ成績 */}
+              <div style={{
+                background: C.surface, border: `1px solid ${C.border}`,
+                padding: "20px 20px",
+              }}>
+                <SectionHeader label="ホーム / アウェイ成績" color={C.blue} />
+                <HARow
+                  label="HOME"
+                  a={{ scored: statsA.homeScored, conceded: statsA.homeConceded, w: statsA.homeWins, d: statsA.homeDraws, l: statsA.homeLosses }}
+                  b={{ scored: statsB.homeScored, conceded: statsB.homeConceded, w: statsB.homeWins, d: statsB.homeDraws, l: statsB.homeLosses }}
+                  teamA={teamA} teamB={teamB}
+                />
+                <HARow
+                  label="AWAY"
+                  a={{ scored: statsA.awayScored, conceded: statsA.awayConceded, w: statsA.awayWins, d: statsA.awayDraws, l: statsA.awayLosses }}
+                  b={{ scored: statsB.awayScored, conceded: statsB.awayConceded, w: statsB.awayWins, d: statsB.awayDraws, l: statsB.awayLosses }}
+                  teamA={teamA} teamB={teamB}
+                />
+              </div>
+            </div>
+
+            {/* ── AI 比較分析 ── */}
+            <div style={{
+              background: C.surface, border: `1px solid ${C.border}`,
+              padding: "20px 22px",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: narrative ? 16 : 0 }}>
+                <SectionHeader label="AI 比較分析" color={C.gold} />
+                <button
+                  onClick={handleGenerate}
+                  disabled={generating}
+                  style={{
+                    padding: "8px 20px", fontSize: 12, fontFamily: "inherit",
+                    letterSpacing: "0.06em", cursor: generating ? "not-allowed" : "pointer",
+                    background: generating ? C.surface2 : `${C.gold}18`,
+                    border: `1px solid ${generating ? C.border : C.gold}`,
+                    color:  generating ? C.muted : C.gold,
+                    marginBottom: 16,
+                  }}
+                >
+                  {generating ? "生成中..." : "比較分析を生成"}
+                </button>
+              </div>
+
+              {genError && (
+                <div style={{
+                  fontSize: 12, color: "#ef4444",
+                  padding: "10px 14px", background: "#ef444411",
+                  border: "1px solid #ef444433", marginTop: 8,
+                }}>
+                  Error: {genError}
+                </div>
+              )}
+
+              {!narrative && !generating && !genError && (
+                <div style={{ fontSize: 12, color: C.muted2, padding: "20px 0 4px", letterSpacing: "0.03em" }}>
+                  「比較分析を生成」ボタンを押すと Gemini AI が2チームの戦術パターンを分析します
+                </div>
+              )}
+
+              {narrative && (
+                <div style={{
+                  fontSize: 13, lineHeight: 1.9, color: C.text,
+                  whiteSpace: "pre-wrap", letterSpacing: "0.02em",
+                  borderTop: `1px solid ${C.border}`, paddingTop: 16,
+                }}>
+                  {narrative}
+                </div>
+              )}
+            </div>
           </>
         )}
 
-        <div style={{ fontSize: 9, color: "#2d2d2d", lineHeight: 1.8 }}>
-          ※ データ：api-sports.io より取得（2024-25 PL・FINISHED試合）
-        </div>
+        {!loading && (!statsA || !statsB) && (
+          <div style={{ textAlign: "center", padding: "80px 0", color: C.muted, fontSize: 13 }}>
+            データを読み込めませんでした
+          </div>
+        )}
 
+        <div style={{ fontSize: 10, color: C.muted2, marginTop: 20, letterSpacing: "0.05em" }}>
+          ※ データ：api-sports.io より取得（Liverpool / Arsenal）
+        </div>
       </div>
     </div>
   );
