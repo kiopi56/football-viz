@@ -2,9 +2,9 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTeamData } from "../hooks/useTeamData";
 
-const SEASONS      = [2022, 2023, 2024];
-const SEASON_LABELS = ["2022-23", "2023-24", "2024-25"];
-const TOP_N        = 8;
+const SEASONS       = [2023, 2024, 2025];
+const SEASON_LABELS = ["2023-24", "2024-25", "2025-26"];
+const TOP_N         = 8;
 const PLAYER_COLORS = [
   "#00ff85", "#ff6b6b", "#4ecdc4", "#ffd93d",
   "#a29bfe", "#fd79a8", "#74b9ff", "#e17055",
@@ -29,15 +29,15 @@ function goalR(goals, maxGoals) {
   return Math.max(7, Math.sqrt(goals / Math.max(maxGoals, 1)) * 16);
 }
 
-export default function ScorerTracker({ teamId }) {
-  const { data: data2022, loading: l2022 } = useTeamData(teamId, 2022);
-  const { data: data2023, loading: l2023 } = useTeamData(teamId, 2023);
-  const { data: data2024, loading: l2024 } = useTeamData(teamId, 2024);
+export default function ScorerTracker({ teamSlug }) {
+  const { data: data2023, loading: l2023 } = useTeamData(teamSlug, 2023);
+  const { data: data2024, loading: l2024 } = useTeamData(teamSlug, 2024);
+  const { data: data2025, loading: l2025 } = useTeamData(teamSlug, 2025);
   const [tooltip, setTooltip] = useState(null);
   const svgRef   = useRef(null);
   const navigate = useNavigate();
 
-  if (l2022 || l2023 || l2024) {
+  if (l2023 || l2024 || l2025) {
     return (
       <div style={{ height: 200, display: "flex", alignItems: "center",
         justifyContent: "center", color: "#555", fontSize: 12,
@@ -47,7 +47,7 @@ export default function ScorerTracker({ teamId }) {
     );
   }
 
-  const dataMap = { 2022: data2022, 2023: data2023, 2024: data2024 };
+  const dataMap = { 2023: data2023, 2024: data2024, 2025: data2025 };
   const hasAnyScorers = SEASONS.some(s => dataMap[s]?.scorers?.length > 0);
 
   if (!hasAnyScorers) {
@@ -65,7 +65,6 @@ export default function ScorerTracker({ teamId }) {
   }
 
   // ── season ごとの rank マップを構築 ──
-  // seasonRankings[season][playerId] = { rank, goals, assists, appearances, name, photo }
   const seasonRankings = {};
   for (const season of SEASONS) {
     seasonRankings[season] = {};
@@ -97,7 +96,7 @@ export default function ScorerTracker({ teamId }) {
     .sort((a, b) => b.maxGoals - a.maxGoals)
     .slice(0, TOP_N);
 
-  // ── 表示する最大ランク（全 top8 × 全シーズンで出る rank の最大）──
+  // ── 表示する最大ランク ──
   let maxRank = TOP_N;
   for (const player of topPlayers) {
     for (const season of SEASONS) {
@@ -109,7 +108,6 @@ export default function ScorerTracker({ teamId }) {
 
   const maxGoals = Math.max(...topPlayers.map(p => p.maxGoals), 1);
 
-  // ── SVG ハンドラ ──
   function handleMouseMove(e, data) {
     const rect = svgRef.current?.getBoundingClientRect();
     if (!rect) return;
@@ -177,7 +175,6 @@ export default function ScorerTracker({ teamId }) {
               };
             });
 
-            // ベジェ曲線
             const paths = [];
             for (let i = 0; i < points.length - 1; i++) {
               const p1 = points[i], p2 = points[i + 1];
@@ -191,7 +188,6 @@ export default function ScorerTracker({ teamId }) {
               );
             }
 
-            // バブル
             const bubbles = points.map((pt, si) => {
               if (!pt) return null;
               const r = goalR(pt.goals, maxGoals);
@@ -200,14 +196,11 @@ export default function ScorerTracker({ teamId }) {
                   onMouseMove={e => handleMouseMove(e, { ...pt, name: player.name, color })}
                   onMouseLeave={() => setTooltip(null)}
                   onClick={() => navigate(`/player/${player.id}`)}>
-                  {/* 外枠 */}
                   <circle cx={pt.x} cy={pt.y} r={r + 1.5}
                     fill="none" stroke={color} strokeWidth={1} strokeOpacity={0.35} />
-                  {/* 塗り */}
                   <circle cx={pt.x} cy={pt.y} r={r}
                     fill={color} fillOpacity={0.88}
                     stroke="#080c10" strokeWidth={1.5} />
-                  {/* ゴール数 */}
                   <text x={pt.x} y={pt.y} textAnchor="middle"
                     dominantBaseline="middle"
                     fontSize={9} fontWeight={700}
@@ -226,17 +219,14 @@ export default function ScorerTracker({ teamId }) {
         {tooltip && (
           <div style={{
             position: "absolute",
-            left: tooltip.mx + 14,
-            top: tooltip.my - 56,
+            left: tooltip.mx + 14, top: tooltip.my - 56,
             background: "rgba(5,10,20,0.97)",
             border: `1px solid ${tooltip.color}44`,
             borderLeft: `3px solid ${tooltip.color}`,
-            borderRadius: 8,
-            padding: "10px 14px",
+            borderRadius: 8, padding: "10px 14px",
             pointerEvents: "none",
             fontFamily: "'Space Mono', monospace",
-            minWidth: 160,
-            zIndex: 10,
+            minWidth: 160, zIndex: 10,
           }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: "#fff", marginBottom: 6 }}>
               {tooltip.name}

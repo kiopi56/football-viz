@@ -13,6 +13,8 @@ const PERIOD_KEYS   = ["0-15", "16-30", "31-45", "46-60", "61-75", "76-90"];
 const PERIOD_LABELS = ["0–15'", "16–30'", "31–45'", "46–60'", "61–75'", "76–90'"];
 const PERIOD_COLORS = ["#22c55e", "#84cc16", "#eab308", "#f97316", "#ef4444", "#a855f7"];
 
+// ── ヘルパー ──────────────────────────────────────────────────
+
 function getByTime(data, metric, venue) {
   if (!data?.byTimeAvailable) return null;
   const root = venue === "all" ? data : data[venue];
@@ -20,10 +22,43 @@ function getByTime(data, metric, venue) {
   return PERIOD_KEYS.map(k => root[metric].byTime[k] ?? 0);
 }
 
-function getTotal(data, metric, venue) {
+// home/away の total が null のとき fixtures から補完
+function getTotal(data, metric, venue, teamId) {
   if (!data) return null;
-  const root = venue === "all" ? data : data[venue];
-  return root?.[metric]?.total ?? null;
+  if (venue === "all") return data?.[metric]?.total ?? null;
+  const root = data[venue];
+  if (root?.[metric]?.total != null) return root[metric].total;
+  // fixtures から導出
+  if (!data.fixtures?.length || !teamId) return null;
+  let total = 0;
+  for (const fix of data.fixtures) {
+    const isHome = fix.home_team_id === teamId;
+    if (venue === "home" && !isHome) continue;
+    if (venue === "away" && isHome) continue;
+    total += metric === "scored"
+      ? (isHome ? (fix.goals_home ?? 0) : (fix.goals_away ?? 0))
+      : (isHome ? (fix.goals_away ?? 0) : (fix.goals_home ?? 0));
+  }
+  return total;
+}
+
+// fixtures から前半/後半 [HT goals, 2H goals] を算出
+function calcHalfStats(data, metric, venue, teamId) {
+  if (!data?.fixtures?.length || !teamId) return null;
+  let ht = 0, ft = 0;
+  for (const fix of data.fixtures) {
+    const isHome = fix.home_team_id === teamId;
+    if (venue === "home" && !isHome) continue;
+    if (venue === "away" && isHome) continue;
+    if (metric === "scored") {
+      ht += isHome ? (fix.ht_home ?? 0) : (fix.ht_away ?? 0);
+      ft += isHome ? (fix.goals_home ?? 0) : (fix.goals_away ?? 0);
+    } else {
+      ht += isHome ? (fix.ht_away ?? 0) : (fix.ht_home ?? 0);
+      ft += isHome ? (fix.goals_away ?? 0) : (fix.goals_home ?? 0);
+    }
+  }
+  return [ht, ft - ht]; // [前半, 後半]
 }
 
 // ── サブコンポーネント ──────────────────────────────────────
@@ -58,6 +93,37 @@ function ToggleGroup({ options, value, onChange, activeColor }) {
   );
 }
 
+// 前半/後半バーチャート（共通）
+function HalfBarChart({ chartData, TEAM_COLOR, primaryLabel, otherLabel, isBoth }) {
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart data={chartData} barCategoryGap="40%">
+        <XAxis dataKey="period" tick={{ fill: "#888", fontSize: 12, fontFamily: "'Space Mono', monospace" }}
+          axisLine={{ stroke: "rgba(255,255,255,0.08)" }} tickLine={false} />
+        <YAxis allowDecimals={false} tick={{ fill: "#555", fontSize: 10 }} axisLine={false} tickLine={false} />
+        <Tooltip
+          contentStyle={{ background: "rgba(5,10,20,0.97)", border: "1px solid rgba(255,255,255,0.12)",
+            borderRadius: 8, fontFamily: "'Space Mono', monospace", fontSize: 11 }}
+          itemStyle={{ color: "#ccc" }} labelStyle={{ color: "#888", marginBottom: 4 }}
+          cursor={{ fill: "rgba(255,255,255,0.03)" }}
+        />
+        <Legend formatter={v => <span style={{ fontSize: 11, color: "#ccc" }}>{v}</span>} />
+        {isBoth ? (
+          <>
+            <Bar dataKey="得点" fill="#22c55e"    radius={[3,3,0,0]} />
+            <Bar dataKey="失点" fill={TEAM_COLOR} radius={[3,3,0,0]} />
+          </>
+        ) : (
+          <>
+            <Bar dataKey={primaryLabel} fill={TEAM_COLOR} radius={[3,3,0,0]} />
+            {otherLabel && <Bar dataKey={otherLabel} fill="#4ade80" fillOpacity={0.7} radius={[3,3,0,0]} />}
+          </>
+        )}
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
+
 // ── メインコンポーネント ──────────────────────────────────────
 
 export default function TeamDetail() {
@@ -77,7 +143,6 @@ export default function TeamDetail() {
   const { data: data2024, loading: l2024 } = useTeamData(teamSlug, 2024);
   const { data: data2023, loading: l2023 } = useTeamData(teamSlug, 2023);
 
-  // fixtures をシーズン切り替えのたびに取得（早期 return より前に置く）
   useEffect(() => {
     if (!team) return;
     setFixtureLoad(true);
@@ -87,10 +152,7 @@ export default function TeamDetail() {
       .finally(() => setFixtureLoad(false));
   }, [team, season]);
 
-  // 存在しないチームは404（HOME にフォールバック）
-  if (!team) {
-    return <Navigate to="/" replace />;
-  }
+  if (!team) return <Navigate to="/" replace />;
 
   if (l2025 || l2024 || l2023) {
     return (
@@ -106,24 +168,51 @@ export default function TeamDetail() {
   const teamId     = team.id;
 
   // シーズンデータマップ
-  const dataMap = { 2025: data2025, 2024: data2024, 2023: data2023 };
+  const dataMap    = { 2025: data2025, 2024: data2024, 2023: data2023 };
   const otherSeason = season === 2025 ? 2024 : season + 1;
-  const primaryData  = dataMap[season];
-  const otherData    = dataMap[otherSeason];
+  const primaryData = dataMap[season];
+  const otherData   = dataMap[otherSeason];
   const primaryLabel = `${season}-${String(season + 1).slice(-2)}`;
   const otherLabel   = `${otherSeason}-${String(otherSeason + 1).slice(-2)}`;
   const isBoth       = dataType === "both";
 
+  // 6期間データ（byTimeAvailable=trueのときのみ有効）
   const priVals     = isBoth ? null : getByTime(primaryData, dataType, venue);
   const othVals     = isBoth ? null : getByTime(otherData,   dataType, venue);
   const priScored   = isBoth ? getByTime(primaryData, "scored",   venue) : null;
   const priConceded = isBoth ? getByTime(primaryData, "conceded", venue) : null;
 
+  // トータル（home/away も fixtures から補完）
   const priTotal = isBoth
-    ? { scored: getTotal(primaryData, "scored", venue), conceded: getTotal(primaryData, "conceded", venue) }
-    : getTotal(primaryData, dataType, venue);
-  const othTotal = isBoth ? null : getTotal(otherData, dataType, venue);
+    ? { scored: getTotal(primaryData, "scored",   venue, teamId), conceded: getTotal(primaryData, "conceded", venue, teamId) }
+    : getTotal(primaryData, dataType, venue, teamId);
+  const othTotal = isBoth ? null : getTotal(otherData, dataType, venue, teamId);
 
+  // 前半/後半 フォールバック（fixtures から算出）
+  const priHalf     = isBoth ? calcHalfStats(primaryData, "scored",   venue, teamId)
+                              : calcHalfStats(primaryData, dataType,   venue, teamId);
+  const priHalfConc = isBoth ? calcHalfStats(primaryData, "conceded", venue, teamId) : null;
+  const othHalf     = isBoth ? null : calcHalfStats(otherData, dataType, venue, teamId);
+
+  // 前半/後半チャートデータ
+  const halfChartData = priHalf ? [
+    {
+      period: "前半 0–45'",
+      ...(isBoth
+        ? { "得点": priHalf[0], "失点": priHalfConc?.[0] ?? 0 }
+        : { [primaryLabel]: priHalf[0], ...(othHalf ? { [otherLabel]: othHalf[0] } : {}) }
+      ),
+    },
+    {
+      period: "後半 46–90'",
+      ...(isBoth
+        ? { "得点": priHalf[1], "失点": priHalfConc?.[1] ?? 0 }
+        : { [primaryLabel]: priHalf[1], ...(othHalf ? { [otherLabel]: othHalf[1] } : {}) }
+      ),
+    },
+  ] : null;
+
+  // 6期間チャートデータ（byTimeAvailable=trueのときのみ使用）
   const chartData = PERIOD_KEYS.map((_k, i) => {
     const e = { period: PERIOD_LABELS[i] };
     if (isBoth) {
@@ -148,6 +237,11 @@ export default function TeamDetail() {
   const metricLabel = dataType === "conceded" ? "失点" : dataType === "scored" ? "得点" : "得失点";
   const venueLabel  = venue === "all" ? "全試合" : venue === "home" ? "ホーム" : "アウェイ";
 
+  // 6期間の有効データが存在するか
+  const has6Period = isBoth ? !!(priScored || priConceded) : !!priVals;
+  // 前半/後半フォールバックを使うか
+  const useHalfFallback = !has6Period && !!halfChartData;
+
   return (
     <div style={{ minHeight: "100vh", background: "#080c10", color: "#fff",
       fontFamily: "'Space Mono', monospace", padding: "28px 20px", boxSizing: "border-box" }}>
@@ -157,8 +251,7 @@ export default function TeamDetail() {
 
         {/* Breadcrumb */}
         <div style={{ marginBottom: 20 }}>
-          <Link to="/" style={{ fontSize: 10, color: "#555", textDecoration: "none", letterSpacing: "0.08em",
-            transition: "color 0.15s" }}
+          <Link to="/" style={{ fontSize: 10, color: "#555", textDecoration: "none", letterSpacing: "0.08em" }}
             onMouseEnter={e => e.target.style.color = "#00ff85"}
             onMouseLeave={e => e.target.style.color = "#555"}
           >← HOME</Link>
@@ -170,8 +263,7 @@ export default function TeamDetail() {
           <div style={{ display: "flex", alignItems: "center", gap: 16, flex: 1 }}>
             <img
               src={`https://media.api-sports.io/football/teams/${teamId}.png`}
-              alt={team.name}
-              width={48} height={48}
+              alt={team.name} width={48} height={48}
               style={{ objectFit: "contain", flexShrink: 0 }}
             />
             <div>
@@ -197,8 +289,7 @@ export default function TeamDetail() {
                 border: active ? `1px solid ${TEAM_COLOR}` : "1px solid rgba(255,255,255,0.12)",
                 background: active ? `${TEAM_COLOR}22` : "transparent",
                 color: active ? TEAM_COLOR : "#666",
-                fontWeight: active ? 700 : 400,
-                letterSpacing: "0.04em",
+                fontWeight: active ? 700 : 400, letterSpacing: "0.04em",
               }}>{label}</button>
             );
           })}
@@ -206,7 +297,7 @@ export default function TeamDetail() {
 
         {/* ── 得点者ビュー ── */}
         {mainView === "scorers" && (
-          <ScorerTracker teamId={teamId} />
+          <ScorerTracker teamSlug={teamSlug} />
         )}
 
         {/* ── チャートビュー ── */}
@@ -243,11 +334,13 @@ export default function TeamDetail() {
         {primaryData && (<>
 
         {/* ── KPIカード ── */}
-        <div style={{ display: "grid", gridTemplateColumns: isBoth ? "1fr 1fr" : "1fr 1fr 1fr 1fr", gap: 8, marginBottom: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 8, marginBottom: 20 }}>
           {isBoth ? (
             [
               { label: `${primaryLabel} 得点`, value: priTotal?.scored  != null ? String(priTotal.scored)   : "–", accent: "#22c55e", sub: venueLabel },
               { label: `${primaryLabel} 失点`, value: priTotal?.conceded != null ? String(priTotal.conceded) : "–", accent: TEAM_COLOR, sub: venueLabel },
+              { label: `前半 得点（${primaryLabel}）`, value: priHalf ? String(priHalf[0]) : "–", accent: "#22c55e", sub: "0–45'" },
+              { label: `後半 得点（${primaryLabel}）`, value: priHalf ? String(priHalf[1]) : "–", accent: "#84cc16", sub: "46–90'" },
             ].map(({ label, value, accent, sub }) => (
               <div key={label} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderTop: `2px solid ${accent}`, borderRadius: 8, padding: "12px 14px" }}>
                 <div style={{ fontSize: 9, color: "#666", letterSpacing: "0.08em", marginBottom: 4, textTransform: "uppercase" }}>{label}</div>
@@ -259,8 +352,16 @@ export default function TeamDetail() {
             [
               { label: `${primaryLabel} ${metricLabel}`, value: priTotal != null ? String(priTotal) : "–", accent: TEAM_COLOR, sub: venueLabel },
               { label: `${otherLabel} ${metricLabel}`,   value: othTotal != null ? String(othTotal)  : "–", accent: "#4ade80",  sub: venueLabel },
-              { label: `76-90' ${metricLabel}（${primaryLabel}）`, value: priVals ? String(priVals[5]) : "–", accent: "#a855f7", sub: primaryLabel },
-              { label: `76-90' ${metricLabel}（${otherLabel}）`,   value: othVals ? String(othVals[5]) : "–", accent: "#818cf8", sub: otherLabel },
+              {
+                label: priVals ? `76-90' ${metricLabel}（${primaryLabel}）` : `前半 ${metricLabel}（${primaryLabel}）`,
+                value: priVals ? String(priVals[5]) : (priHalf ? String(priHalf[0]) : "–"),
+                accent: "#a855f7", sub: priVals ? primaryLabel : "0–45'",
+              },
+              {
+                label: priVals ? `76-90' ${metricLabel}（${otherLabel}）` : `後半 ${metricLabel}（${primaryLabel}）`,
+                value: priVals ? (othVals ? String(othVals[5]) : "–") : (priHalf ? String(priHalf[1]) : "–"),
+                accent: "#818cf8", sub: priVals ? otherLabel : "46–90'",
+              },
             ].map(({ label, value, accent, sub }) => (
               <div key={label} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderTop: `2px solid ${accent}`, borderRadius: 8, padding: "12px 14px" }}>
                 <div style={{ fontSize: 9, color: "#666", letterSpacing: "0.08em", marginBottom: 4, textTransform: "uppercase" }}>{label}</div>
@@ -282,13 +383,9 @@ export default function TeamDetail() {
 
         {/* ── メインチャート ── */}
         <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 12, padding: "24px 16px", marginBottom: 20, height: 300 }}>
-          {(!priVals && !isBoth) && (
-            <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#555", fontSize: 12 }}>
-              このシーズンの時間帯データは取得できませんでした
-            </div>
-          )}
 
-          {(isBoth || (priVals && view === "compare")) && (
+          {/* 6期間バーチャート（byTimeAvailable=true かつ compare/both モード） */}
+          {has6Period && (view === "compare" || isBoth) && (
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} barGap={3} barCategoryGap="25%">
                 <XAxis dataKey="period" tick={{ fill: "#888", fontSize: 11, fontFamily: "'Space Mono', monospace" }} axisLine={{ stroke: "rgba(255,255,255,0.08)" }} tickLine={false} />
@@ -310,6 +407,7 @@ export default function TeamDetail() {
             </ResponsiveContainer>
           )}
 
+          {/* 6期間 pct */}
           {!isBoth && priVals && view === "pct" && (
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={pctData} barGap={3} barCategoryGap="25%">
@@ -323,6 +421,7 @@ export default function TeamDetail() {
             </ResponsiveContainer>
           )}
 
+          {/* 6期間 radar */}
           {!isBoth && priVals && view === "radar" && (
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart data={pctData}>
@@ -335,38 +434,93 @@ export default function TeamDetail() {
               </RadarChart>
             </ResponsiveContainer>
           )}
+
+          {/* 前半/後半フォールバックチャート（byTimeAvailable=false のとき） */}
+          {useHalfFallback && (
+            <HalfBarChart
+              chartData={halfChartData}
+              TEAM_COLOR={TEAM_COLOR}
+              primaryLabel={isBoth ? undefined : primaryLabel}
+              otherLabel={isBoth ? undefined : (othHalf ? otherLabel : undefined)}
+              isBoth={isBoth}
+            />
+          )}
+
+          {/* 完全にデータなし */}
+          {!has6Period && !useHalfFallback && (
+            <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#555", fontSize: 12 }}>
+              データなし
+            </div>
+          )}
         </div>
 
         {/* ── 時間帯別内訳テーブル ── */}
         <div style={{ fontSize: 10, color: "#555", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>
-          時間帯別 内訳
+          {primaryData?.byTimeAvailable ? "時間帯別 内訳" : "前半 / 後半 内訳"}
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(6,1fr)", gap: 6, marginBottom: 12 }}>
-          {PERIOD_KEYS.map((k, i) => (
-            <div key={k} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderBottom: `2px solid ${PERIOD_COLORS[i]}`, borderRadius: 8, padding: "10px 6px", textAlign: "center" }}>
-              <div style={{ fontSize: 9, color: "#666", marginBottom: 6 }}>{PERIOD_LABELS[i]}</div>
-              {isBoth ? (
-                <>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "#22c55e" }}>{priScored?.[i]   ?? "–"}</div>
-                  <div style={{ fontSize: 8, color: "#555", marginBottom: 2 }}>得点</div>
-                  <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "4px 0" }} />
-                  <div style={{ fontSize: 15, fontWeight: 700, color: TEAM_COLOR }}>{priConceded?.[i] ?? "–"}</div>
-                  <div style={{ fontSize: 8, color: "#555" }}>失点</div>
-                </>
-              ) : (
-                <>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: TEAM_COLOR }}>{priVals?.[i] ?? "–"}</div>
-                  {othVals && (
-                    <>
-                      <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "4px 0" }} />
-                      <div style={{ fontSize: 15, fontWeight: 700, color: "#4ade80" }}>{othVals[i]}</div>
-                    </>
-                  )}
-                </>
-              )}
-            </div>
-          ))}
-        </div>
+
+        {primaryData?.byTimeAvailable ? (
+          /* 6期間テーブル */
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(6,1fr)", gap: 6, marginBottom: 12 }}>
+            {PERIOD_KEYS.map((k, i) => (
+              <div key={k} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)", borderBottom: `2px solid ${PERIOD_COLORS[i]}`, borderRadius: 8, padding: "10px 6px", textAlign: "center" }}>
+                <div style={{ fontSize: 9, color: "#666", marginBottom: 6 }}>{PERIOD_LABELS[i]}</div>
+                {isBoth ? (
+                  <>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: "#22c55e" }}>{priScored?.[i]   ?? "–"}</div>
+                    <div style={{ fontSize: 8, color: "#555", marginBottom: 2 }}>得点</div>
+                    <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "4px 0" }} />
+                    <div style={{ fontSize: 15, fontWeight: 700, color: TEAM_COLOR }}>{priConceded?.[i] ?? "–"}</div>
+                    <div style={{ fontSize: 8, color: "#555" }}>失点</div>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ fontSize: 18, fontWeight: 700, color: TEAM_COLOR }}>{priVals?.[i] ?? "–"}</div>
+                    {othVals && (
+                      <>
+                        <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "4px 0" }} />
+                        <div style={{ fontSize: 15, fontWeight: 700, color: "#4ade80" }}>{othVals[i]}</div>
+                      </>
+                    )}
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          /* 前半/後半 2セルテーブル */
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginBottom: 12 }}>
+            {["前半 0–45'", "後半 46–90'"].map((label, i) => (
+              <div key={label} style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderBottom: `2px solid ${i === 0 ? "#22c55e" : "#f97316"}`,
+                borderRadius: 8, padding: "14px 10px", textAlign: "center",
+              }}>
+                <div style={{ fontSize: 10, color: "#666", marginBottom: 8 }}>{label}</div>
+                {isBoth ? (
+                  <>
+                    <div style={{ fontSize: 20, fontWeight: 700, color: "#22c55e" }}>{priHalf ? priHalf[i] : "–"}</div>
+                    <div style={{ fontSize: 9, color: "#555", marginBottom: 2 }}>得点</div>
+                    <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "6px 0" }} />
+                    <div style={{ fontSize: 20, fontWeight: 700, color: TEAM_COLOR }}>{priHalfConc ? priHalfConc[i] : "–"}</div>
+                    <div style={{ fontSize: 9, color: "#555" }}>失点</div>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ fontSize: 24, fontWeight: 700, color: TEAM_COLOR }}>{priHalf ? priHalf[i] : "–"}</div>
+                    {othHalf && (
+                      <>
+                        <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "6px 0" }} />
+                        <div style={{ fontSize: 18, fontWeight: 700, color: "#4ade80" }}>{othHalf[i]}</div>
+                      </>
+                    )}
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* 凡例 */}
         <div style={{ display: "flex", gap: 16, marginBottom: 28, fontSize: 10, color: "#555", flexWrap: "wrap" }}>
@@ -377,9 +531,9 @@ export default function TeamDetail() {
             </>
           ) : (
             <>
-              {priVals && <span><span style={{ color: TEAM_COLOR, fontWeight: 700 }}>■</span> {primaryLabel}（{metricLabel}・{venueLabel}）</span>}
-              {othVals && <span><span style={{ color: "#4ade80",  fontWeight: 700 }}>■</span> {otherLabel}（{metricLabel}・{venueLabel}）</span>}
-              {!priVals && !othVals && <span style={{ color: "#444" }}>時間帯データなし（スコアのみ）</span>}
+              <span><span style={{ color: TEAM_COLOR, fontWeight: 700 }}>■</span> {primaryLabel}（{metricLabel}・{venueLabel}）</span>
+              {(othVals || othHalf) && <span><span style={{ color: "#4ade80", fontWeight: 700 }}>■</span> {otherLabel}（{metricLabel}・{venueLabel}）</span>}
+              {useHalfFallback && <span style={{ color: "#333" }}>※ ht_home/ht_away から前半/後半を算出</span>}
             </>
           )}
         </div>
