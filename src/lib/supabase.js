@@ -131,6 +131,19 @@ export async function fetchFixtureWithFallback(fixtureId) {
   return results.find(r => r !== null) ?? null;
 }
 
+/** fixture_id に紐づくプレスコメントを取得（最大5件） */
+export async function fetchPressComments(fixtureId) {
+  const { data, error } = await supabase
+    .from("press_comments")
+    .select("id, article_url, article_title, speaker, comment_text, published_at")
+    .eq("fixture_id", fixtureId)
+    .order("published_at", { ascending: false })
+    .limit(5);
+
+  if (error) throw error;
+  return data ?? [];
+}
+
 /**
  * Supabase → JSON の順で直近 n 試合を取得
  */

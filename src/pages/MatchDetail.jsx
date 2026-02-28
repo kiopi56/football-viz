@@ -16,7 +16,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
 } from "recharts";
 import {
-  fetchFixtureWithFallback, fetchGoalEvents, resolveTeamId,
+  fetchFixtureWithFallback, fetchGoalEvents, resolveTeamId, fetchPressComments,
 } from "../lib/supabase";
 import { useTeamData } from "../hooks/useTeamData";
 
@@ -109,6 +109,8 @@ export default function MatchDetail() {
   const [narrativeLoading, setNarrativeLoading] = useState(false);
   const [narrativeError,   setNarrativeError]   = useState(null);
 
+  const [relatedArticles, setRelatedArticles] = useState([]);
+
   // fixture 読み込み後に teamId を決定
   const teamId = fixture ? resolveTeamId(fixture) : null;
   const info   = teamId ? TEAM_INFO[teamId] : null;
@@ -122,8 +124,16 @@ export default function MatchDetail() {
   useEffect(() => {
     if (!id) return;
     setLoading(true); setLoadErr(null);
-    Promise.all([fetchFixtureWithFallback(id), fetchGoalEvents(id)])
-      .then(([fix, evts]) => { setFixture(fix); setGoals(evts); })
+    Promise.all([
+      fetchFixtureWithFallback(id),
+      fetchGoalEvents(id),
+      fetchPressComments(id).catch(() => []),
+    ])
+      .then(([fix, evts, articles]) => {
+        setFixture(fix);
+        setGoals(evts);
+        setRelatedArticles(articles);
+      })
       .catch(e => setLoadErr(e.message))
       .finally(() => setLoading(false));
   }, [id]);
@@ -533,6 +543,58 @@ ${historyStr}
                 {info.name} 全データを見る →
               </Link>
             )}
+
+            {/* ── 関連記事 ── */}
+            <div style={{ background: "#0e1318", border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: 10, padding: "16px" }}>
+              <div style={{ fontSize: 9, color: "#555", letterSpacing: "0.1em",
+                textTransform: "uppercase", marginBottom: 10 }}>
+                関連記事
+              </div>
+
+              {relatedArticles.length === 0 ? (
+                <div style={{ fontSize: 10, color: "#333", padding: "4px 0" }}>記事準備中</div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  {relatedArticles.map(article => {
+                    let domain = article.article_url;
+                    try { domain = new URL(article.article_url).hostname.replace(/^www\./, ""); } catch {}
+                    const title   = article.article_title || article.speaker || "記事";
+                    const preview = (article.comment_text ?? "").slice(0, 100);
+                    return (
+                      <a key={article.id} href={article.article_url}
+                        target="_blank" rel="noreferrer"
+                        style={{
+                          display: "block", textDecoration: "none",
+                          background: "rgba(255,255,255,0.02)",
+                          border: "1px solid rgba(255,255,255,0.06)",
+                          borderLeft: `3px solid ${TEAM_COLOR}`,
+                          borderRadius: 6, padding: "10px 12px",
+                          transition: "background 0.15s",
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.06)"}
+                        onMouseLeave={e => e.currentTarget.style.background = "rgba(255,255,255,0.02)"}
+                      >
+                        <div style={{ display: "flex", justifyContent: "space-between",
+                          alignItems: "center", marginBottom: 4 }}>
+                          <span style={{ fontSize: 8, color: "#555" }}>{domain}</span>
+                          <span style={{ fontSize: 10, color: "#444" }}>↗</span>
+                        </div>
+                        <div style={{ fontSize: 10, color: "#ccc", fontWeight: 700,
+                          marginBottom: 4, lineHeight: 1.4 }}>
+                          {title.length > 55 ? title.slice(0, 55) + "…" : title}
+                        </div>
+                        {preview && (
+                          <div style={{ fontSize: 9, color: "#555", lineHeight: 1.5 }}>
+                            {preview}{preview.length >= 100 ? "…" : ""}
+                          </div>
+                        )}
+                      </a>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
