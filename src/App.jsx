@@ -78,16 +78,18 @@ export default function App() {
     <HashRouter>
       <NavBar />
       <Routes>
-        <Route path="/"                  element={<Home />} />
-        <Route path="/team/:teamId"      element={<TeamDetail />} />
-        <Route path="/match/:fixtureId"   element={<MatchDetail />} />
-        <Route path="/player/:playerId"   element={<PlayerDetail />} />
+        <Route path="/"                    element={<Home />} />
+        <Route path="/team/:teamSlug"    element={<TeamDetail />} />
+        <Route path="/match/:fixtureId"  element={<MatchDetail />} />
+        <Route path="/player/:playerId"  element={<PlayerDetail />} />
         <Route path="/compare"           element={<Compare />} />
-        {/* 後方互換：旧URLを /team/:id にリダイレクト */}
-        <Route path="/liverpool" element={<Navigate to="/team/40" replace />} />
-        <Route path="/arsenal"   element={<Navigate to="/team/42" replace />} />
+        {/* 後方互換：旧URLをslugベースにリダイレクト */}
+        <Route path="/liverpool"         element={<Navigate to="/team/liverpool" replace />} />
+        <Route path="/arsenal"           element={<Navigate to="/team/arsenal"   replace />} />
+        <Route path="/team/40"           element={<Navigate to="/team/liverpool" replace />} />
+        <Route path="/team/42"           element={<Navigate to="/team/arsenal"   replace />} />
         {/* 404: HOME にフォールバック */}
-        <Route path="*"          element={<Navigate to="/" replace />} />
+        <Route path="*"                  element={<Navigate to="/" replace />} />
       </Routes>
     </HashRouter>
   );

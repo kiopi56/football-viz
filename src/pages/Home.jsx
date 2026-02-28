@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import StatsHighlight from "../components/StatsHighlight";
 import { fetchRecentFixturesWithFallback, fetchLatestPressComments } from "../lib/supabase";
+import { CURRENT_TEAMS } from "../data/teams";
 
 // ── カラー定数 ────────────────────────────────────────────────
 const C = {
@@ -16,15 +17,6 @@ const C = {
   accent:  "#00ff85",
   gold:    "#f0b429",
   blue:    "#6cabdd",
-};
-
-const SLUG_MAP    = { 40: "liverpool", 42: "arsenal" };
-const TEAM_COLORS = {
-  33:"#DA291C",34:"#00A4E4",35:"#DA020E",36:"#CC0000",
-  39:"#FDB913",40:"#C8102E",41:"#D71920",42:"#EF0107",
-  45:"#274488",46:"#003090",47:"#132257",48:"#7A263A",
-  49:"#034694",50:"#6CABDD",51:"#0057B8",52:"#C4122E",
-  55:"#E03A3E",57:"#0044A9",65:"#DD0000",66:"#95BFE5",
 };
 
 const ARTICLE_TABS = [
@@ -337,31 +329,12 @@ function MediaSourcesCard({ articles }) {
 // ── メインコンポーネント ──────────────────────────────────────
 
 export default function Home() {
-  const [teams,         setTeams]         = useState([]);
-  const [teamData,      setTeamData]      = useState({});
-  const [loading,       setLoading]       = useState(true);
   const [recentMatches, setRecentMatches] = useState([]);
   const [allArticles,   setAllArticles]   = useState([]);
   const [articleTab,    setArticleTab]    = useState("all");
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${import.meta.env.BASE_URL}data/pl-teams-2024.json`)
-      .then(r => r.json())
-      .then(async list => {
-        setTeams(list);
-        const dataTeams = list.filter(t => t.hasData && SLUG_MAP[t.id]);
-        const results = await Promise.all(
-          dataTeams.map(t =>
-            fetch(`${import.meta.env.BASE_URL}data/${SLUG_MAP[t.id]}-2024.json`)
-              .then(r => r.ok ? r.json() : null).catch(() => null)
-              .then(json => [t.id, json])
-          )
-        );
-        setTeamData(Object.fromEntries(results.filter(([, d]) => d)));
-        setLoading(false);
-      }).catch(() => setLoading(false));
-
     Promise.all([fetchRecentFixturesWithFallback(40, 3), fetchRecentFixturesWithFallback(42, 3)])
       .then(([liv, ars]) => setRecentMatches(
         [...liv, ...ars].sort((a, b) => new Date(b.match_date) - new Date(a.match_date))
@@ -416,8 +389,8 @@ export default function Home() {
             <div style={{ display:"flex", gap:"2rem" }}>
               {[
                 { val:"20",   label:"チーム" },
-                { val:"3",    label:"シーズン" },
-                { val:"2,280",label:"試合データ" },
+                { val:"11",   label:"シーズン" },
+                { val:"4,000+",label:"試合データ" },
               ].map(({ val, label }) => (
                 <div key={label}>
                   <div style={{ fontFamily:"'Bebas Neue',sans-serif", fontSize:"2rem",
@@ -429,43 +402,34 @@ export default function Home() {
             </div>
           </div>
 
-          {/* ヒーロー右: チームグリッド */}
-          {loading ? (
-            <div style={{ background:C.surface2, height:200,
-              display:"flex", alignItems:"center", justifyContent:"center",
-              fontSize:"0.75rem", color:C.muted2 }}>Loading...</div>
-          ) : (
-            <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:"1px",
-              background:C.border }}>
-              {teams.map(team => {
-                const hasData = team.hasData && !!teamData[team.id];
-                return (
-                  <div key={team.id}
-                    onClick={hasData ? () => navigate(`/team/${team.id}`) : undefined}
-                    style={{ background:C.surface2, padding:"0.75rem 0.5rem",
-                      display:"flex", flexDirection:"column", alignItems:"center", gap:"0.4rem",
-                      cursor: hasData ? "pointer" : "default",
-                      opacity: hasData ? 1 : 0.4,
-                      transition:"background 0.15s",
-                    }}
-                    onMouseEnter={e => hasData && (e.currentTarget.style.background = "#1a2535")}
-                    onMouseLeave={e => (e.currentTarget.style.background = C.surface2)}
-                  >
-                    <img src={team.logo} alt={team.shortName} width={28} height={28}
-                      style={{ objectFit:"contain" }} loading="lazy" />
-                    <div style={{ fontSize:"0.6rem", color:C.muted, textAlign:"center",
-                      letterSpacing:"0.5px", lineHeight:1.2 }}>
-                      {team.shortName}
-                    </div>
-                    {hasData && (
-                      <div style={{ width:4, height:4, borderRadius:"50%",
-                        background:C.accent }} />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
+          {/* ヒーロー右: 2025-26チームグリッド */}
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:"1px",
+            background:C.border }}>
+            {CURRENT_TEAMS.map(team => (
+              <div key={team.id}
+                onClick={() => navigate(`/team/${team.slug}`)}
+                style={{ background:C.surface2, padding:"0.75rem 0.5rem",
+                  display:"flex", flexDirection:"column", alignItems:"center", gap:"0.4rem",
+                  cursor:"pointer", transition:"background 0.15s",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = "#1a2535"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = C.surface2; }}
+              >
+                <img
+                  src={`https://media.api-sports.io/football/teams/${team.id}.png`}
+                  alt={team.shortName}
+                  width={28} height={28}
+                  style={{ objectFit:"contain" }}
+                  loading="lazy"
+                />
+                <div style={{ fontSize:"0.6rem", color:C.muted, textAlign:"center",
+                  letterSpacing:"0.5px", lineHeight:1.2 }}>
+                  {team.shortName}
+                </div>
+                <div style={{ width:4, height:4, borderRadius:"50%", background:team.color }} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -585,7 +549,7 @@ export default function Home() {
           {[
             { label:"データソース", value:"api-sports.io v3" },
             { label:"更新頻度",     value:"毎週月曜 自動更新" },
-            { label:"対象リーグ",   value:"Premier League 2024–25" },
+            { label:"対象リーグ",   value:"Premier League 2015–26" },
           ].map(({ label, value }) => (
             <div key={label}>
               <div style={{ fontSize:"0.65rem", color:C.muted2, letterSpacing:"2px",

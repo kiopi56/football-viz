@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, Navigate } from "react-router-dom";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Legend,
@@ -7,12 +7,7 @@ import {
 import { useTeamData } from "../hooks/useTeamData";
 import ScorerTracker from "../components/ScorerTracker";
 import { fetchFixturesWithFallback } from "../lib/supabase";
-
-// ── チーム固有情報（データ対応済みチームのみ） ──────────────────
-const TEAM_INFO = {
-  40: { name: "LIVERPOOL FC", color: "#C8102E" },
-  42: { name: "ARSENAL FC",   color: "#EF0107" },
-};
+import { TEAMS_BY_SLUG } from "../data/teams";
 
 const PERIOD_KEYS   = ["0-15", "16-30", "31-45", "46-60", "61-75", "76-90"];
 const PERIOD_LABELS = ["0–15'", "16–30'", "31–45'", "46–60'", "61–75'", "76–90'"];
@@ -66,12 +61,11 @@ function ToggleGroup({ options, value, onChange, activeColor }) {
 // ── メインコンポーネント ──────────────────────────────────────
 
 export default function TeamDetail() {
-  const { teamId: teamIdStr } = useParams();
-  const teamId = Number(teamIdStr);
-  const info   = TEAM_INFO[teamId];
+  const { teamSlug } = useParams();
+  const team = TEAMS_BY_SLUG[teamSlug];
 
   const [mainView, setMainView] = useState("chart");
-  const [season,   setSeason]   = useState(2024);
+  const [season,   setSeason]   = useState(2025);
   const [dataType, setDataType] = useState("conceded");
   const [venue,    setVenue]    = useState("all");
   const [view,     setView]     = useState("compare");
@@ -79,33 +73,26 @@ export default function TeamDetail() {
   const [fixtures,    setFixtures]    = useState([]);
   const [fixtureLoad, setFixtureLoad] = useState(false);
 
-  const { data: data2024, loading: l2024 } = useTeamData(teamId || null, 2024);
-  const { data: data2023, loading: l2023 } = useTeamData(teamId || null, 2023);
-  const { data: data2022, loading: l2022 } = useTeamData(teamId || null, 2022);
+  const { data: data2025, loading: l2025 } = useTeamData(teamSlug, 2025);
+  const { data: data2024, loading: l2024 } = useTeamData(teamSlug, 2024);
+  const { data: data2023, loading: l2023 } = useTeamData(teamSlug, 2023);
 
   // fixtures をシーズン切り替えのたびに取得（早期 return より前に置く）
   useEffect(() => {
-    if (!teamId) return;
+    if (!team) return;
     setFixtureLoad(true);
-    fetchFixturesWithFallback(teamId, season)
+    fetchFixturesWithFallback(team.id, season)
       .then(setFixtures)
       .catch(() => setFixtures([]))
       .finally(() => setFixtureLoad(false));
-  }, [teamId, season]);
+  }, [team, season]);
 
-  // チーム未対応
-  if (!info) {
-    return (
-      <div style={{ minHeight: "100vh", background: "#080c10", display: "flex",
-        flexDirection: "column", alignItems: "center", justifyContent: "center",
-        fontFamily: "'Space Mono', monospace", color: "#555", fontSize: 13, gap: 16 }}>
-        <div>このチームのデータは準備中です</div>
-        <Link to="/" style={{ color: "#00ff85", textDecoration: "none", fontSize: 11 }}>← チーム一覧に戻る</Link>
-      </div>
-    );
+  // 存在しないチームは404（HOME にフォールバック）
+  if (!team) {
+    return <Navigate to="/" replace />;
   }
 
-  if (l2024 || l2023 || l2022) {
+  if (l2025 || l2024 || l2023) {
     return (
       <div style={{ minHeight: "100vh", background: "#080c10", display: "flex",
         alignItems: "center", justifyContent: "center",
@@ -115,11 +102,12 @@ export default function TeamDetail() {
     );
   }
 
-  const TEAM_COLOR = info.color;
+  const TEAM_COLOR = team.color;
+  const teamId     = team.id;
 
-  // 3シーズン対応: 選択シーズン → 隣のシーズンと比較
-  const dataMap = { 2024: data2024, 2023: data2023, 2022: data2022 };
-  const otherSeason = season === 2024 ? 2023 : season + 1; // 2022→2023, 2023→2024
+  // シーズンデータマップ
+  const dataMap = { 2025: data2025, 2024: data2024, 2023: data2023 };
+  const otherSeason = season === 2025 ? 2024 : season + 1;
   const primaryData  = dataMap[season];
   const otherData    = dataMap[otherSeason];
   const primaryLabel = `${season}-${String(season + 1).slice(-2)}`;
@@ -179,14 +167,22 @@ export default function TeamDetail() {
         {/* ── Header ── */}
         <div style={{ display: "flex", alignItems: "flex-start", gap: 20, marginBottom: 20 }}>
           <div style={{ width: 6, background: TEAM_COLOR, alignSelf: "stretch", borderRadius: 3, flexShrink: 0 }} />
-          <div>
-            <div style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(24px,5vw,48px)", letterSpacing: "0.04em", lineHeight: 1 }}>
-              {info.name}
+          <div style={{ display: "flex", alignItems: "center", gap: 16, flex: 1 }}>
+            <img
+              src={`https://media.api-sports.io/football/teams/${teamId}.png`}
+              alt={team.name}
+              width={48} height={48}
+              style={{ objectFit: "contain", flexShrink: 0 }}
+            />
+            <div>
+              <div style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(24px,5vw,48px)", letterSpacing: "0.04em", lineHeight: 1 }}>
+                {team.name.toUpperCase()}
+              </div>
+              <div style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(13px,2.2vw,22px)", letterSpacing: "0.1em", color: TEAM_COLOR, lineHeight: 1.3 }}>
+                時間帯別 得失点分析
+              </div>
+              <div style={{ fontSize: 10, color: "#555", marginTop: 6 }}>PL シーズン比較</div>
             </div>
-            <div style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(13px,2.2vw,22px)", letterSpacing: "0.1em", color: TEAM_COLOR, lineHeight: 1.3 }}>
-              時間帯別 得失点分析
-            </div>
-            <div style={{ fontSize: 10, color: "#555", marginTop: 6 }}>PL シーズン比較</div>
           </div>
         </div>
 
@@ -219,7 +215,7 @@ export default function TeamDetail() {
         {/* ── シーズンタブ + 直近フォーム ── */}
         <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20, flexWrap: "wrap" }}>
           <ToggleGroup
-            options={[[2024, "2024-25"], [2023, "2023-24"], [2022, "2022-23"]]}
+            options={[[2025, "2025-26"], [2024, "2024-25"], [2023, "2023-24"]]}
             value={season}
             onChange={v => setSeason(Number(v))}
             activeColor={TEAM_COLOR}
@@ -231,6 +227,20 @@ export default function TeamDetail() {
             </div>
           )}
         </div>
+
+        {/* データがない場合 */}
+        {!primaryData && (
+          <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)",
+            borderRadius: 12, padding: "40px 20px", textAlign: "center",
+            color: "#444", fontSize: 12, marginBottom: 20 }}>
+            {season}-{String(season + 1).slice(-2)} シーズンのデータがありません
+            <div style={{ fontSize: 10, color: "#333", marginTop: 8 }}>
+              （このシーズンはプレミアリーグ不在の可能性があります）
+            </div>
+          </div>
+        )}
+
+        {primaryData && (<>
 
         {/* ── KPIカード ── */}
         <div style={{ display: "grid", gridTemplateColumns: isBoth ? "1fr 1fr" : "1fr 1fr 1fr 1fr", gap: 8, marginBottom: 20 }}>
@@ -436,6 +446,7 @@ export default function TeamDetail() {
           )}
         </div>
 
+        </>)}
         </>)}
 
       </div>
