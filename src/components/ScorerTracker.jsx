@@ -12,7 +12,7 @@ const PLAYER_COLORS = [
 
 // SVG layout constants
 const W    = 720;
-const H    = 400;
+const H    = 560;
 const PAD  = { top: 56, right: 40, bottom: 44, left: 44 };
 const COL_X = [
   PAD.left + (W - PAD.left - PAD.right) * 0 / 2,
@@ -26,7 +26,7 @@ function rankY(rank, maxRank) {
 }
 
 function goalR(goals, maxGoals) {
-  return Math.max(10, Math.sqrt(goals / Math.max(maxGoals, 1)) * 26);
+  return Math.max(7, Math.sqrt(goals / Math.max(maxGoals, 1)) * 16);
 }
 
 export default function ScorerTracker({ teamId }) {
@@ -201,8 +201,8 @@ export default function ScorerTracker({ teamId }) {
                   onMouseLeave={() => setTooltip(null)}
                   onClick={() => navigate(`/player/${player.id}`)}>
                   {/* 外枠 */}
-                  <circle cx={pt.x} cy={pt.y} r={r + 2}
-                    fill="none" stroke={color} strokeWidth={1.5} strokeOpacity={0.35} />
+                  <circle cx={pt.x} cy={pt.y} r={r + 1.5}
+                    fill="none" stroke={color} strokeWidth={1} strokeOpacity={0.35} />
                   {/* 塗り */}
                   <circle cx={pt.x} cy={pt.y} r={r}
                     fill={color} fillOpacity={0.88}
@@ -210,7 +210,7 @@ export default function ScorerTracker({ teamId }) {
                   {/* ゴール数 */}
                   <text x={pt.x} y={pt.y} textAnchor="middle"
                     dominantBaseline="middle"
-                    fontSize={r > 14 ? 11 : 9} fontWeight={700}
+                    fontSize={9} fontWeight={700}
                     fill="#080c10" fontFamily="'Space Mono', monospace">
                     {pt.goals}
                   </text>

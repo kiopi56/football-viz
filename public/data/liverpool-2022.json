@@ -1,7 +1,35 @@
 {
   "teamId": 40,
   "season": 2022,
-  "byTimeAvailable": true,
+  "byTimeAvailable": false,
+  "scored": {
+    "total": 75,
+    "byTime": null
+  },
+  "conceded": {
+    "total": 47,
+    "byTime": null
+  },
+  "home": {
+    "scored": {
+      "total": null,
+      "byTime": null
+    },
+    "conceded": {
+      "total": null,
+      "byTime": null
+    }
+  },
+  "away": {
+    "scored": {
+      "total": null,
+      "byTime": null
+    },
+    "conceded": {
+      "total": null,
+      "byTime": null
+    }
+  },
   "recentForm": [
     "D",
     "D",
@@ -9,100 +37,690 @@
     "W",
     "W"
   ],
-  "scored": {
-    "total": 71,
-    "byTime": {
-      "0-15": 13,
-      "16-30": 6,
-      "31-45": 15,
-      "46-60": 9,
-      "61-75": 14,
-      "76-90": 14
+  "scorers": [
+    {
+      "id": 306,
+      "name": "Mohamed Salah",
+      "photo": "https://media.api-sports.io/football/players/306.png",
+      "goals": 19,
+      "assists": 12,
+      "appearances": 38
+    },
+    {
+      "id": 302,
+      "name": "Roberto Firmino",
+      "photo": "https://media.api-sports.io/football/players/302.png",
+      "goals": 11,
+      "assists": 4,
+      "appearances": 25
+    },
+    {
+      "id": 51617,
+      "name": "D. Núñez",
+      "photo": "https://media.api-sports.io/football/players/51617.png",
+      "goals": 9,
+      "assists": 3,
+      "appearances": 29
+    },
+    {
+      "id": 2678,
+      "name": "Diogo Jota",
+      "photo": "https://media.api-sports.io/football/players/2678.png",
+      "goals": 7,
+      "assists": 4,
+      "appearances": 22
+    },
+    {
+      "id": 247,
+      "name": "C. Gakpo",
+      "photo": "https://media.api-sports.io/football/players/247.png",
+      "goals": 7,
+      "assists": 2,
+      "appearances": 21
+    },
+    {
+      "id": 2489,
+      "name": "L. Díaz",
+      "photo": "https://media.api-sports.io/football/players/2489.png",
+      "goals": 4,
+      "assists": 2,
+      "appearances": 17
+    },
+    {
+      "id": 290,
+      "name": "V. van Dijk",
+      "photo": "https://media.api-sports.io/football/players/290.png",
+      "goals": 3,
+      "assists": 1,
+      "appearances": 33
+    },
+    {
+      "id": 293,
+      "name": "C. Jones",
+      "photo": "https://media.api-sports.io/football/players/293.png",
+      "goals": 3,
+      "assists": 1,
+      "appearances": 18
+    },
+    {
+      "id": 153066,
+      "name": "Fábio Carvalho",
+      "photo": "https://media.api-sports.io/football/players/153066.png",
+      "goals": 2,
+      "assists": 0,
+      "appearances": 13
+    },
+    {
+      "id": 283,
+      "name": "T. Alexander-Arnold",
+      "photo": "https://media.api-sports.io/football/players/283.png",
+      "goals": 2,
+      "assists": 9,
+      "appearances": 37
+    },
+    {
+      "id": 19035,
+      "name": "H. Elliott",
+      "photo": "https://media.api-sports.io/football/players/19035.png",
+      "goals": 1,
+      "assists": 2,
+      "appearances": 32
+    },
+    {
+      "id": 310187,
+      "name": "Stefan Bajčetić",
+      "photo": "https://media.api-sports.io/football/players/310187.png",
+      "goals": 1,
+      "assists": 0,
+      "appearances": 11
+    },
+    {
+      "id": 286,
+      "name": "J. Matip",
+      "photo": "https://media.api-sports.io/football/players/286.png",
+      "goals": 1,
+      "assists": 0,
+      "appearances": 14
+    },
+    {
+      "id": 297,
+      "name": "A. Oxlade-Chamberlain",
+      "photo": "https://media.api-sports.io/football/players/297.png",
+      "goals": 1,
+      "assists": 0,
+      "appearances": 9
     }
-  },
-  "conceded": {
-    "total": 45,
-    "byTime": {
-      "0-15": 8,
-      "16-30": 8,
-      "31-45": 6,
-      "46-60": 10,
-      "61-75": 6,
-      "76-90": 7
-    }
-  },
-  "home": {
-    "scored": {
-      "total": 42,
-      "byTime": {
-        "0-15": 8,
-        "16-30": 3,
-        "31-45": 8,
-        "46-60": 6,
-        "61-75": 7,
-        "76-90": 10
-      }
-    },
-    "conceded": {
-      "total": 17,
-      "byTime": {
-        "0-15": 5,
-        "16-30": 3,
-        "31-45": 3,
-        "46-60": 1,
-        "61-75": 1,
-        "76-90": 4
-      }
-    }
-  },
-  "away": {
-    "scored": {
-      "total": 29,
-      "byTime": {
-        "0-15": 5,
-        "16-30": 3,
-        "31-45": 7,
-        "46-60": 3,
-        "61-75": 7,
-        "76-90": 4
-      }
-    },
-    "conceded": {
-      "total": 28,
-      "byTime": {
-        "0-15": 3,
-        "16-30": 5,
-        "31-45": 3,
-        "46-60": 9,
-        "61-75": 5,
-        "76-90": 3
-      }
-    }
-  },
-  "byPeriod": [
+  ],
+  "fixtures": [
     {
-      "time": "0-15",
-      "goals": 8
+      "id": 868325,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-05-28T15:30:00+00:00",
+      "home_team_id": 41,
+      "away_team_id": 40,
+      "home_team_name": "Southampton",
+      "away_team_name": "Liverpool",
+      "goals_home": 4,
+      "goals_away": 4,
+      "ht_home": 2,
+      "ht_away": 2,
+      "status": "FT"
     },
     {
-      "time": "16-30",
-      "goals": 8
+      "id": 868309,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-05-20T14:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 66,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Aston Villa",
+      "goals_home": 1,
+      "goals_away": 1,
+      "ht_home": 0,
+      "ht_away": 1,
+      "status": "FT"
     },
     {
-      "time": "31-45",
-      "goals": 6
+      "id": 868303,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-05-15T19:00:00+00:00",
+      "home_team_id": 46,
+      "away_team_id": 40,
+      "home_team_name": "Leicester",
+      "away_team_name": "Liverpool",
+      "goals_home": 0,
+      "goals_away": 3,
+      "ht_home": 0,
+      "ht_away": 2,
+      "status": "FT"
     },
     {
-      "time": "46-60",
-      "goals": 10
+      "id": 868289,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-05-06T16:30:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 55,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Brentford",
+      "goals_home": 1,
+      "goals_away": 0,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
     },
     {
-      "time": "61-75",
-      "goals": 6
+      "id": 868221,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-05-03T19:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 36,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Fulham",
+      "goals_home": 1,
+      "goals_away": 0,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
     },
     {
-      "time": "76-90",
-      "goals": 7
+      "id": 868283,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-04-30T15:30:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 47,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Tottenham",
+      "goals_home": 4,
+      "goals_away": 3,
+      "ht_home": 3,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 868270,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-04-26T18:45:00+00:00",
+      "home_team_id": 48,
+      "away_team_id": 40,
+      "home_team_name": "West Ham",
+      "away_team_name": "Liverpool",
+      "goals_home": 1,
+      "goals_away": 2,
+      "ht_home": 1,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 868263,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-04-22T14:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 65,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Nottingham Forest",
+      "goals_home": 3,
+      "goals_away": 2,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 868249,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-04-17T19:00:00+00:00",
+      "home_team_id": 63,
+      "away_team_id": 40,
+      "home_team_name": "Leeds",
+      "away_team_name": "Liverpool",
+      "goals_home": 1,
+      "goals_away": 6,
+      "ht_home": 0,
+      "ht_away": 2,
+      "status": "FT"
+    },
+    {
+      "id": 868241,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-04-09T15:30:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 42,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Arsenal",
+      "goals_home": 2,
+      "goals_away": 2,
+      "ht_home": 1,
+      "ht_away": 2,
+      "status": "FT"
+    },
+    {
+      "id": 868019,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-04-04T19:00:00+00:00",
+      "home_team_id": 49,
+      "away_team_id": 40,
+      "home_team_name": "Chelsea",
+      "away_team_name": "Liverpool",
+      "goals_home": 0,
+      "goals_away": 0,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 868232,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-04-01T11:30:00+00:00",
+      "home_team_id": 50,
+      "away_team_id": 40,
+      "home_team_name": "Manchester City",
+      "away_team_name": "Liverpool",
+      "goals_home": 4,
+      "goals_away": 1,
+      "ht_home": 1,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 868206,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-03-11T12:30:00+00:00",
+      "home_team_id": 35,
+      "away_team_id": 40,
+      "home_team_name": "Bournemouth",
+      "away_team_name": "Liverpool",
+      "goals_home": 1,
+      "goals_away": 0,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 868201,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-03-05T16:30:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 33,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Manchester United",
+      "goals_home": 7,
+      "goals_away": 0,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 868012,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-03-01T20:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 39,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Wolves",
+      "goals_home": 2,
+      "goals_away": 0,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 868187,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-02-25T19:45:00+00:00",
+      "home_team_id": 52,
+      "away_team_id": 40,
+      "home_team_name": "Crystal Palace",
+      "away_team_name": "Liverpool",
+      "goals_home": 0,
+      "goals_away": 0,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 868182,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-02-18T17:30:00+00:00",
+      "home_team_id": 34,
+      "away_team_id": 40,
+      "home_team_name": "Newcastle",
+      "away_team_name": "Liverpool",
+      "goals_home": 0,
+      "goals_away": 2,
+      "ht_home": 0,
+      "ht_away": 2,
+      "status": "FT"
+    },
+    {
+      "id": 868172,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-02-13T20:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 45,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Everton",
+      "goals_home": 2,
+      "goals_away": 0,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 868165,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-02-04T15:00:00+00:00",
+      "home_team_id": 39,
+      "away_team_id": 40,
+      "home_team_name": "Wolves",
+      "away_team_name": "Liverpool",
+      "goals_home": 3,
+      "goals_away": 0,
+      "ht_home": 2,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 868152,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-01-21T12:30:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 49,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Chelsea",
+      "goals_home": 0,
+      "goals_away": 0,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 868138,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-01-14T15:00:00+00:00",
+      "home_team_id": 51,
+      "away_team_id": 40,
+      "home_team_name": "Brighton",
+      "away_team_name": "Liverpool",
+      "goals_home": 3,
+      "goals_away": 0,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 868128,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2023-01-02T17:30:00+00:00",
+      "home_team_id": 55,
+      "away_team_id": 40,
+      "home_team_name": "Brentford",
+      "away_team_name": "Liverpool",
+      "goals_home": 3,
+      "goals_away": 1,
+      "ht_home": 2,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 868119,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2022-12-30T20:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 46,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Leicester",
+      "goals_home": 2,
+      "goals_away": 1,
+      "ht_home": 2,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 868107,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2022-12-26T17:30:00+00:00",
+      "home_team_id": 66,
+      "away_team_id": 40,
+      "home_team_name": "Aston Villa",
+      "away_team_name": "Liverpool",
+      "goals_home": 1,
+      "goals_away": 3,
+      "ht_home": 0,
+      "ht_away": 2,
+      "status": "FT"
+    },
+    {
+      "id": 868099,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2022-11-12T15:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 41,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Southampton",
+      "goals_home": 3,
+      "goals_away": 1,
+      "ht_home": 3,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 868093,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2022-11-06T16:30:00+00:00",
+      "home_team_id": 47,
+      "away_team_id": 40,
+      "home_team_name": "Tottenham",
+      "away_team_name": "Liverpool",
+      "goals_home": 1,
+      "goals_away": 2,
+      "ht_home": 0,
+      "ht_away": 2,
+      "status": "FT"
+    },
+    {
+      "id": 868083,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2022-10-29T18:45:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 63,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Leeds",
+      "goals_home": 1,
+      "goals_away": 2,
+      "ht_home": 1,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 868071,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2022-10-22T11:30:00+00:00",
+      "home_team_id": 65,
+      "away_team_id": 40,
+      "home_team_name": "Nottingham Forest",
+      "away_team_name": "Liverpool",
+      "goals_home": 1,
+      "goals_away": 0,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 868064,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2022-10-19T18:30:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 48,
+      "home_team_name": "Liverpool",
+      "away_team_name": "West Ham",
+      "goals_home": 1,
+      "goals_away": 0,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 868051,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2022-10-16T15:30:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 50,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Manchester City",
+      "goals_home": 1,
+      "goals_away": 0,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 868037,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2022-10-09T15:30:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 40,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Liverpool",
+      "goals_home": 3,
+      "goals_away": 2,
+      "ht_home": 2,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 868032,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2022-10-01T14:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 51,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Brighton",
+      "goals_home": 3,
+      "goals_away": 3,
+      "ht_home": 1,
+      "ht_away": 2,
+      "status": "FT"
+    },
+    {
+      "id": 868000,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2022-09-03T11:30:00+00:00",
+      "home_team_id": 45,
+      "away_team_id": 40,
+      "home_team_name": "Everton",
+      "away_team_name": "Liverpool",
+      "goals_home": 0,
+      "goals_away": 0,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 867994,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2022-08-31T19:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 34,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Newcastle",
+      "goals_home": 2,
+      "goals_away": 1,
+      "ht_home": 0,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 867981,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2022-08-27T14:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 35,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Bournemouth",
+      "goals_home": 9,
+      "goals_away": 0,
+      "ht_home": 5,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 867972,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2022-08-22T19:00:00+00:00",
+      "home_team_id": 33,
+      "away_team_id": 40,
+      "home_team_name": "Manchester United",
+      "away_team_name": "Liverpool",
+      "goals_home": 2,
+      "goals_away": 1,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 867961,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2022-08-15T19:00:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 52,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Crystal Palace",
+      "goals_home": 1,
+      "goals_away": 1,
+      "ht_home": 0,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 867947,
+      "season": 2022,
+      "team_id": 40,
+      "match_date": "2022-08-06T11:30:00+00:00",
+      "home_team_id": 36,
+      "away_team_id": 40,
+      "home_team_name": "Fulham",
+      "away_team_name": "Liverpool",
+      "goals_home": 2,
+      "goals_away": 2,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
     }
   ]
 }

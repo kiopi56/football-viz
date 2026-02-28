@@ -21,8 +21,8 @@ const SEASON_LABELS = ["2022-23", "2023-24", "2024-25"];
 
 // ── ミニバンプチャート定数 ──────────────────────────────────
 const W   = 480;
-const H   = 200;
-const PAD = { top: 36, right: 30, bottom: 28, left: 36 };
+const H   = 280;
+const PAD = { top: 36, right: 30, bottom: 36, left: 36 };
 const COL_X = [
   PAD.left + (W - PAD.left - PAD.right) * 0 / 2,
   PAD.left + (W - PAD.left - PAD.right) * 1 / 2,
@@ -335,21 +335,21 @@ export default function PlayerDetail() {
                 {/* ランクバブル */}
                 {bumpPoints.map((pt, si) => {
                   if (!pt) return null;
-                  const r = Math.max(14, Math.sqrt(pt.goals / maxGoals) * 24);
+                  const r = Math.max(7, Math.sqrt(pt.goals / maxGoals) * 13);
                   return (
                     <g key={si}>
-                      <circle cx={pt.x} cy={pt.y} r={r + 2}
-                        fill="none" stroke={ACCENT} strokeWidth={1.5} strokeOpacity={0.3} />
+                      <circle cx={pt.x} cy={pt.y} r={r + 1.5}
+                        fill="none" stroke={ACCENT} strokeWidth={1} strokeOpacity={0.3} />
                       <circle cx={pt.x} cy={pt.y} r={r}
                         fill={ACCENT} fillOpacity={0.9} stroke="#080c10" strokeWidth={1.5} />
-                      <text x={pt.x} y={pt.y - 1} textAnchor="middle"
-                        dominantBaseline="middle" fontSize={10} fontWeight={700}
+                      <text x={pt.x} y={pt.y} textAnchor="middle"
+                        dominantBaseline="middle" fontSize={8} fontWeight={700}
                         fill="#080c10" fontFamily="'Space Mono', monospace">
                         #{pt.rank}
                       </text>
                       {/* 得点ラベル（バブル下） */}
-                      <text x={pt.x} y={pt.y + r + 12}
-                        textAnchor="middle" fontSize={9} fill="#555"
+                      <text x={pt.x} y={pt.y + r + 10}
+                        textAnchor="middle" fontSize={8} fill="#555"
                         fontFamily="'Space Mono', monospace">
                         {pt.goals}G
                       </text>
