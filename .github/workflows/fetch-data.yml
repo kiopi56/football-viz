@@ -2,8 +2,8 @@ name: Fetch Football Data
 
 on:
   schedule:
-    # 毎週月曜 08:00 JST（= 23:00 UTC 日曜）
-    - cron: "0 23 * * 0"
+    # 毎日 09:00 JST（= 00:00 UTC）
+    - cron: "0 0 * * *"
   workflow_dispatch:  # 手動実行
 
 permissions:
@@ -26,10 +26,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Fetch data (2024 season)
-        run: node scripts/fetchData.mjs --season=2024
+      - name: Fetch data (2024 & 2025 seasons, all teams)
+        run: |
+          node scripts/fetchData.mjs --season=2024 --team=all
+          node scripts/fetchData.mjs --season=2025 --team=all
         env:
-          FOOTBALL_DATA_API_KEY:     ${{ secrets.FOOTBALL_DATA_API_KEY }}
+          VITE_APISPORTS_KEY:        ${{ secrets.VITE_APISPORTS_KEY }}
           VITE_SUPABASE_URL:         ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_SERVICE_KEY: ${{ secrets.VITE_SUPABASE_SERVICE_KEY }}
 

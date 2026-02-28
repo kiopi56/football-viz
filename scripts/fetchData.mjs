@@ -1,24 +1,21 @@
 /**
  * scripts/fetchData.mjs
  *
- * football-data.org API から Liverpool / Arsenal の試合データ・得点者を取得し
- * public/data/ に JSON として保存する。Supabase の fixtures テーブルにも upsert する。
+ * api-sports.io からプレミアリーグ全チーム・複数シーズンのデータを取得し
+ * public/data/{slug}-{season}.json として保存する。
+ * Supabase の fixtures テーブルにも upsert する。
  *
  * 実行例:
- *   node scripts/fetchData.mjs              # 2024シーズン（デフォルト）
- *   node scripts/fetchData.mjs --season=2022
- *   node scripts/fetchData.mjs --with-stats  # 個別試合詳細も取得（+76 APIコール）
+ *   node scripts/fetchData.mjs                           # season=2024, 全チーム
+ *   node scripts/fetchData.mjs --season=2025 --team=all  # 2025全チーム
+ *   node scripts/fetchData.mjs --seasons=all             # 全11シーズン×全チーム
+ *   node scripts/fetchData.mjs --with-stats              # fixture統計も取得
+ *   node scripts/fetchData.mjs --season=2024 --team=liverpool
  *
  * 環境変数（.env から自動読み込み）:
- *   FOOTBALL_DATA_API_KEY   ← football-data.org API キー
+ *   VITE_APISPORTS_KEY
  *   VITE_SUPABASE_URL
  *   VITE_SUPABASE_SERVICE_KEY
- *
- * 出力ファイル:
- *   public/data/liverpool-{season}.json
- *   public/data/arsenal-{season}.json
- *
- * API レート制限: 10 calls/min（無料プラン）→ 各コール間に 7 秒待機
  */
 
 import { writeFileSync, mkdirSync, readFileSync, existsSync } from "fs";
@@ -40,126 +37,236 @@ try {
 } catch {}
 
 // ── 設定 ─────────────────────────────────────────────────────
-const BASE_URL = "https://api.football-data.org/v4";
-const API_KEY  = process.env.FOOTBALL_DATA_API_KEY;
+const BASE_URL = "https://v3.football.api-sports.io";
+const API_KEY  = process.env.VITE_APISPORTS_KEY;
 
-// football-data.org チームID → アプリ内レガシーID（後方互換）
-const TEAM_ID_MAP = { 64: 40, 57: 42 };
+const ALL_SEASONS = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025];
 
-// 取得対象チーム（football-data.org ID）
-const FD_TEAMS = [
-  { fdId: 64, legacyId: 40, slug: "liverpool" },
-  { fdId: 57, legacyId: 42, slug: "arsenal"   },
-];
+// チーム名 → スラッグ の補正テーブル（api-sports の名称に対応）
+const SLUG_OVERRIDES = {
+  "Manchester United":        "manchester-united",
+  "Manchester City":          "manchester-city",
+  "Nottingham Forest":        "nottingham-forest",
+  "Brighton":                 "brighton",
+  "Brighton & Hove Albion":   "brighton",
+  "West Ham":                 "west-ham",
+  "West Ham United":          "west-ham",
+  "Tottenham":                "tottenham",
+  "Tottenham Hotspur":        "tottenham",
+  "Leicester":                "leicester",
+  "Leicester City":           "leicester",
+  "Leeds":                    "leeds",
+  "Leeds United":             "leeds",
+  "Sheffield Utd":            "sheffield-united",
+  "Sheffield United":         "sheffield-united",
+  "Aston Villa":              "aston-villa",
+  "Crystal Palace":           "crystal-palace",
+  "Wolverhampton Wanderers":  "wolverhampton",
+  "Wolves":                   "wolverhampton",
+  "Ipswich":                  "ipswich",
+  "Luton":                    "luton",
+  "Burnley":                  "burnley",
+  "Huddersfield":             "huddersfield",
+  "Huddersfield Town":        "huddersfield",
+  "Stoke":                    "stoke",
+  "Stoke City":               "stoke",
+  "Sunderland":               "sunderland",
+  "Swansea":                  "swansea",
+  "Swansea City":             "swansea",
+  "Watford":                  "watford",
+  "West Brom":                "west-brom",
+  "West Bromwich Albion":     "west-brom",
+  "Wigan":                    "wigan",
+  "Reading":                  "reading",
+  "Middlesbrough":            "middlesbrough",
+  "Hull":                     "hull",
+  "Hull City":                "hull",
+  "Cardiff":                  "cardiff",
+  "Cardiff City":             "cardiff",
+  "Norwich":                  "norwich",
+  "Norwich City":             "norwich",
+  "Blackburn":                "blackburn",
+  "Blackburn Rovers":         "blackburn",
+  "Queens Park Rangers":      "qpr",
+  "QPR":                      "qpr",
+};
 
-// ── コマンドライン引数 ────────────────────────────────────────
-const seasonArg  = process.argv.find(a => a.startsWith("--season="));
-const SEASON     = seasonArg ? Number(seasonArg.split("=")[1]) : 2024;
-const WITH_STATS = process.argv.includes("--with-stats");
-
-if (isNaN(SEASON) || SEASON < 2018 || SEASON > 2030) {
-  console.error(`Error: Invalid season "${seasonArg?.split("=")[1]}". Example: --season=2022`);
-  process.exit(1);
+function toSlug(name) {
+  if (SLUG_OVERRIDES[name]) return SLUG_OVERRIDES[name];
+  return name
+    .toLowerCase()
+    .replace(/\s+(fc|afc|city|united|town|rovers|athletic|wanderers|hotspur|albion|palace|villa|forest|county)$/i, "")
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
-console.log(`\nTarget season : ${SEASON} (${SEASON}-${String(SEASON + 1).slice(-2)})`);
-console.log(`With stats    : ${WITH_STATS}`);
+// ── CLI 引数パース ────────────────────────────────────────────
+const args = Object.fromEntries(
+  process.argv.slice(2)
+    .filter(a => a.startsWith("--"))
+    .map(a => {
+      const [k, v] = a.slice(2).split("=");
+      return [k, v ?? true];
+    })
+);
 
-// ── Supabase クライアント ─────────────────────────────────────
+const WITH_STATS    = args["with-stats"] === true;
+const TEAM_FILTER   = (args.team ?? "all").toLowerCase();  // "all" or slug
+const SEASONS_RAW   = args.seasons ?? (args.season ? String(args.season) : "2024");
+const TARGET_SEASONS =
+  SEASONS_RAW === "all"
+    ? ALL_SEASONS
+    : SEASONS_RAW.split(",").map(Number).filter(n => !isNaN(n));
+
+console.log(`\nSeasons   : ${TARGET_SEASONS.join(", ")}`);
+console.log(`Team      : ${TEAM_FILTER}`);
+console.log(`With stats: ${WITH_STATS}`);
+
+// ── Supabase ──────────────────────────────────────────────────
 const supabase =
   process.env.VITE_SUPABASE_URL && process.env.VITE_SUPABASE_SERVICE_KEY
     ? createClient(process.env.VITE_SUPABASE_URL, process.env.VITE_SUPABASE_SERVICE_KEY)
     : null;
 
-if (supabase) {
-  console.log("Supabase      : connected ✓");
-} else {
-  console.warn("Supabase      : not configured – DB への保存をスキップします");
-}
+console.log(`Supabase  : ${supabase ? "connected ✓" : "not configured (skip)"}`);
 
 // ── ユーティリティ ─────────────────────────────────────────────
-
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
 async function apiFetch(path) {
   const url = `${BASE_URL}${path}`;
-  const res = await fetch(url, {
-    headers: { "X-Auth-Token": API_KEY },
-  });
-  if (!res.ok) {
-    const body = await res.text().catch(() => "");
-    throw new Error(`HTTP ${res.status} ${res.statusText}: ${path}\n  ${body.slice(0, 200)}`);
+  const res = await fetch(url, { headers: { "x-apisports-key": API_KEY } });
+  if (!res.ok) throw new Error(`HTTP ${res.status}: ${path}`);
+  const json = await res.json();
+  const errors = json.errors;
+  if (errors && !Array.isArray(errors) && Object.keys(errors).length > 0) {
+    throw new Error(`API error: ${Object.values(errors)[0]}`);
   }
-  return res.json();
+  return json;
 }
 
-/** football-data.org のチームIDをアプリ内 ID にマップ（Liverpool/Arsenal のみ変換） */
-function mapTeamId(fdId) {
-  return TEAM_ID_MAP[fdId] ?? fdId;
+// ── フィクスチャ取得 ──────────────────────────────────────────
+
+/** シーズン全 FINISHED 試合を一括取得（1 API call） */
+async function fetchSeasonFixtures(season) {
+  const json = await apiFetch(`/fixtures?league=39&season=${season}&status=FT`);
+  return json.response ?? [];
 }
 
-// ── 既存 JSON の読み込み（フォールバック用）──────────────────────
-
-function readExistingJson(slug, season) {
-  try {
-    const p = join(process.cwd(), "public", "data", `${slug}-${season}.json`);
-    if (!existsSync(p)) return null;
-    return JSON.parse(readFileSync(p, "utf-8"));
-  } catch {
-    return null;
+/** フィクスチャからユニークなチーム一覧を抽出 */
+function extractTeams(fixtures) {
+  const map = new Map();
+  for (const fx of fixtures) {
+    for (const side of ["home", "away"]) {
+      const t = fx.teams[side];
+      if (!map.has(t.id)) {
+        map.set(t.id, { id: t.id, name: t.name, logo: t.logo, slug: toSlug(t.name) });
+      }
+    }
   }
+  return [...map.values()].sort((a, b) => a.name.localeCompare(b.name));
 }
 
-// ── API データ取得 ─────────────────────────────────────────────
+// ── 得点者取得 ─────────────────────────────────────────────────
 
-/** シーズン全試合（FINISHED）を取得 */
-async function fetchAllMatches(season) {
-  console.log(`\n[matches] Fetching PL finished matches for ${season}...`);
-  const json = await apiFetch(`/competitions/PL/matches?season=${season}&status=FINISHED`);
-  const matches = json.matches ?? [];
-  console.log(`[matches] Total: ${matches.length} matches`);
-  return matches;
+async function fetchScorers(teamId, season) {
+  const rows = [];
+  let page = 1;
+  while (page <= 3) {
+    if (page > 1) await wait(500);
+    const res = await apiFetch(`/players?team=${teamId}&season=${season}&league=39&page=${page}`);
+    for (const item of res.response ?? []) {
+      const stats = item.statistics?.[0];
+      rows.push({
+        id:          item.player.id,
+        name:        item.player.name,
+        photo:       item.player.photo,
+        goals:       stats?.goals?.total    ?? 0,
+        assists:     stats?.goals?.assists  ?? 0,
+        appearances: stats?.games?.appearences ?? 0,
+      });
+    }
+    if (!res.paging || res.paging.current >= res.paging.total) break;
+    page++;
+  }
+  return rows
+    .filter(r => r.goals > 0)
+    .sort((a, b) => b.goals - a.goals)
+    .slice(0, 15);
 }
 
-/** PL トップスコアラー（limit=20）を取得 */
-async function fetchTopScorers(season) {
-  await wait(7000);
-  console.log(`[scorers] Fetching top scorers for ${season}...`);
-  const json = await apiFetch(`/competitions/PL/scorers?season=${season}&limit=20`);
-  return json.scorers ?? [];
-}
+// ── 試合スタッツ取得 ───────────────────────────────────────────
 
-/** 個別試合の詳細（--with-stats 時のみ呼び出し） */
-async function fetchMatchDetail(matchId) {
-  try {
-    const json = await apiFetch(`/matches/${matchId}`);
-    return {
-      goals:         json.goals         ?? null,
-      bookings:      json.bookings       ?? null,
-      substitutions: json.substitutions ?? null,
-      referees:      json.referees       ?? null,
+/** fixture statistics レスポンスを {teamId: {shots,...}} マップに変換 */
+function parseStats(response) {
+  const result = {};
+  for (const entry of response) {
+    const teamId = entry.team.id;
+    const statsArr = entry.statistics ?? [];
+    const get = type => {
+      const found = statsArr.find(s => s.type === type);
+      const val = found?.value;
+      if (val === null || val === undefined) return null;
+      if (typeof val === "string" && val.endsWith("%")) return parseInt(val);
+      return val;
     };
+    result[teamId] = {
+      shots_on_goal:     get("Shots on Goal"),
+      shots_off_goal:    get("Shots off Goal"),
+      total_shots:       get("Total Shots"),
+      blocked_shots:     get("Blocked Shots"),
+      corners:           get("Corner Kicks"),
+      possession:        get("Ball Possession"),
+      fouls:             get("Fouls"),
+      yellow_cards:      get("Yellow Cards"),
+      red_cards:         get("Red Cards"),
+      saves:             get("Goalkeeper Saves"),
+      total_passes:      get("Total passes"),
+      pass_accuracy:     get("Passes %"),
+    };
+  }
+  return result;
+}
+
+async function fetchFixtureStats(fixtureId) {
+  try {
+    const json = await apiFetch(`/fixtures/statistics?fixture=${fixtureId}`);
+    return parseStats(json.response ?? []);
   } catch (e) {
-    console.warn(`  [warn] match ${matchId}: ${e.message.split("\n")[0]}`);
-    return null;
+    console.warn(`    [warn] stats ${fixtureId}: ${e.message}`);
+    return {};
   }
 }
 
-// ── スタッツ集計 ───────────────────────────────────────────────
+// ── Supabase upsert ───────────────────────────────────────────
 
-function calcFromMatches(fdId, legacyId, matches) {
+async function upsertFixtures(rows) {
+  if (!supabase || rows.length === 0) return;
+  const { error } = await supabase
+    .from("fixtures")
+    .upsert(rows, { onConflict: "id" });
+  if (error) {
+    console.warn(`  [supabase] upsert error: ${error.message}`);
+  } else {
+    console.log(`  [supabase] upserted: ${rows.length} fixtures`);
+  }
+}
+
+// ── スコア集計 ─────────────────────────────────────────────────
+
+function calcFromFixtures(teamId, fixtures) {
   let scoredTotal = 0, concededTotal = 0;
   const recentForm = [];
 
-  // 日付降順で並べ（直近フォーム算出用）
-  const sorted = [...matches].sort(
-    (a, b) => new Date(b.utcDate) - new Date(a.utcDate)
+  const sorted = [...fixtures].sort(
+    (a, b) => new Date(b.fixture.date) - new Date(a.fixture.date)
   );
 
-  for (const m of sorted) {
-    const isHome   = m.homeTeam.id === fdId;
-    const scored   = isHome ? (m.score.fullTime.home ?? 0) : (m.score.fullTime.away ?? 0);
-    const conceded = isHome ? (m.score.fullTime.away ?? 0) : (m.score.fullTime.home ?? 0);
+  for (const fx of sorted) {
+    const isHome   = fx.teams.home.id === teamId;
+    const scored   = isHome ? (fx.goals.home ?? 0) : (fx.goals.away ?? 0);
+    const conceded = isHome ? (fx.goals.away ?? 0) : (fx.goals.home ?? 0);
     scoredTotal   += scored;
     concededTotal += conceded;
     if (recentForm.length < 5) {
@@ -168,172 +275,193 @@ function calcFromMatches(fdId, legacyId, matches) {
   }
 
   return {
-    teamId: legacyId,
-    season: SEASON,
     byTimeAvailable: false,
     scored:   { total: scoredTotal,   byTime: null },
     conceded: { total: concededTotal, byTime: null },
-    home: {
-      scored:   { total: null, byTime: null },
-      conceded: { total: null, byTime: null },
-    },
-    away: {
-      scored:   { total: null, byTime: null },
-      conceded: { total: null, byTime: null },
-    },
+    home:     { scored: { total: null, byTime: null }, conceded: { total: null, byTime: null } },
+    away:     { scored: { total: null, byTime: null }, conceded: { total: null, byTime: null } },
     recentForm,
   };
 }
 
-// ── Supabase upsert ───────────────────────────────────────────
+// ── JSON 変換 ──────────────────────────────────────────────────
 
-async function upsertFixtures(teamId, fixturesForJson) {
-  if (!supabase) return;
+function toFixtureRow(fx, teamId, season, statsMap) {
+  const homeId = fx.teams.home.id;
+  const awayId = fx.teams.away.id;
+  const homeStats = statsMap?.[homeId] ?? null;
+  const awayStats = statsMap?.[awayId] ?? null;
 
-  const rows = fixturesForJson.map(f => ({
-    id:             f.id,
-    team_id:        f.team_id,
-    season:         f.season,
-    match_date:     f.match_date,
-    home_team_id:   f.home_team_id,
-    away_team_id:   f.away_team_id,
-    home_team_name: f.home_team_name,
-    away_team_name: f.away_team_name,
-    goals_home:     f.goals_home,
-    goals_away:     f.goals_away,
-    ht_home:        f.ht_home,
-    ht_away:        f.ht_away,
-    status:         f.status,
-  }));
-
-  const { error } = await supabase
-    .from("fixtures")
-    .upsert(rows, { onConflict: "id" });
-
-  if (error) {
-    console.warn(`  [supabase] upsert error: ${error.message}`);
-  } else {
-    console.log(`  [supabase] fixtures upserted: ${rows.length} rows`);
-  }
+  return {
+    id:             fx.fixture.id,
+    season,
+    team_id:        teamId,
+    match_date:     fx.fixture.date,
+    home_team_id:   homeId,
+    away_team_id:   awayId,
+    home_team_name: fx.teams.home.name,
+    away_team_name: fx.teams.away.name,
+    goals_home:     fx.goals.home,
+    goals_away:     fx.goals.away,
+    ht_home:        fx.score?.halftime?.home ?? null,
+    ht_away:        fx.score?.halftime?.away ?? null,
+    status:         fx.fixture.status.short,
+    ...(homeStats || awayStats
+      ? { stats_home: homeStats, stats_away: awayStats }
+      : {}),
+  };
 }
 
-// ── チームデータ処理 ───────────────────────────────────────────
-
-async function processTeam(fdId, legacyId, slug, teamMatches, allScorers) {
-  console.log(`\n[${slug}] Processing ${teamMatches.length} matches...`);
-
-  // ── 個別試合スタッツ（--with-stats 時のみ）──
-  const matchStats = {};
-  if (WITH_STATS) {
-    console.log(`[${slug}] Fetching individual match stats (${teamMatches.length} calls)...`);
-    for (const m of teamMatches) {
-      await wait(7000);
-      const detail = await fetchMatchDetail(m.id);
-      if (detail) matchStats[m.id] = detail;
-    }
-    console.log(`[${slug}] Stats fetched: ${Object.keys(matchStats).length} matches`);
-  }
-
-  // ── fixtures を JSON/Supabase 保存用フォーマットに変換 ──
-  const fixturesForJson = teamMatches
-    .sort((a, b) => new Date(b.utcDate) - new Date(a.utcDate))
-    .map(m => ({
-      id:             m.id,
-      season:         SEASON,
-      team_id:        legacyId,
-      match_date:     m.utcDate,
-      home_team_id:   mapTeamId(m.homeTeam.id),
-      away_team_id:   mapTeamId(m.awayTeam.id),
-      home_team_name: m.homeTeam.shortName ?? m.homeTeam.name,
-      away_team_name: m.awayTeam.shortName ?? m.awayTeam.name,
-      goals_home:     m.score.fullTime.home,
-      goals_away:     m.score.fullTime.away,
-      ht_home:        m.score.halfTime?.home  ?? null,
-      ht_away:        m.score.halfTime?.away  ?? null,
-      status:         "FT",
-      ...(WITH_STATS && matchStats[m.id] ? { stats: matchStats[m.id] } : {}),
-    }));
-
-  // ── スコアラーをチームでフィルタ（PL top 20 から） ──
-  const scorersFromApi = allScorers
-    .filter(s => s.team.id === fdId)
-    .map(s => ({
-      id:          s.player.id,
-      name:        s.player.name,
-      photo:       null,   // football-data.org は選手写真を提供しない
-      goals:       s.goals,
-      assists:     s.assists ?? 0,
-      appearances: s.playedMatches ?? null,
-    }));
-
-  // PL top-20 に含まれない場合は既存 JSON のスコアラーデータを流用
-  let scorers = scorersFromApi;
-  if (scorers.length === 0) {
-    const existing = readExistingJson(slug, SEASON);
-    if (existing?.scorers?.length > 0) {
-      scorers = existing.scorers;
-      console.log(`[${slug}] Scorers: 0 in top-20 → fallback to existing JSON (${scorers.length} scorers)`);
-    } else {
-      console.warn(`[${slug}] Scorers: 0 in top-20, no fallback data`);
-    }
-  } else {
-    console.log(`[${slug}] Scorers: ${scorers.length} from top-20`);
-  }
-
-  // ── 集計 ──
-  const coreData = calcFromMatches(fdId, legacyId, teamMatches);
-
-  // ── Supabase upsert ──
-  await upsertFixtures(legacyId, fixturesForJson);
-
-  return { ...coreData, scorers, fixtures: fixturesForJson };
-}
-
-// ── エントリポイント ───────────────────────────────────────────
+// ── メイン ────────────────────────────────────────────────────
 
 async function main() {
   if (!API_KEY) {
-    console.error("Error: FOOTBALL_DATA_API_KEY is not set");
+    console.error("Error: VITE_APISPORTS_KEY is not set");
     process.exit(1);
   }
 
   const outDir = join(process.cwd(), "public", "data");
   mkdirSync(outDir, { recursive: true });
 
-  // ── 1. 全試合データを一括取得（1 API call）──
-  const allMatches = await fetchAllMatches(SEASON);
+  let totalFiles = 0;
+  let totalApiCalls = 0;
 
-  // ── 2. PL トップスコアラーを取得（1 API call）──
-  const allScorers = await fetchTopScorers(SEASON);
-  console.log(`[scorers] Total: ${allScorers.length}`);
+  for (const [si, season] of TARGET_SEASONS.entries()) {
+    if (si > 0) await wait(1000);
 
-  // ── 3. チームごとに処理・保存 ──
-  for (const { fdId, legacyId, slug } of FD_TEAMS) {
-    const teamMatches = allMatches.filter(
-      m => m.homeTeam.id === fdId || m.awayTeam.id === fdId
-    );
-    console.log(`\n[${slug}] Matches found: ${teamMatches.length}`);
+    console.log(`\n${"=".repeat(60)}`);
+    console.log(`SEASON ${season} (${season}-${String(season + 1).slice(-2)})`);
+    console.log("=".repeat(60));
 
-    if (teamMatches.length === 0) {
-      console.warn(`[${slug}] No matches found, skipping`);
+    // ── 1. 全 FINISHED 試合を一括取得 ──
+    console.log(`[fixtures] Fetching all FT matches...`);
+    let allFixtures;
+    try {
+      allFixtures = await fetchSeasonFixtures(season);
+      totalApiCalls++;
+    } catch (e) {
+      console.error(`[fixtures] Failed: ${e.message}`);
+      continue;
+    }
+    console.log(`[fixtures] ${allFixtures.length} matches found`);
+
+    if (allFixtures.length === 0) {
+      console.warn(`[fixtures] No matches – skipping season ${season}`);
       continue;
     }
 
-    const data = await processTeam(fdId, legacyId, slug, teamMatches, allScorers);
+    // ── 2. チーム一覧を抽出 ──
+    const allTeams = extractTeams(allFixtures);
+    const teams = TEAM_FILTER === "all"
+      ? allTeams
+      : allTeams.filter(t => t.slug === TEAM_FILTER || t.name.toLowerCase() === TEAM_FILTER);
 
-    const outPath = join(outDir, `${slug}-${SEASON}.json`);
-    writeFileSync(outPath, JSON.stringify(data, null, 2));
+    if (teams.length === 0) {
+      console.warn(`[teams] No team matched "${TEAM_FILTER}" in season ${season}`);
+      continue;
+    }
+    console.log(`[teams] ${teams.length} teams to process`);
 
-    console.log(`\n✓ Saved: ${outPath}`);
-    console.log(`  scored   : ${data.scored.total}`);
-    console.log(`  conceded : ${data.conceded.total}`);
-    console.log(`  diff     : ${data.scored.total - data.conceded.total >= 0 ? "+" : ""}${data.scored.total - data.conceded.total}`);
-    console.log(`  form     : ${data.recentForm.join(" ")}`);
-    console.log(`  scorers  : ${data.scorers.length}`);
-    console.log(`  fixtures : ${data.fixtures.length}`);
+    // ── 3. fixture statistics 取得（--with-stats のみ） ──
+    const fixtureStatsMap = {}; // fixtureId → {homeId: stats, awayId: stats}
+    if (WITH_STATS) {
+      console.log(`[stats] Fetching statistics for ${allFixtures.length} fixtures...`);
+      for (const [i, fx] of allFixtures.entries()) {
+        await wait(500);
+        fixtureStatsMap[fx.fixture.id] = await fetchFixtureStats(fx.fixture.id);
+        totalApiCalls++;
+        if ((i + 1) % 50 === 0) {
+          console.log(`  ${i + 1}/${allFixtures.length} done`);
+        }
+      }
+    }
+
+    // ── 4. Supabase upsert 用の全試合行（一括） ──
+    const supabaseRows = allFixtures.map(fx => ({
+      id:             fx.fixture.id,
+      season,
+      team_id:        fx.teams.home.id,  // home チーム視点
+      match_date:     fx.fixture.date,
+      home_team_id:   fx.teams.home.id,
+      away_team_id:   fx.teams.away.id,
+      home_team_name: fx.teams.home.name,
+      away_team_name: fx.teams.away.name,
+      goals_home:     fx.goals.home,
+      goals_away:     fx.goals.away,
+      ht_home:        fx.score?.halftime?.home ?? null,
+      ht_away:        fx.score?.halftime?.away ?? null,
+      status:         fx.fixture.status.short,
+    }));
+    await upsertFixtures(supabaseRows);
+
+    // ── 5. チームごとに JSON 生成 ──
+    for (const [ti, team] of teams.entries()) {
+      if (ti > 0) await wait(500);
+
+      const teamFx = allFixtures.filter(
+        fx => fx.teams.home.id === team.id || fx.teams.away.id === team.id
+      );
+
+      if (teamFx.length === 0) {
+        console.warn(`  [${team.slug}] No fixtures found, skipping`);
+        continue;
+      }
+
+      // スコアラー取得
+      let scorers = [];
+      try {
+        await wait(500);
+        scorers = await fetchScorers(team.id, season);
+        totalApiCalls += 2; // 平均2ページ
+      } catch (e) {
+        console.warn(`  [${team.slug}] Scorers failed: ${e.message}`);
+      }
+
+      // JSON 用 fixtures 配列
+      const fixturesForJson = teamFx
+        .sort((a, b) => new Date(b.fixture.date) - new Date(a.fixture.date))
+        .map(fx => toFixtureRow(fx, team.id, season, fixtureStatsMap[fx.fixture.id]));
+
+      // 集計
+      const agg = calcFromFixtures(team.id, teamFx);
+
+      const data = {
+        teamId: team.id,
+        season,
+        ...agg,
+        scorers,
+        fixtures: fixturesForJson,
+      };
+
+      const outPath = join(outDir, `${team.slug}-${season}.json`);
+      writeFileSync(outPath, JSON.stringify(data, null, 2));
+      totalFiles++;
+
+      console.log(
+        `  ✓ ${team.slug}-${season}.json` +
+        `  scored=${agg.scored.total} conceded=${agg.conceded.total}` +
+        `  scorers=${scorers.length} fixtures=${teamFx.length}`
+      );
+    }
+
+    // ── 6. pl-teams-{season}.json 更新（season=2024 のみ） ──
+    if (season === 2024) {
+      const teamsData = allTeams.map(t => ({
+        id:        t.id,
+        name:      t.name,
+        shortName: t.name,
+        slug:      t.slug,
+        logo:      t.logo,
+        hasData:   true,
+      }));
+      const teamsPath = join(outDir, "pl-teams-2024.json");
+      writeFileSync(teamsPath, JSON.stringify(teamsData, null, 2));
+      console.log(`\n✓ Saved pl-teams-2024.json (${teamsData.length} teams)`);
+    }
   }
 
-  console.log("\n✓ All done!");
+  console.log(`\n${"=".repeat(60)}`);
+  console.log(`✓ Done! Files: ${totalFiles}  API calls: ${totalApiCalls}+`);
 }
 
 main().catch(err => {
