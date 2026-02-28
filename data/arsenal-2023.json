@@ -1,7 +1,35 @@
 {
   "teamId": 42,
   "season": 2023,
-  "byTimeAvailable": true,
+  "byTimeAvailable": false,
+  "scored": {
+    "total": 91,
+    "byTime": null
+  },
+  "conceded": {
+    "total": 29,
+    "byTime": null
+  },
+  "home": {
+    "scored": {
+      "total": null,
+      "byTime": null
+    },
+    "conceded": {
+      "total": null,
+      "byTime": null
+    }
+  },
+  "away": {
+    "scored": {
+      "total": null,
+      "byTime": null
+    },
+    "conceded": {
+      "total": null,
+      "byTime": null
+    }
+  },
   "recentForm": [
     "W",
     "W",
@@ -9,100 +37,698 @@
     "W",
     "W"
   ],
-  "scored": {
-    "total": 86,
-    "byTime": {
-      "0-15": 10,
-      "16-30": 11,
-      "31-45": 16,
-      "46-60": 13,
-      "61-75": 16,
-      "76-90": 20
+  "scorers": [
+    {
+      "id": 1460,
+      "name": "B. Saka",
+      "photo": "https://media.api-sports.io/football/players/1460.png",
+      "goals": 16,
+      "assists": 8,
+      "appearances": 35
+    },
+    {
+      "id": 978,
+      "name": "K. Havertz",
+      "photo": "https://media.api-sports.io/football/players/978.png",
+      "goals": 13,
+      "assists": 7,
+      "appearances": 37
+    },
+    {
+      "id": 1946,
+      "name": "L. Trossard",
+      "photo": "https://media.api-sports.io/football/players/1946.png",
+      "goals": 12,
+      "assists": 1,
+      "appearances": 34
+    },
+    {
+      "id": 37127,
+      "name": "M. Ødegaard",
+      "photo": "https://media.api-sports.io/football/players/37127.png",
+      "goals": 8,
+      "assists": 10,
+      "appearances": 35
+    },
+    {
+      "id": 2937,
+      "name": "D. Rice",
+      "photo": "https://media.api-sports.io/football/players/2937.png",
+      "goals": 7,
+      "assists": 8,
+      "appearances": 38
+    },
+    {
+      "id": 127769,
+      "name": "Gabriel Martinelli",
+      "photo": "https://media.api-sports.io/football/players/127769.png",
+      "goals": 6,
+      "assists": 4,
+      "appearances": 35
+    },
+    {
+      "id": 1468,
+      "name": "E. Nketiah",
+      "photo": "https://media.api-sports.io/football/players/1468.png",
+      "goals": 5,
+      "assists": 2,
+      "appearances": 27
+    },
+    {
+      "id": 19959,
+      "name": "B. White",
+      "photo": "https://media.api-sports.io/football/players/19959.png",
+      "goals": 4,
+      "assists": 4,
+      "appearances": 37
+    },
+    {
+      "id": 22224,
+      "name": "Gabriel Magalhães",
+      "photo": "https://media.api-sports.io/football/players/22224.png",
+      "goals": 4,
+      "assists": 0,
+      "appearances": 36
+    },
+    {
+      "id": 643,
+      "name": "Gabriel Jesus",
+      "photo": "https://media.api-sports.io/football/players/643.png",
+      "goals": 4,
+      "assists": 5,
+      "appearances": 27
+    },
+    {
+      "id": 22090,
+      "name": "W. Saliba",
+      "photo": "https://media.api-sports.io/football/players/22090.png",
+      "goals": 2,
+      "assists": 1,
+      "appearances": 38
+    },
+    {
+      "id": 2597,
+      "name": "T. Tomiyasu",
+      "photo": "https://media.api-sports.io/football/players/2597.png",
+      "goals": 2,
+      "assists": 1,
+      "appearances": 23
+    },
+    {
+      "id": 61431,
+      "name": "J. Kiwior",
+      "photo": "https://media.api-sports.io/football/players/61431.png",
+      "goals": 1,
+      "assists": 3,
+      "appearances": 38
+    },
+    {
+      "id": 641,
+      "name": "O. Zinchenko",
+      "photo": "https://media.api-sports.io/football/players/641.png",
+      "goals": 1,
+      "assists": 2,
+      "appearances": 32
+    },
+    {
+      "id": 41725,
+      "name": "Fábio Vieira",
+      "photo": "https://media.api-sports.io/football/players/41725.png",
+      "goals": 1,
+      "assists": 2,
+      "appearances": 11
     }
-  },
-  "conceded": {
-    "total": 28,
-    "byTime": {
-      "0-15": 4,
-      "16-30": 4,
-      "31-45": 3,
-      "46-60": 7,
-      "61-75": 2,
-      "76-90": 8
-    }
-  },
-  "home": {
-    "scored": {
-      "total": 45,
-      "byTime": {
-        "0-15": 5,
-        "16-30": 6,
-        "31-45": 5,
-        "46-60": 8,
-        "61-75": 9,
-        "76-90": 12
-      }
-    },
-    "conceded": {
-      "total": 15,
-      "byTime": {
-        "0-15": 2,
-        "16-30": 1,
-        "31-45": 3,
-        "46-60": 3,
-        "61-75": 0,
-        "76-90": 6
-      }
-    }
-  },
-  "away": {
-    "scored": {
-      "total": 41,
-      "byTime": {
-        "0-15": 5,
-        "16-30": 5,
-        "31-45": 11,
-        "46-60": 5,
-        "61-75": 7,
-        "76-90": 8
-      }
-    },
-    "conceded": {
-      "total": 13,
-      "byTime": {
-        "0-15": 2,
-        "16-30": 3,
-        "31-45": 0,
-        "46-60": 4,
-        "61-75": 2,
-        "76-90": 2
-      }
-    }
-  },
-  "byPeriod": [
+  ],
+  "fixtures": [
     {
-      "time": "0-15",
-      "goals": 4
+      "id": 1035544,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2024-05-19T15:00:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 45,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Everton",
+      "goals_home": 2,
+      "goals_away": 1,
+      "ht_home": 1,
+      "ht_away": 1,
+      "status": "FT"
     },
     {
-      "time": "16-30",
-      "goals": 4
+      "id": 1035538,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2024-05-12T15:30:00+00:00",
+      "home_team_id": 33,
+      "away_team_id": 42,
+      "home_team_name": "Manchester United",
+      "away_team_name": "Arsenal",
+      "goals_home": 0,
+      "goals_away": 1,
+      "ht_home": 0,
+      "ht_away": 1,
+      "status": "FT"
     },
     {
-      "time": "31-45",
-      "goals": 3
+      "id": 1035524,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2024-05-04T11:30:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 35,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Bournemouth",
+      "goals_home": 3,
+      "goals_away": 0,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
     },
     {
-      "time": "46-60",
-      "goals": 7
+      "id": 1035521,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2024-04-28T13:00:00+00:00",
+      "home_team_id": 47,
+      "away_team_id": 42,
+      "home_team_name": "Tottenham",
+      "away_team_name": "Arsenal",
+      "goals_home": 2,
+      "goals_away": 3,
+      "ht_home": 0,
+      "ht_away": 3,
+      "status": "FT"
     },
     {
-      "time": "61-75",
-      "goals": 2
+      "id": 1035454,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2024-04-23T19:00:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 49,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Chelsea",
+      "goals_home": 5,
+      "goals_away": 0,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
     },
     {
-      "time": "76-90",
-      "goals": 8
+      "id": 1035513,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2024-04-20T18:30:00+00:00",
+      "home_team_id": 39,
+      "away_team_id": 42,
+      "home_team_name": "Wolves",
+      "away_team_name": "Arsenal",
+      "goals_home": 0,
+      "goals_away": 2,
+      "ht_home": 0,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1035495,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2024-04-14T15:30:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 66,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Aston Villa",
+      "goals_home": 0,
+      "goals_away": 2,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1035485,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2024-04-06T16:30:00+00:00",
+      "home_team_id": 51,
+      "away_team_id": 42,
+      "home_team_name": "Brighton",
+      "away_team_name": "Arsenal",
+      "goals_home": 0,
+      "goals_away": 3,
+      "ht_home": 0,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1035475,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2024-04-03T18:30:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 1359,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Luton",
+      "goals_home": 2,
+      "goals_away": 0,
+      "ht_home": 2,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1035469,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2024-03-31T15:30:00+00:00",
+      "home_team_id": 50,
+      "away_team_id": 42,
+      "home_team_name": "Manchester City",
+      "away_team_name": "Arsenal",
+      "goals_home": 0,
+      "goals_away": 0,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1035445,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2024-03-09T17:30:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 55,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Brentford",
+      "goals_home": 2,
+      "goals_away": 1,
+      "ht_home": 1,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1035442,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2024-03-04T20:00:00+00:00",
+      "home_team_id": 62,
+      "away_team_id": 42,
+      "home_team_name": "Sheffield Utd",
+      "away_team_name": "Arsenal",
+      "goals_home": 0,
+      "goals_away": 6,
+      "ht_home": 0,
+      "ht_away": 5,
+      "status": "FT"
+    },
+    {
+      "id": 1035425,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2024-02-24T20:00:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 34,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Newcastle",
+      "goals_home": 4,
+      "goals_away": 1,
+      "ht_home": 2,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1035415,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2024-02-17T15:00:00+00:00",
+      "home_team_id": 44,
+      "away_team_id": 42,
+      "home_team_name": "Burnley",
+      "away_team_name": "Arsenal",
+      "goals_home": 0,
+      "goals_away": 5,
+      "ht_home": 0,
+      "ht_away": 2,
+      "status": "FT"
+    },
+    {
+      "id": 1035412,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2024-02-11T14:00:00+00:00",
+      "home_team_id": 48,
+      "away_team_id": 42,
+      "home_team_name": "West Ham",
+      "away_team_name": "Arsenal",
+      "goals_home": 0,
+      "goals_away": 6,
+      "ht_home": 0,
+      "ht_away": 4,
+      "status": "FT"
+    },
+    {
+      "id": 1035395,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2024-02-04T16:30:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 40,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Liverpool",
+      "goals_home": 3,
+      "goals_away": 1,
+      "ht_home": 1,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1035387,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2024-01-30T19:30:00+00:00",
+      "home_team_id": 65,
+      "away_team_id": 42,
+      "home_team_name": "Nottingham Forest",
+      "away_team_name": "Arsenal",
+      "goals_home": 1,
+      "goals_away": 2,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1035375,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2024-01-20T12:30:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 52,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Crystal Palace",
+      "goals_home": 5,
+      "goals_away": 0,
+      "ht_home": 2,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1035366,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2023-12-31T14:00:00+00:00",
+      "home_team_id": 36,
+      "away_team_id": 42,
+      "home_team_name": "Fulham",
+      "away_team_name": "Arsenal",
+      "goals_home": 2,
+      "goals_away": 1,
+      "ht_home": 1,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1035355,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2023-12-28T20:15:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 48,
+      "home_team_name": "Arsenal",
+      "away_team_name": "West Ham",
+      "goals_home": 0,
+      "goals_away": 2,
+      "ht_home": 0,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1035347,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2023-12-23T17:30:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 42,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Arsenal",
+      "goals_home": 1,
+      "goals_away": 1,
+      "ht_home": 1,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1035335,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2023-12-17T14:00:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 51,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Brighton",
+      "goals_home": 2,
+      "goals_away": 0,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1035324,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2023-12-09T17:30:00+00:00",
+      "home_team_id": 66,
+      "away_team_id": 42,
+      "home_team_name": "Aston Villa",
+      "away_team_name": "Arsenal",
+      "goals_home": 1,
+      "goals_away": 0,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1035318,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2023-12-05T20:15:00+00:00",
+      "home_team_id": 1359,
+      "away_team_id": 42,
+      "home_team_name": "Luton",
+      "away_team_name": "Arsenal",
+      "goals_home": 3,
+      "goals_away": 4,
+      "ht_home": 1,
+      "ht_away": 2,
+      "status": "FT"
+    },
+    {
+      "id": 1035305,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2023-12-02T15:00:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 39,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Wolves",
+      "goals_home": 2,
+      "goals_away": 1,
+      "ht_home": 2,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1035294,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2023-11-25T17:30:00+00:00",
+      "home_team_id": 55,
+      "away_team_id": 42,
+      "home_team_name": "Brentford",
+      "away_team_name": "Arsenal",
+      "goals_home": 0,
+      "goals_away": 1,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1035148,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2023-11-11T15:00:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 44,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Burnley",
+      "goals_home": 3,
+      "goals_away": 1,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1035143,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2023-11-04T17:30:00+00:00",
+      "home_team_id": 34,
+      "away_team_id": 42,
+      "home_team_name": "Newcastle",
+      "away_team_name": "Arsenal",
+      "goals_home": 1,
+      "goals_away": 0,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1035128,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2023-10-28T14:00:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 62,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Sheffield Utd",
+      "goals_home": 5,
+      "goals_away": 0,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1035120,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2023-10-21T16:30:00+00:00",
+      "home_team_id": 49,
+      "away_team_id": 42,
+      "home_team_name": "Chelsea",
+      "away_team_name": "Arsenal",
+      "goals_home": 2,
+      "goals_away": 2,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1035107,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2023-10-08T15:30:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 50,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Manchester City",
+      "goals_home": 1,
+      "goals_away": 0,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1035097,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2023-09-30T14:00:00+00:00",
+      "home_team_id": 35,
+      "away_team_id": 42,
+      "home_team_name": "Bournemouth",
+      "away_team_name": "Arsenal",
+      "goals_home": 0,
+      "goals_away": 4,
+      "ht_home": 0,
+      "ht_away": 2,
+      "status": "FT"
+    },
+    {
+      "id": 1035087,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2023-09-24T13:00:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 47,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Tottenham",
+      "goals_home": 2,
+      "goals_away": 2,
+      "ht_home": 1,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1035079,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2023-09-17T15:30:00+00:00",
+      "home_team_id": 45,
+      "away_team_id": 42,
+      "home_team_name": "Everton",
+      "away_team_name": "Arsenal",
+      "goals_home": 0,
+      "goals_away": 1,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1035067,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2023-09-03T15:30:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 33,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Manchester United",
+      "goals_home": 3,
+      "goals_away": 1,
+      "ht_home": 1,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1035058,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2023-08-26T14:00:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 36,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Fulham",
+      "goals_home": 2,
+      "goals_away": 2,
+      "ht_home": 0,
+      "ht_away": 1,
+      "status": "FT"
+    },
+    {
+      "id": 1035048,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2023-08-21T19:00:00+00:00",
+      "home_team_id": 52,
+      "away_team_id": 42,
+      "home_team_name": "Crystal Palace",
+      "away_team_name": "Arsenal",
+      "goals_home": 0,
+      "goals_away": 1,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT"
+    },
+    {
+      "id": 1035038,
+      "season": 2023,
+      "team_id": 42,
+      "match_date": "2023-08-12T11:30:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 65,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Nottingham Forest",
+      "goals_home": 2,
+      "goals_away": 1,
+      "ht_home": 2,
+      "ht_away": 0,
+      "status": "FT"
     }
   ]
 }
