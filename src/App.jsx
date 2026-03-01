@@ -4,6 +4,7 @@ import TeamDetail  from "./pages/TeamDetail";
 import Compare     from "./pages/Compare";
 import MatchDetail  from "./pages/MatchDetail";
 import PlayerDetail from "./pages/PlayerDetail";
+import MyRecords    from "./pages/MyRecords";
 import { useAuth } from "./contexts/AuthContext";
 
 const NAV_BG = "#080c10";
@@ -20,6 +21,23 @@ const linkBase = {
   fontFamily:     "'Barlow', sans-serif",
   fontWeight:     600,
 };
+
+function MyRecordsLink() {
+  const { user } = useAuth();
+  if (!user) return null;
+  return (
+    <NavLink
+      to="/my-records"
+      style={({ isActive }) => ({
+        ...linkBase,
+        color:             isActive ? "#fff" : "#3a5060",
+        borderBottomColor: isActive ? "#00ff85" : "transparent",
+      })}
+    >
+      MY RECORDS
+    </NavLink>
+  );
+}
 
 function AuthButton() {
   const { user, loading, signIn, signOut, displayName, avatarUrl } = useAuth();
@@ -144,6 +162,8 @@ function NavBar() {
       >
         COMPARE
       </NavLink>
+      {/* ログイン済みのみ表示 */}
+      <MyRecordsLink />
 
       {/* 認証ボタン */}
       <AuthButton />
@@ -161,6 +181,7 @@ export default function App() {
         <Route path="/match/:fixtureId"  element={<MatchDetail />} />
         <Route path="/player/:playerId"  element={<PlayerDetail />} />
         <Route path="/compare"           element={<Compare />} />
+        <Route path="/my-records"        element={<MyRecords />} />
         {/* 後方互換：旧URLをslugベースにリダイレクト */}
         <Route path="/liverpool"         element={<Navigate to="/team/liverpool" replace />} />
         <Route path="/arsenal"           element={<Navigate to="/team/arsenal"   replace />} />

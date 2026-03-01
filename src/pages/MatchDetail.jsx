@@ -19,6 +19,8 @@ import {
   fetchFixtureWithFallback, fetchGoalEvents, resolveTeamId, fetchPressComments,
 } from "../lib/supabase";
 import { useTeamData } from "../hooks/useTeamData";
+import { useAuth } from "../contexts/AuthContext";
+import { getRecord, saveRecord } from "../lib/matchRecords";
 
 // ── 定数 ─────────────────────────────────────────────────────
 const TEAM_INFO = {
@@ -94,6 +96,170 @@ function StatBar({ label, homeVal, awayVal, homeColor, awayColor, unit = "" }) {
   );
 }
 
+// ── 観戦記録パネル ────────────────────────────────────────────
+function StarRating({ value, onChange }) {
+  const [hover, setHover] = useState(0);
+  return (
+    <div style={{ display: "flex", gap: 4 }}>
+      {[1, 2, 3, 4, 5].map(n => (
+        <span
+          key={n}
+          onClick={() => onChange(n === value ? 0 : n)}
+          onMouseEnter={() => setHover(n)}
+          onMouseLeave={() => setHover(0)}
+          style={{
+            fontSize: 22, cursor: "pointer", lineHeight: 1,
+            color: n <= (hover || value) ? "#f0b429" : "#2a3a4a",
+            transition: "color 0.1s",
+          }}
+        >★</span>
+      ))}
+    </div>
+  );
+}
+
+function WatchRecordPanel({ user, fixtureId, teamColor }) {
+  const [watched,  setWatched]  = useState(false);
+  const [rating,   setRating]   = useState(0);
+  const [mom,      setMom]      = useState("");
+  const [memo,     setMemo]     = useState("");
+  const [saving,   setSaving]   = useState(false);
+  const [saved,    setSaved]    = useState(false);
+  const [loadErr,  setLoadErr]  = useState(null);
+  const [saveErr,  setSaveErr]  = useState(null);
+
+  useEffect(() => {
+    if (!user || !fixtureId) return;
+    getRecord(user.id, fixtureId)
+      .then(rec => {
+        if (rec) {
+          setWatched(rec.watched ?? false);
+          setRating(rec.rating ?? 0);
+          setMom(rec.mom ?? "");
+          setMemo(rec.memo ?? "");
+        }
+      })
+      .catch(e => setLoadErr(e.message));
+  }, [user, fixtureId]);
+
+  async function handleSave() {
+    setSaving(true); setSaveErr(null); setSaved(false);
+    try {
+      await saveRecord(user.id, fixtureId, { watched, rating, memo, mom });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (e) {
+      setSaveErr(e.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  const AC = "#00ff85";
+
+  return (
+    <div style={{
+      background: "#0e1318",
+      border: `1px solid ${watched ? AC + "40" : "rgba(255,255,255,0.08)"}`,
+      borderTop: `2px solid ${watched ? AC : "rgba(255,255,255,0.1)"}`,
+      borderRadius: 10,
+      padding: "14px 16px",
+    }}>
+      <div style={{ fontSize: 9, color: "#555", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 12 }}>
+        観戦記録
+      </div>
+
+      {loadErr && (
+        <div style={{ fontSize: 9, color: "#ef4444", marginBottom: 8 }}>{loadErr}</div>
+      )}
+
+      {/* 観戦トグル */}
+      <button
+        onClick={() => setWatched(v => !v)}
+        style={{
+          width: "100%", padding: "8px", borderRadius: 6, marginBottom: 12,
+          cursor: "pointer", fontSize: 11, fontWeight: 700, fontFamily: "'Space Mono', monospace",
+          border: `1px solid ${watched ? AC : "#2a3a4a"}`,
+          background: watched ? `${AC}18` : "transparent",
+          color: watched ? AC : "#555",
+          transition: "all 0.2s",
+        }}
+      >
+        {watched ? "✔ 見た！" : "見た！"}
+      </button>
+
+      {/* 評価 */}
+      <div style={{ marginBottom: 12 }}>
+        <div style={{ fontSize: 9, color: "#444", marginBottom: 6 }}>評価</div>
+        <StarRating value={rating} onChange={setRating} />
+      </div>
+
+      {/* MOM */}
+      <div style={{ marginBottom: 12 }}>
+        <div style={{ fontSize: 9, color: "#444", marginBottom: 6 }}>MOM</div>
+        <input
+          value={mom}
+          onChange={e => setMom(e.target.value)}
+          placeholder="選手名を入力..."
+          maxLength={50}
+          style={{
+            width: "100%", boxSizing: "border-box",
+            background: "#0a0f14", border: "1px solid #1e2d3a",
+            borderRadius: 5, padding: "6px 8px",
+            color: "#ccc", fontSize: 10,
+            fontFamily: "'Space Mono', monospace",
+            outline: "none",
+          }}
+          onFocus={e => e.target.style.borderColor = AC}
+          onBlur={e => e.target.style.borderColor = "#1e2d3a"}
+        />
+      </div>
+
+      {/* メモ */}
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ fontSize: 9, color: "#444", marginBottom: 6 }}>メモ</div>
+        <textarea
+          value={memo}
+          onChange={e => setMemo(e.target.value)}
+          placeholder="感想を入力..."
+          maxLength={500}
+          rows={3}
+          style={{
+            width: "100%", boxSizing: "border-box",
+            background: "#0a0f14", border: "1px solid #1e2d3a",
+            borderRadius: 5, padding: "6px 8px",
+            color: "#ccc", fontSize: 10,
+            fontFamily: "'Space Mono', monospace",
+            resize: "vertical", outline: "none",
+          }}
+          onFocus={e => e.target.style.borderColor = AC}
+          onBlur={e => e.target.style.borderColor = "#1e2d3a"}
+        />
+      </div>
+
+      {saveErr && (
+        <div style={{ fontSize: 9, color: "#ef4444", marginBottom: 8 }}>{saveErr}</div>
+      )}
+
+      <button
+        onClick={handleSave}
+        disabled={saving}
+        style={{
+          width: "100%", padding: "8px", borderRadius: 6,
+          cursor: saving ? "wait" : "pointer",
+          fontSize: 10, fontWeight: 700, fontFamily: "'Space Mono', monospace",
+          border: `1px solid ${saved ? AC : "#2a3a4a"}`,
+          background: saved ? `${AC}22` : saving ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.04)",
+          color: saved ? AC : saving ? "#555" : "#888",
+          transition: "all 0.2s",
+        }}
+      >
+        {saved ? "✔ 保存しました" : saving ? "保存中..." : "保存する"}
+      </button>
+    </div>
+  );
+}
+
 function Skeleton({ w = "100%", h = 16, radius = 4, mb = 8 }) {
   return (
     <div style={{
@@ -121,6 +287,7 @@ function FormBadge({ result }) {
 export default function MatchDetail() {
   const { fixtureId } = useParams();
   const id = Number(fixtureId);
+  const { user } = useAuth();
 
   const [fixture,   setFixture]   = useState(null);
   const [goals,     setGoals]     = useState([]);
@@ -531,6 +698,11 @@ ${historyStr}
 
           {/* ── 右サイドバー ── */}
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+
+            {/* 観戦記録 (ログイン済みのみ) */}
+            {user && (
+              <WatchRecordPanel user={user} fixtureId={id} teamColor={TEAM_COLOR} />
+            )}
 
             {/* 直近5試合フォーム */}
             <div style={{ background: "#0e1318", border: "1px solid rgba(255,255,255,0.08)",
