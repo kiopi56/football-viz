@@ -38,8 +38,10 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          VITE_SUPABASE_URL:      ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          # Supabase anon key and URL are public-facing credentials (protected by RLS)
+          VITE_SUPABASE_URL:      "https://ajebyprcmqelkialuuqf.supabase.co"
+          VITE_SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFqZWJ5cHJjbXFlbGtpYWx1dXFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE5MzQwMzIsImV4cCI6MjA4NzUxMDAzMn0.sbAhJmamM8QIc-asjXBoR97mfx_5FAGGHrzU5hWUZ7w"
+          VITE_GOOGLE_CLIENT_ID:  "77369284206-4gemh02btkub0j0cn62g5e99lmokpp2l.apps.googleusercontent.com"
           VITE_GEMINI_API_KEY:    ${{ secrets.VITE_GEMINI_API_KEY }}
 
       - name: Deploy to gh-pages
