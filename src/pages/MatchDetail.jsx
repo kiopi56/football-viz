@@ -72,6 +72,28 @@ async function generateNarrative(prompt) {
 
 // ── サブコンポーネント ────────────────────────────────────────
 
+/** 試合スタッツの左右分割バー行 */
+function StatBar({ label, homeVal, awayVal, homeColor, awayColor, unit = "" }) {
+  if (homeVal == null && awayVal == null) return null;
+  const h = homeVal ?? 0;
+  const a = awayVal ?? 0;
+  const total = h + a || 1;
+  const homePct = (h / total) * 100;
+  return (
+    <div style={{ marginBottom: 12 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
+        <span style={{ fontSize: 14, fontWeight: 700, color: homeColor, minWidth: 40 }}>{h}{unit}</span>
+        <span style={{ fontSize: 9, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em", textAlign: "center", flex: 1 }}>{label}</span>
+        <span style={{ fontSize: 14, fontWeight: 700, color: awayColor, minWidth: 40, textAlign: "right" }}>{a}{unit}</span>
+      </div>
+      <div style={{ height: 5, borderRadius: 3, background: "#1a2230", display: "flex", overflow: "hidden" }}>
+        <div style={{ width: `${homePct}%`, background: homeColor, transition: "width 0.5s" }} />
+        <div style={{ flex: 1, background: awayColor }} />
+      </div>
+    </div>
+  );
+}
+
 function Skeleton({ w = "100%", h = 16, radius = 4, mb = 8 }) {
   return (
     <div style={{
@@ -410,6 +432,33 @@ ${historyStr}
                 </div>
               )}
             </div>
+
+            {/* ── 試合スタッツ ── */}
+            {(fixture.stats_home != null || fixture.stats_away != null) && (() => {
+              const sH = fixture.stats_home;
+              const sA = fixture.stats_away;
+              const homeColor = fixture.home_team_id === teamId ? TEAM_COLOR : "#5a7a99";
+              const awayColor = fixture.away_team_id === teamId ? TEAM_COLOR : "#5a7a99";
+              return (
+                <div style={{ background: "#0e1318", border: "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: 12, padding: "20px 22px", marginBottom: 16 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+                    <div style={{ fontSize: 10, color: "#555", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                      試合スタッツ
+                    </div>
+                    <div style={{ display: "flex", gap: 16, fontSize: 9, color: "#444" }}>
+                      <span style={{ color: homeColor }}>■ {fixture.home_team_name}</span>
+                      <span style={{ color: awayColor }}>■ {fixture.away_team_name}</span>
+                    </div>
+                  </div>
+                  <StatBar label="ポゼッション" homeVal={sH?.possession} awayVal={sA?.possession} homeColor={homeColor} awayColor={awayColor} unit="%" />
+                  <StatBar label="シュート"     homeVal={sH?.total_shots}    awayVal={sA?.total_shots}    homeColor={homeColor} awayColor={awayColor} />
+                  <StatBar label="枠内シュート" homeVal={sH?.shots_on_goal}  awayVal={sA?.shots_on_goal}  homeColor={homeColor} awayColor={awayColor} />
+                  <StatBar label="コーナー"     homeVal={sH?.corners}        awayVal={sA?.corners}        homeColor={homeColor} awayColor={awayColor} />
+                  <StatBar label="ファウル"     homeVal={sH?.fouls}          awayVal={sA?.fouls}          homeColor={homeColor} awayColor={awayColor} />
+                </div>
+              );
+            })()}
 
             {/* ── 時間帯別カード（今季） ── */}
             <div style={{ marginBottom: 16 }}>

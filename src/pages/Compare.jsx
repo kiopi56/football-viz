@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { CURRENT_TEAMS } from "../data/teams";
 
 // ── カラー定数 ────────────────────────────────────────────────
 const C = {
@@ -15,10 +16,22 @@ const C = {
   blue:    "#6cabdd",
 };
 
-const TEAMS = [
-  { id: 42, name: "Arsenal",   slug: "arsenal",   color: C.red,  short: "ARS", emoji: "🔴", bgAlpha: "rgba(200,16,46,0.15)" },
-  { id: 40, name: "Liverpool", slug: "liverpool",  color: C.blue, short: "LIV", emoji: "🔵", bgAlpha: "rgba(108,171,221,0.15)" },
-];
+function hexToRgba(hex, alpha = 0.15) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+const TEAMS = CURRENT_TEAMS.map(t => ({
+  id:      t.id,
+  name:    t.name,
+  slug:    t.slug,
+  color:   t.color,
+  short:   t.shortName,
+  emoji:   t.emoji,
+  bgAlpha: hexToRgba(t.color),
+}));
 
 const SEASONS = [
   { key: 2022, label: "2022-23" },
@@ -102,6 +115,33 @@ function calcStats(json) {
   };
 }
 
+// ── 試合スタッツ平均 ───────────────────────────────────────────
+
+function calcAvgStats(json) {
+  if (!json) return null;
+  const teamId   = json.teamId;
+  const fixtures = json.fixtures ?? [];
+  const withStats = fixtures.filter(f => f.stats_home != null && f.stats_away != null);
+  if (!withStats.length) return null;
+  let totPoss = 0, totShots = 0, totCorners = 0, n = 0;
+  for (const f of withStats) {
+    const isHome = f.home_team_id === teamId;
+    const stats  = isHome ? f.stats_home : f.stats_away;
+    if (!stats) continue;
+    totPoss    += stats.possession  ?? 0;
+    totShots   += stats.total_shots ?? 0;
+    totCorners += stats.corners     ?? 0;
+    n++;
+  }
+  if (!n) return null;
+  return {
+    possession: Math.round(totPoss / n),
+    shots:      +(totShots / n).toFixed(1),
+    corners:    +(totCorners / n).toFixed(1),
+    sampleSize: n,
+  };
+}
+
 // ── Gemini API ────────────────────────────────────────────────
 
 async function callGemini(prompt) {
@@ -163,6 +203,7 @@ function TeamDropdown({ teamId, onChange, label, seasonLabel }) {
           <div style={{
             position: "absolute", top: "100%", left: -1, right: -1, zIndex: 50,
             background: C.surface, border: `1px solid ${C.border}`, borderTop: "none",
+            maxHeight: 320, overflowY: "auto",
           }}>
             {TEAMS.map(t => (
               <div
@@ -170,14 +211,20 @@ function TeamDropdown({ teamId, onChange, label, seasonLabel }) {
                 onMouseDown={e => { e.stopPropagation(); onChange(t.id); setOpen(false); }}
                 style={{
                   display: "flex", alignItems: "center", gap: "0.75rem",
-                  padding: "0.65rem 1rem", cursor: "pointer",
+                  padding: "0.55rem 1rem", cursor: "pointer",
                   background: t.id === teamId ? C.surface2 : "transparent",
                   borderBottom: `1px solid ${C.border}`,
                   transition: "background 0.15s",
                 }}
+                onMouseEnter={e => { if (t.id !== teamId) e.currentTarget.style.background = C.surface2; }}
+                onMouseLeave={e => { if (t.id !== teamId) e.currentTarget.style.background = "transparent"; }}
               >
-                <span>{t.emoji}</span>
-                <span style={{ fontFamily: "'Bebas Neue'", fontSize: "1.2rem", letterSpacing: "2px", color: t.color }}>
+                <img
+                  src={`https://media.api-sports.io/football/teams/${t.id}.png`}
+                  alt={t.name} width={20} height={20}
+                  style={{ objectFit: "contain", flexShrink: 0 }}
+                />
+                <span style={{ fontFamily: "'Bebas Neue'", fontSize: "1.1rem", letterSpacing: "2px", color: t.color }}>
                   {t.name}
                 </span>
               </div>
@@ -602,8 +649,56 @@ ${teamB.name}: 総得点${statsB.scored}（前半${statsB.htScored}/後半${stat
           </div>
         )}
 
+        {/* ── 平均スタッツ比較 ── */}
+        {!loading && statsA && statsB && (() => {
+          const avgA = calcAvgStats(rawA);
+          const avgB = calcAvgStats(rawB);
+          if (!avgA && !avgB) return null;
+          const rows = [
+            { label: "平均ポゼッション", valA: avgA?.possession != null ? `${avgA.possession}%` : "–", valB: avgB?.possession != null ? `${avgB.possession}%` : "–", rawA: avgA?.possession ?? 0, rawB: avgB?.possession ?? 0 },
+            { label: "平均シュート",     valA: avgA?.shots    ?? "–",  valB: avgB?.shots    ?? "–",  rawA: avgA?.shots    ?? 0, rawB: avgB?.shots    ?? 0 },
+            { label: "平均コーナー",     valA: avgA?.corners  ?? "–",  valB: avgB?.corners  ?? "–",  rawA: avgA?.corners  ?? 0, rawB: avgB?.corners  ?? 0 },
+          ];
+          const sampleNote = [avgA, avgB].filter(Boolean).map(a => `${a.sampleSize}試合`).join(" / ");
+          return (
+            <div style={{ background: C.border, marginBottom: "2rem" }}>
+              <div style={{
+                background: C.surface, padding: "0.75rem 1.25rem",
+                borderBottom: `1px solid ${C.border}`,
+                fontSize: "0.65rem", letterSpacing: "2px", color: C.muted,
+                textTransform: "uppercase",
+                display: "flex", justifyContent: "space-between", alignItems: "center",
+              }}>
+                <span>平均スタッツ比較</span>
+                <span style={{ color: C.muted2 }}>({sampleNote}・スタッツ取得試合)</span>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "1px", background: C.border }}>
+                {rows.map(({ label, valA, valB, rawA: rA, rawB: rB }) => {
+                  const total = rA + rB || 1;
+                  const pctA = (rA / total) * 100;
+                  return (
+                    <div key={label} style={{ background: C.surface, padding: "1rem 1.25rem" }}>
+                      <div style={{ fontSize: "0.65rem", color: C.muted, letterSpacing: "1px", textAlign: "center", marginBottom: "0.75rem" }}>
+                        {label}
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "0.5rem" }}>
+                        <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", lineHeight: 1, color: teamA.color }}>{valA}</span>
+                        <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "1.8rem", lineHeight: 1, color: teamB.color }}>{valB}</span>
+                      </div>
+                      <div style={{ height: 4, background: C.surface2, display: "flex", overflow: "hidden" }}>
+                        <div style={{ width: `${pctA}%`, background: teamA.color, transition: "width 0.4s" }} />
+                        <div style={{ flex: 1, background: teamB.color }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })()}
+
         <div style={{ fontSize: "0.7rem", color: C.muted2, marginTop: "1rem" }}>
-          ※ データ：api-sports.io より取得（Liverpool / Arsenal）
+          ※ データ：api-sports.io より取得
         </div>
       </div>
 

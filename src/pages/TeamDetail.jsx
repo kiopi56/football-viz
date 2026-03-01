@@ -42,6 +42,30 @@ function getTotal(data, metric, venue, teamId) {
   return total;
 }
 
+// fixtures から試合スタッツの平均を算出
+function calcAvgMatchStats(data, teamId) {
+  const fixtures = data?.fixtures ?? [];
+  const withStats = fixtures.filter(f => f.stats_home != null && f.stats_away != null);
+  if (!withStats.length) return null;
+  let totPoss = 0, totShots = 0, totCorners = 0, n = 0;
+  for (const f of withStats) {
+    const isHome = f.home_team_id === teamId;
+    const stats = isHome ? f.stats_home : f.stats_away;
+    if (!stats) continue;
+    totPoss    += stats.possession  ?? 0;
+    totShots   += stats.total_shots ?? 0;
+    totCorners += stats.corners     ?? 0;
+    n++;
+  }
+  if (!n) return null;
+  return {
+    possession: Math.round(totPoss / n),
+    shots:      +(totShots / n).toFixed(1),
+    corners:    +(totCorners / n).toFixed(1),
+    sampleSize: n,
+  };
+}
+
 // fixtures から前半/後半 [HT goals, 2H goals] を算出
 function calcHalfStats(data, metric, venue, teamId) {
   if (!data?.fixtures?.length || !teamId) return null;
@@ -371,6 +395,35 @@ export default function TeamDetail() {
             ))
           )}
         </div>
+
+        {/* ── 平均スタッツ ── */}
+        {(() => {
+          const avg = calcAvgMatchStats(primaryData, teamId);
+          if (!avg) return null;
+          return (
+            <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)",
+              borderRadius: 10, padding: "14px 18px", marginBottom: 14 }}>
+              <div style={{ fontSize: 9, color: "#555", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>
+                シーズン平均スタッツ
+                <span style={{ color: "#333", fontWeight: 400, marginLeft: 6 }}>({avg.sampleSize}試合)</span>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8 }}>
+                {[
+                  { label: "平均ポゼッション", value: `${avg.possession}%`, color: "#6cabdd" },
+                  { label: "平均シュート",     value: avg.shots,           color: "#22c55e" },
+                  { label: "平均コーナー",     value: avg.corners,         color: "#f0b429" },
+                ].map(({ label, value, color }) => (
+                  <div key={label} style={{ textAlign: "center", padding: "10px 6px",
+                    background: "rgba(255,255,255,0.02)", borderRadius: 6,
+                    border: "1px solid rgba(255,255,255,0.05)", borderTop: `2px solid ${color}` }}>
+                    <div style={{ fontSize: 22, fontWeight: 700, color, lineHeight: 1, marginBottom: 4 }}>{value}</div>
+                    <div style={{ fontSize: 9, color: "#555", letterSpacing: "0.06em" }}>{label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
 
         {/* ── コントロール ── */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 14 }}>

@@ -173,7 +173,35 @@
       "goals_away": 2,
       "ht_home": 0,
       "ht_away": 2,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 10,
+        "total_shots": 20,
+        "blocked_shots": 7,
+        "corners": 4,
+        "possession": 73,
+        "fouls": 11,
+        "yellow_cards": 1,
+        "red_cards": null,
+        "saves": 4,
+        "total_passes": 658,
+        "pass_accuracy": 90
+      },
+      "stats_away": {
+        "shots_on_goal": 6,
+        "shots_off_goal": 4,
+        "total_shots": 12,
+        "blocked_shots": 2,
+        "corners": 3,
+        "possession": 27,
+        "fouls": 5,
+        "yellow_cards": 0,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 246,
+        "pass_accuracy": 72
+      }
     },
     {
       "id": 1035541,
@@ -188,7 +216,35 @@
       "goals_away": 1,
       "ht_home": 1,
       "ht_away": 1,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 9,
+        "shots_off_goal": 6,
+        "total_shots": 21,
+        "blocked_shots": 6,
+        "corners": 9,
+        "possession": 63,
+        "fouls": 10,
+        "yellow_cards": 3,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 547,
+        "pass_accuracy": 88
+      },
+      "stats_away": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 2,
+        "total_shots": 7,
+        "blocked_shots": 2,
+        "corners": 3,
+        "possession": 37,
+        "fouls": 14,
+        "yellow_cards": 5,
+        "red_cards": null,
+        "saves": 7,
+        "total_passes": 318,
+        "pass_accuracy": 74
+      }
     },
     {
       "id": 1035527,
@@ -203,7 +259,35 @@
       "goals_away": 4,
       "ht_home": 0,
       "ht_away": 3,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 5,
+        "shots_off_goal": 7,
+        "total_shots": 17,
+        "blocked_shots": 5,
+        "corners": 4,
+        "possession": 47,
+        "fouls": 8,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 7,
+        "total_passes": 425,
+        "pass_accuracy": 77
+      },
+      "stats_away": {
+        "shots_on_goal": 11,
+        "shots_off_goal": 5,
+        "total_shots": 23,
+        "blocked_shots": 7,
+        "corners": 11,
+        "possession": 53,
+        "fouls": 8,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 4,
+        "total_passes": 478,
+        "pass_accuracy": 80
+      }
     },
     {
       "id": 1035518,
@@ -218,7 +302,35 @@
       "goals_away": 1,
       "ht_home": 0,
       "ht_away": 0,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 10,
+        "shots_off_goal": 8,
+        "total_shots": 27,
+        "blocked_shots": 9,
+        "corners": 6,
+        "possession": 48,
+        "fouls": 8,
+        "yellow_cards": 1,
+        "red_cards": null,
+        "saves": 6,
+        "total_passes": 414,
+        "pass_accuracy": 78
+      },
+      "stats_away": {
+        "shots_on_goal": 7,
+        "shots_off_goal": 5,
+        "total_shots": 16,
+        "blocked_shots": 4,
+        "corners": 5,
+        "possession": 52,
+        "fouls": 11,
+        "yellow_cards": 3,
+        "red_cards": null,
+        "saves": 9,
+        "total_passes": 452,
+        "pass_accuracy": 79
+      }
     },
     {
       "id": 1035511,
@@ -233,7 +345,35 @@
       "goals_away": 4,
       "ht_home": 0,
       "ht_away": 2,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 11,
+        "shots_off_goal": 4,
+        "total_shots": 18,
+        "blocked_shots": 3,
+        "corners": 11,
+        "possession": 49,
+        "fouls": 10,
+        "yellow_cards": 1,
+        "red_cards": null,
+        "saves": 5,
+        "total_passes": 461,
+        "pass_accuracy": 78
+      },
+      "stats_away": {
+        "shots_on_goal": 9,
+        "shots_off_goal": 5,
+        "total_shots": 16,
+        "blocked_shots": 2,
+        "corners": 2,
+        "possession": 51,
+        "fouls": 9,
+        "yellow_cards": 0,
+        "red_cards": null,
+        "saves": 10,
+        "total_passes": 503,
+        "pass_accuracy": 83
+      }
     },
     {
       "id": 1035497,
@@ -248,7 +388,35 @@
       "goals_away": 1,
       "ht_home": 0,
       "ht_away": 0,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 6,
+        "total_shots": 11,
+        "blocked_shots": 2,
+        "corners": 4,
+        "possession": 45,
+        "fouls": 18,
+        "yellow_cards": 1,
+        "red_cards": null,
+        "saves": 8,
+        "total_passes": 453,
+        "pass_accuracy": 81
+      },
+      "stats_away": {
+        "shots_on_goal": 8,
+        "shots_off_goal": 6,
+        "total_shots": 20,
+        "blocked_shots": 6,
+        "corners": 5,
+        "possession": 55,
+        "fouls": 8,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 567,
+        "pass_accuracy": 86
+      }
     },
     {
       "id": 1035487,
@@ -263,7 +431,35 @@
       "goals_away": 0,
       "ht_home": 1,
       "ht_away": 0,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 6,
+        "total_shots": 12,
+        "blocked_shots": 3,
+        "corners": 3,
+        "possession": 37,
+        "fouls": 11,
+        "yellow_cards": 2,
+        "red_cards": 0,
+        "saves": 1,
+        "total_passes": 294,
+        "pass_accuracy": 68
+      },
+      "stats_away": {
+        "shots_on_goal": 1,
+        "shots_off_goal": 3,
+        "total_shots": 6,
+        "blocked_shots": 2,
+        "corners": 5,
+        "possession": 63,
+        "fouls": 13,
+        "yellow_cards": 1,
+        "red_cards": 1,
+        "saves": 2,
+        "total_passes": 523,
+        "pass_accuracy": 78
+      }
     },
     {
       "id": 1035477,
@@ -278,7 +474,35 @@
       "goals_away": 1,
       "ht_home": 1,
       "ht_away": 1,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 6,
+        "shots_off_goal": 4,
+        "total_shots": 13,
+        "blocked_shots": 3,
+        "corners": 7,
+        "possession": 51,
+        "fouls": 10,
+        "yellow_cards": 0,
+        "red_cards": null,
+        "saves": 1,
+        "total_passes": 468,
+        "pass_accuracy": 84
+      },
+      "stats_away": {
+        "shots_on_goal": 2,
+        "shots_off_goal": 4,
+        "total_shots": 8,
+        "blocked_shots": 2,
+        "corners": 4,
+        "possession": 49,
+        "fouls": 12,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 5,
+        "total_passes": 468,
+        "pass_accuracy": 84
+      }
     },
     {
       "id": 1035467,
@@ -293,7 +517,35 @@
       "goals_away": 2,
       "ht_home": 1,
       "ht_away": 0,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 13,
+        "shots_off_goal": 10,
+        "total_shots": 33,
+        "blocked_shots": 10,
+        "corners": 12,
+        "possession": 69,
+        "fouls": 12,
+        "yellow_cards": 2,
+        "red_cards": 0,
+        "saves": 4,
+        "total_passes": 630,
+        "pass_accuracy": 90
+      },
+      "stats_away": {
+        "shots_on_goal": 7,
+        "shots_off_goal": 6,
+        "total_shots": 18,
+        "blocked_shots": 5,
+        "corners": 4,
+        "possession": 31,
+        "fouls": 7,
+        "yellow_cards": 4,
+        "red_cards": 1,
+        "saves": 11,
+        "total_passes": 271,
+        "pass_accuracy": 75
+      }
     },
     {
       "id": 1035456,
@@ -308,7 +560,35 @@
       "goals_away": 1,
       "ht_home": 1,
       "ht_away": 0,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 6,
+        "shots_off_goal": 5,
+        "total_shots": 17,
+        "blocked_shots": 6,
+        "corners": 5,
+        "possession": 61,
+        "fouls": 14,
+        "yellow_cards": 2,
+        "red_cards": 0,
+        "saves": 5,
+        "total_passes": 457,
+        "pass_accuracy": 80
+      },
+      "stats_away": {
+        "shots_on_goal": 5,
+        "shots_off_goal": 1,
+        "total_shots": 9,
+        "blocked_shots": 3,
+        "corners": 4,
+        "possession": 39,
+        "fouls": 17,
+        "yellow_cards": 4,
+        "red_cards": 1,
+        "saves": 4,
+        "total_passes": 292,
+        "pass_accuracy": 63
+      }
     },
     {
       "id": 1035452,
@@ -323,7 +603,35 @@
       "goals_away": 2,
       "ht_home": 0,
       "ht_away": 2,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 12,
+        "total_shots": 22,
+        "blocked_shots": 6,
+        "corners": 4,
+        "possession": 52,
+        "fouls": 11,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 439,
+        "pass_accuracy": 73
+      },
+      "stats_away": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 1,
+        "total_shots": 11,
+        "blocked_shots": 6,
+        "corners": 3,
+        "possession": 48,
+        "fouls": 18,
+        "yellow_cards": 4,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 428,
+        "pass_accuracy": 70
+      }
     },
     {
       "id": 1035435,
@@ -338,7 +646,35 @@
       "goals_away": 2,
       "ht_home": 0,
       "ht_away": 1,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 6,
+        "shots_off_goal": 8,
+        "total_shots": 20,
+        "blocked_shots": 6,
+        "corners": 7,
+        "possession": 75,
+        "fouls": 8,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 1,
+        "total_passes": 608,
+        "pass_accuracy": 82
+      },
+      "stats_away": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 6,
+        "total_shots": 10,
+        "blocked_shots": 1,
+        "corners": 2,
+        "possession": 25,
+        "fouls": 13,
+        "yellow_cards": 4,
+        "red_cards": null,
+        "saves": 5,
+        "total_passes": 206,
+        "pass_accuracy": 56
+      }
     },
     {
       "id": 1035429,
@@ -353,7 +689,35 @@
       "goals_away": 0,
       "ht_home": 0,
       "ht_away": 0,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 6,
+        "shots_off_goal": 6,
+        "total_shots": 15,
+        "blocked_shots": 3,
+        "corners": 12,
+        "possession": 56,
+        "fouls": 8,
+        "yellow_cards": 3,
+        "red_cards": 0,
+        "saves": 0,
+        "total_passes": 477,
+        "pass_accuracy": 79
+      },
+      "stats_away": {
+        "shots_on_goal": 0,
+        "shots_off_goal": 1,
+        "total_shots": 2,
+        "blocked_shots": 1,
+        "corners": 3,
+        "possession": 44,
+        "fouls": 14,
+        "yellow_cards": 1,
+        "red_cards": 1,
+        "saves": 3,
+        "total_passes": 393,
+        "pass_accuracy": 71
+      }
     },
     {
       "id": 1035415,
@@ -368,7 +732,35 @@
       "goals_away": 5,
       "ht_home": 0,
       "ht_away": 2,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 0,
+        "shots_off_goal": 5,
+        "total_shots": 8,
+        "blocked_shots": 3,
+        "corners": 4,
+        "possession": 35,
+        "fouls": 11,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 316,
+        "pass_accuracy": 73
+      },
+      "stats_away": {
+        "shots_on_goal": 7,
+        "shots_off_goal": 4,
+        "total_shots": 16,
+        "blocked_shots": 5,
+        "corners": 6,
+        "possession": 65,
+        "fouls": 8,
+        "yellow_cards": 1,
+        "red_cards": null,
+        "saves": 0,
+        "total_passes": 603,
+        "pass_accuracy": 87
+      }
     },
     {
       "id": 1035407,
@@ -383,7 +775,35 @@
       "goals_away": 1,
       "ht_home": 1,
       "ht_away": 1,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 10,
+        "shots_off_goal": 6,
+        "total_shots": 25,
+        "blocked_shots": 9,
+        "corners": 9,
+        "possession": 71,
+        "fouls": 11,
+        "yellow_cards": 3,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 670,
+        "pass_accuracy": 87
+      },
+      "stats_away": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 4,
+        "total_shots": 9,
+        "blocked_shots": 1,
+        "corners": 3,
+        "possession": 29,
+        "fouls": 13,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 7,
+        "total_passes": 277,
+        "pass_accuracy": 67
+      }
     },
     {
       "id": 1035398,
@@ -398,7 +818,35 @@
       "goals_away": 2,
       "ht_home": 0,
       "ht_away": 2,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 4,
+        "total_shots": 12,
+        "blocked_shots": 4,
+        "corners": 2,
+        "possession": 44,
+        "fouls": 11,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 5,
+        "total_passes": 382,
+        "pass_accuracy": 75
+      },
+      "stats_away": {
+        "shots_on_goal": 7,
+        "shots_off_goal": 4,
+        "total_shots": 15,
+        "blocked_shots": 4,
+        "corners": 13,
+        "possession": 56,
+        "fouls": 7,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 489,
+        "pass_accuracy": 76
+      }
     },
     {
       "id": 1035393,
@@ -413,7 +861,35 @@
       "goals_away": 1,
       "ht_home": 2,
       "ht_away": 0,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 4,
+        "total_shots": 14,
+        "blocked_shots": 6,
+        "corners": 7,
+        "possession": 74,
+        "fouls": 3,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 795,
+        "pass_accuracy": 90
+      },
+      "stats_away": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 3,
+        "total_shots": 8,
+        "blocked_shots": 2,
+        "corners": 3,
+        "possession": 26,
+        "fouls": 13,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 1,
+        "total_passes": 270,
+        "pass_accuracy": 74
+      }
     },
     {
       "id": 1035378,
@@ -428,7 +904,35 @@
       "goals_away": 1,
       "ht_home": 1,
       "ht_away": 0,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 7,
+        "shots_off_goal": 6,
+        "total_shots": 13,
+        "blocked_shots": 0,
+        "corners": 2,
+        "possession": 39,
+        "fouls": 7,
+        "yellow_cards": 1,
+        "red_cards": null,
+        "saves": 4,
+        "total_passes": 342,
+        "pass_accuracy": 70
+      },
+      "stats_away": {
+        "shots_on_goal": 5,
+        "shots_off_goal": 3,
+        "total_shots": 14,
+        "blocked_shots": 6,
+        "corners": 8,
+        "possession": 61,
+        "fouls": 12,
+        "yellow_cards": 0,
+        "red_cards": null,
+        "saves": 7,
+        "total_passes": 542,
+        "pass_accuracy": 81
+      }
     },
     {
       "id": 1035364,
@@ -443,7 +947,35 @@
       "goals_away": 2,
       "ht_home": 2,
       "ht_away": 1,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 7,
+        "shots_off_goal": 7,
+        "total_shots": 19,
+        "blocked_shots": 5,
+        "corners": 6,
+        "possession": 66,
+        "fouls": 9,
+        "yellow_cards": 4,
+        "red_cards": 0,
+        "saves": 3,
+        "total_passes": 465,
+        "pass_accuracy": 85
+      },
+      "stats_away": {
+        "shots_on_goal": 5,
+        "shots_off_goal": 3,
+        "total_shots": 9,
+        "blocked_shots": 1,
+        "corners": 2,
+        "possession": 34,
+        "fouls": 14,
+        "yellow_cards": 3,
+        "red_cards": 1,
+        "saves": 4,
+        "total_passes": 240,
+        "pass_accuracy": 72
+      }
     },
     {
       "id": 1035358,
@@ -458,7 +990,35 @@
       "goals_away": 2,
       "ht_home": 0,
       "ht_away": 1,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 0,
+        "shots_off_goal": 8,
+        "total_shots": 9,
+        "blocked_shots": 1,
+        "corners": 4,
+        "possession": 31,
+        "fouls": 7,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 8,
+        "total_passes": 292,
+        "pass_accuracy": 63
+      },
+      "stats_away": {
+        "shots_on_goal": 10,
+        "shots_off_goal": 6,
+        "total_shots": 19,
+        "blocked_shots": 3,
+        "corners": 4,
+        "possession": 69,
+        "fouls": 10,
+        "yellow_cards": 1,
+        "red_cards": null,
+        "saves": 0,
+        "total_passes": 664,
+        "pass_accuracy": 85
+      }
     },
     {
       "id": 1035346,
@@ -473,7 +1033,35 @@
       "goals_away": 2,
       "ht_home": 0,
       "ht_away": 0,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 5,
+        "shots_off_goal": 5,
+        "total_shots": 19,
+        "blocked_shots": 9,
+        "corners": 8,
+        "possession": 66,
+        "fouls": 5,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 0,
+        "total_passes": 702,
+        "pass_accuracy": 85
+      },
+      "stats_away": {
+        "shots_on_goal": 2,
+        "shots_off_goal": 3,
+        "total_shots": 7,
+        "blocked_shots": 2,
+        "corners": 6,
+        "possession": 34,
+        "fouls": 17,
+        "yellow_cards": 1,
+        "red_cards": null,
+        "saves": 5,
+        "total_passes": 362,
+        "pass_accuracy": 75
+      }
     },
     {
       "id": 1035337,
@@ -488,7 +1076,35 @@
       "goals_away": 2,
       "ht_home": 0,
       "ht_away": 2,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 2,
+        "shots_off_goal": 3,
+        "total_shots": 14,
+        "blocked_shots": 9,
+        "corners": 8,
+        "possession": 62,
+        "fouls": 9,
+        "yellow_cards": 0,
+        "red_cards": null,
+        "saves": 4,
+        "total_passes": 542,
+        "pass_accuracy": 85
+      },
+      "stats_away": {
+        "shots_on_goal": 6,
+        "shots_off_goal": 3,
+        "total_shots": 9,
+        "blocked_shots": 0,
+        "corners": 6,
+        "possession": 38,
+        "fouls": 8,
+        "yellow_cards": 1,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 330,
+        "pass_accuracy": 72
+      }
     },
     {
       "id": 1035325,
@@ -503,7 +1119,35 @@
       "goals_away": 1,
       "ht_home": 0,
       "ht_away": 1,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 11,
+        "shots_off_goal": 11,
+        "total_shots": 29,
+        "blocked_shots": 7,
+        "corners": 9,
+        "possession": 72,
+        "fouls": 5,
+        "yellow_cards": 0,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 777,
+        "pass_accuracy": 91
+      },
+      "stats_away": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 1,
+        "total_shots": 6,
+        "blocked_shots": 2,
+        "corners": 1,
+        "possession": 28,
+        "fouls": 8,
+        "yellow_cards": 4,
+        "red_cards": null,
+        "saves": 10,
+        "total_passes": 308,
+        "pass_accuracy": 73
+      }
     },
     {
       "id": 1035321,
@@ -518,7 +1162,35 @@
       "goals_away": 0,
       "ht_home": 1,
       "ht_away": 0,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 3,
+        "total_shots": 7,
+        "blocked_shots": 0,
+        "corners": 5,
+        "possession": 51,
+        "fouls": 11,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 467,
+        "pass_accuracy": 79
+      },
+      "stats_away": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 5,
+        "total_shots": 12,
+        "blocked_shots": 4,
+        "corners": 8,
+        "possession": 49,
+        "fouls": 15,
+        "yellow_cards": 4,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 436,
+        "pass_accuracy": 77
+      }
     },
     {
       "id": 1035307,
@@ -533,7 +1205,35 @@
       "goals_away": 0,
       "ht_home": 2,
       "ht_away": 0,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 7,
+        "shots_off_goal": 6,
+        "total_shots": 19,
+        "blocked_shots": 6,
+        "corners": 6,
+        "possession": 64,
+        "fouls": 10,
+        "yellow_cards": 2,
+        "red_cards": 0,
+        "saves": 3,
+        "total_passes": 570,
+        "pass_accuracy": 84
+      },
+      "stats_away": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 3,
+        "total_shots": 6,
+        "blocked_shots": 0,
+        "corners": 1,
+        "possession": 36,
+        "fouls": 12,
+        "yellow_cards": 7,
+        "red_cards": 1,
+        "saves": 2,
+        "total_passes": 334,
+        "pass_accuracy": 72
+      }
     },
     {
       "id": 1035295,
@@ -548,7 +1248,35 @@
       "goals_away": 2,
       "ht_home": 0,
       "ht_away": 0,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 5,
+        "shots_off_goal": 6,
+        "total_shots": 11,
+        "blocked_shots": 0,
+        "corners": 4,
+        "possession": 51,
+        "fouls": 11,
+        "yellow_cards": 1,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 496,
+        "pass_accuracy": 82
+      },
+      "stats_away": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 3,
+        "total_shots": 11,
+        "blocked_shots": 5,
+        "corners": 5,
+        "possession": 49,
+        "fouls": 7,
+        "yellow_cards": 3,
+        "red_cards": null,
+        "saves": 4,
+        "total_passes": 473,
+        "pass_accuracy": 76
+      }
     },
     {
       "id": 1035148,
@@ -563,7 +1291,35 @@
       "goals_away": 1,
       "ht_home": 1,
       "ht_away": 0,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 6,
+        "shots_off_goal": 6,
+        "total_shots": 16,
+        "blocked_shots": 4,
+        "corners": 13,
+        "possession": 64,
+        "fouls": 8,
+        "yellow_cards": 0,
+        "red_cards": 1,
+        "saves": 4,
+        "total_passes": 561,
+        "pass_accuracy": 86
+      },
+      "stats_away": {
+        "shots_on_goal": 5,
+        "shots_off_goal": 3,
+        "total_shots": 8,
+        "blocked_shots": 0,
+        "corners": 3,
+        "possession": 36,
+        "fouls": 9,
+        "yellow_cards": 1,
+        "red_cards": 0,
+        "saves": 3,
+        "total_passes": 334,
+        "pass_accuracy": 79
+      }
     },
     {
       "id": 1035138,
@@ -578,7 +1334,35 @@
       "goals_away": 2,
       "ht_home": 0,
       "ht_away": 1,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 5,
+        "shots_off_goal": 10,
+        "total_shots": 17,
+        "blocked_shots": 2,
+        "corners": 12,
+        "possession": 68,
+        "fouls": 9,
+        "yellow_cards": 0,
+        "red_cards": null,
+        "saves": 1,
+        "total_passes": 591,
+        "pass_accuracy": 85
+      },
+      "stats_away": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 0,
+        "total_shots": 4,
+        "blocked_shots": 1,
+        "corners": 1,
+        "possession": 32,
+        "fouls": 12,
+        "yellow_cards": 5,
+        "red_cards": null,
+        "saves": 5,
+        "total_passes": 296,
+        "pass_accuracy": 72
+      }
     },
     {
       "id": 1035127,
@@ -593,7 +1377,35 @@
       "goals_away": 1,
       "ht_home": 1,
       "ht_away": 1,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 6,
+        "shots_off_goal": 4,
+        "total_shots": 13,
+        "blocked_shots": 3,
+        "corners": 10,
+        "possession": 44,
+        "fouls": 9,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 366,
+        "pass_accuracy": 76
+      },
+      "stats_away": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 2,
+        "total_shots": 6,
+        "blocked_shots": 1,
+        "corners": 5,
+        "possession": 56,
+        "fouls": 12,
+        "yellow_cards": 3,
+        "red_cards": null,
+        "saves": 4,
+        "total_passes": 470,
+        "pass_accuracy": 79
+      }
     },
     {
       "id": 1035119,
@@ -608,7 +1420,35 @@
       "goals_away": 0,
       "ht_home": 1,
       "ht_away": 0,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 10,
+        "shots_off_goal": 8,
+        "total_shots": 23,
+        "blocked_shots": 5,
+        "corners": 5,
+        "possession": 50,
+        "fouls": 14,
+        "yellow_cards": 5,
+        "red_cards": 0,
+        "saves": 1,
+        "total_passes": 443,
+        "pass_accuracy": 79
+      },
+      "stats_away": {
+        "shots_on_goal": 1,
+        "shots_off_goal": 4,
+        "total_shots": 6,
+        "blocked_shots": 1,
+        "corners": 5,
+        "possession": 50,
+        "fouls": 12,
+        "yellow_cards": 4,
+        "red_cards": 1,
+        "saves": 6,
+        "total_passes": 437,
+        "pass_accuracy": 83
+      }
     },
     {
       "id": 1035109,
@@ -623,7 +1463,35 @@
       "goals_away": 4,
       "ht_home": 1,
       "ht_away": 1,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 3,
+        "total_shots": 10,
+        "blocked_shots": 4,
+        "corners": 7,
+        "possession": 38,
+        "fouls": 11,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 390,
+        "pass_accuracy": 84
+      },
+      "stats_away": {
+        "shots_on_goal": 5,
+        "shots_off_goal": 2,
+        "total_shots": 9,
+        "blocked_shots": 2,
+        "corners": 3,
+        "possession": 62,
+        "fouls": 8,
+        "yellow_cards": 4,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 664,
+        "pass_accuracy": 92
+      }
     },
     {
       "id": 1035051,
@@ -638,7 +1506,35 @@
       "goals_away": 2,
       "ht_home": 0,
       "ht_away": 1,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 10,
+        "total_shots": 18,
+        "blocked_shots": 5,
+        "corners": 7,
+        "possession": 49,
+        "fouls": 14,
+        "yellow_cards": 4,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 370,
+        "pass_accuracy": 69
+      },
+      "stats_away": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 8,
+        "total_shots": 14,
+        "blocked_shots": 2,
+        "corners": 6,
+        "possession": 51,
+        "fouls": 6,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 1,
+        "total_passes": 412,
+        "pass_accuracy": 72
+      }
     },
     {
       "id": 1035102,
@@ -653,7 +1549,35 @@
       "goals_away": 0,
       "ht_home": 1,
       "ht_away": 0,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 8,
+        "shots_off_goal": 6,
+        "total_shots": 20,
+        "blocked_shots": 6,
+        "corners": 5,
+        "possession": 53,
+        "fouls": 7,
+        "yellow_cards": 1,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 510,
+        "pass_accuracy": 81
+      },
+      "stats_away": {
+        "shots_on_goal": 2,
+        "shots_off_goal": 1,
+        "total_shots": 8,
+        "blocked_shots": 5,
+        "corners": 3,
+        "possession": 47,
+        "fouls": 15,
+        "yellow_cards": 3,
+        "red_cards": null,
+        "saves": 6,
+        "total_passes": 463,
+        "pass_accuracy": 79
+      }
     },
     {
       "id": 1035090,
@@ -668,7 +1592,35 @@
       "goals_away": 1,
       "ht_home": 0,
       "ht_away": 1,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 5,
+        "total_shots": 12,
+        "blocked_shots": 3,
+        "corners": 9,
+        "possession": 62,
+        "fouls": 6,
+        "yellow_cards": 1,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 647,
+        "pass_accuracy": 88
+      },
+      "stats_away": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 2,
+        "total_shots": 11,
+        "blocked_shots": 5,
+        "corners": 5,
+        "possession": 38,
+        "fouls": 12,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 4,
+        "total_passes": 402,
+        "pass_accuracy": 80
+      }
     },
     {
       "id": 1035083,
@@ -683,7 +1635,35 @@
       "goals_away": 1,
       "ht_home": 0,
       "ht_away": 1,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 5,
+        "total_shots": 14,
+        "blocked_shots": 5,
+        "corners": 5,
+        "possession": 46,
+        "fouls": 16,
+        "yellow_cards": 2,
+        "red_cards": 0,
+        "saves": 2,
+        "total_passes": 407,
+        "pass_accuracy": 79
+      },
+      "stats_away": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 4,
+        "total_shots": 10,
+        "blocked_shots": 3,
+        "corners": 4,
+        "possession": 54,
+        "fouls": 10,
+        "yellow_cards": 3,
+        "red_cards": 1,
+        "saves": 3,
+        "total_passes": 487,
+        "pass_accuracy": 84
+      }
     },
     {
       "id": 1035070,
@@ -698,7 +1678,35 @@
       "goals_away": 5,
       "ht_home": 1,
       "ht_away": 2,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 6,
+        "total_shots": 16,
+        "blocked_shots": 6,
+        "corners": 7,
+        "possession": 46,
+        "fouls": 15,
+        "yellow_cards": 4,
+        "red_cards": null,
+        "saves": 6,
+        "total_passes": 467,
+        "pass_accuracy": 81
+      },
+      "stats_away": {
+        "shots_on_goal": 11,
+        "shots_off_goal": 3,
+        "total_shots": 21,
+        "blocked_shots": 7,
+        "corners": 4,
+        "possession": 54,
+        "fouls": 9,
+        "yellow_cards": 3,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 563,
+        "pass_accuracy": 87
+      }
     },
     {
       "id": 1035061,
@@ -713,7 +1721,35 @@
       "goals_away": 3,
       "ht_home": 0,
       "ht_away": 2,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 2,
+        "shots_off_goal": 6,
+        "total_shots": 9,
+        "blocked_shots": 1,
+        "corners": 4,
+        "possession": 57,
+        "fouls": 12,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 594,
+        "pass_accuracy": 89
+      },
+      "stats_away": {
+        "shots_on_goal": 6,
+        "shots_off_goal": 4,
+        "total_shots": 16,
+        "blocked_shots": 6,
+        "corners": 6,
+        "possession": 43,
+        "fouls": 11,
+        "yellow_cards": 0,
+        "red_cards": null,
+        "saves": 1,
+        "total_passes": 454,
+        "pass_accuracy": 84
+      }
     },
     {
       "id": 1035037,
@@ -728,7 +1764,35 @@
       "goals_away": 3,
       "ht_home": 0,
       "ht_away": 2,
-      "status": "FT"
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 1,
+        "shots_off_goal": 3,
+        "total_shots": 6,
+        "blocked_shots": 2,
+        "corners": 6,
+        "possession": 34,
+        "fouls": 11,
+        "yellow_cards": null,
+        "red_cards": 1,
+        "saves": 5,
+        "total_passes": 365,
+        "pass_accuracy": 79
+      },
+      "stats_away": {
+        "shots_on_goal": 8,
+        "shots_off_goal": 4,
+        "total_shots": 17,
+        "blocked_shots": 5,
+        "corners": 5,
+        "possession": 66,
+        "fouls": 8,
+        "yellow_cards": null,
+        "red_cards": 0,
+        "saves": 1,
+        "total_passes": 706,
+        "pass_accuracy": 90
+      }
     }
   ]
 }
