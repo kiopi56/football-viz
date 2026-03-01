@@ -118,7 +118,10 @@ function StarRating({ value, onChange }) {
   );
 }
 
-function WatchRecordPanel({ user, fixtureId, teamColor }) {
+function WatchRecordPanel({ fixtureId, teamColor }) {
+  // useAuth() を直接呼ぶことで、認証状態の変化を確実にキャッチする
+  const { user, loading: authLoading } = useAuth();
+
   const [watched,  setWatched]  = useState(false);
   const [rating,   setRating]   = useState(0);
   const [mom,      setMom]      = useState("");
@@ -141,6 +144,21 @@ function WatchRecordPanel({ user, fixtureId, teamColor }) {
       })
       .catch(e => setLoadErr(e.message));
   }, [user, fixtureId]);
+
+  // 認証ロード中はスケルトン表示
+  if (authLoading) {
+    return (
+      <div style={{
+        background: "#0e1318", border: "1px solid rgba(255,255,255,0.08)",
+        borderRadius: 10, padding: "14px 16px",
+        animation: "pulse 1.4s ease-in-out infinite alternate",
+        height: 60,
+      }} />
+    );
+  }
+
+  // 未ログインは非表示
+  if (!user) return null;
 
   async function handleSave() {
     setSaving(true); setSaveErr(null); setSaved(false);
@@ -287,7 +305,6 @@ function FormBadge({ result }) {
 export default function MatchDetail() {
   const { fixtureId } = useParams();
   const id = Number(fixtureId);
-  const { user } = useAuth();
 
   const [fixture,   setFixture]   = useState(null);
   const [goals,     setGoals]     = useState([]);
@@ -699,10 +716,8 @@ ${historyStr}
           {/* ── 右サイドバー ── */}
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
 
-            {/* 観戦記録 (ログイン済みのみ) */}
-            {user && (
-              <WatchRecordPanel user={user} fixtureId={id} teamColor={TEAM_COLOR} />
-            )}
+            {/* 観戦記録パネル（認証状態はパネル内で管理） */}
+            <WatchRecordPanel fixtureId={id} teamColor={TEAM_COLOR} />
 
             {/* 直近5試合フォーム */}
             <div style={{ background: "#0e1318", border: "1px solid rgba(255,255,255,0.08)",
