@@ -3,11 +3,11 @@
   "season": 2025,
   "byTimeAvailable": false,
   "scored": {
-    "total": 48,
+    "total": 49,
     "byTime": null
   },
   "conceded": {
-    "total": 31,
+    "total": 33,
     "byTime": null
   },
   "home": {
@@ -31,9 +31,9 @@
     }
   },
   "recentForm": [
+    "L",
     "D",
     "D",
-    "W",
     "W",
     "W"
   ],
@@ -144,6 +144,49 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379239,
+      "season": 2025,
+      "team_id": 49,
+      "match_date": "2026-03-01T16:30:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 49,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Chelsea",
+      "goals_home": 2,
+      "goals_away": 1,
+      "ht_home": 1,
+      "ht_away": 1,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 5,
+        "shots_off_goal": 3,
+        "total_shots": 12,
+        "blocked_shots": 4,
+        "corners": 5,
+        "possession": 41,
+        "fouls": 11,
+        "yellow_cards": 1,
+        "red_cards": 0,
+        "saves": 4,
+        "total_passes": 338,
+        "pass_accuracy": 82
+      },
+      "stats_away": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 5,
+        "total_shots": 9,
+        "blocked_shots": 1,
+        "corners": 10,
+        "possession": 59,
+        "fouls": 14,
+        "yellow_cards": 5,
+        "red_cards": 1,
+        "saves": 3,
+        "total_passes": 476,
+        "pass_accuracy": 88
+      }
+    },
     {
       "id": 1379231,
       "season": 2025,

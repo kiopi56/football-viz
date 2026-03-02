@@ -42,17 +42,17 @@
       "id": 196855,
       "name": "J. Anthony",
       "photo": "https://media.api-sports.io/football/players/196855.png",
-      "goals": 6,
+      "goals": 7,
       "assists": 1,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 36927,
       "name": "Z. Flemming",
       "photo": "https://media.api-sports.io/football/players/36927.png",
-      "goals": 6,
+      "goals": 7,
       "assists": 0,
-      "appearances": 19
+      "appearances": 20
     },
     {
       "id": 98936,
@@ -60,7 +60,7 @@
       "photo": "https://media.api-sports.io/football/players/98936.png",
       "goals": 3,
       "assists": 1,
-      "appearances": 19
+      "appearances": 20
     },
     {
       "id": 270508,
@@ -68,7 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/270508.png",
       "goals": 3,
       "assists": 1,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 19827,
@@ -91,8 +91,8 @@
       "name": "H. Mejbri",
       "photo": "https://media.api-sports.io/football/players/180560.png",
       "goals": 1,
-      "assists": 1,
-      "appearances": 19
+      "assists": 3,
+      "appearances": 20
     },
     {
       "id": 20303,
@@ -100,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/20303.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 161621,
@@ -108,7 +108,7 @@
       "photo": "https://media.api-sports.io/football/players/161621.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 20
+      "appearances": 21
     },
     {
       "id": 37882,

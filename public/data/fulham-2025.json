@@ -3,11 +3,11 @@
   "season": 2025,
   "byTimeAvailable": false,
   "scored": {
-    "total": 38,
+    "total": 40,
     "byTime": null
   },
   "conceded": {
-    "total": 41,
+    "total": 42,
     "byTime": null
   },
   "home": {
@@ -32,10 +32,10 @@
   },
   "recentForm": [
     "W",
+    "W",
     "L",
     "L",
-    "L",
-    "W"
+    "L"
   ],
   "scorers": [
     {
@@ -144,6 +144,49 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379243,
+      "season": 2025,
+      "team_id": 36,
+      "match_date": "2026-03-01T14:00:00+00:00",
+      "home_team_id": 36,
+      "away_team_id": 47,
+      "home_team_name": "Fulham",
+      "away_team_name": "Tottenham",
+      "goals_home": 2,
+      "goals_away": 1,
+      "ht_home": 2,
+      "ht_away": 0,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 10,
+        "total_shots": 18,
+        "blocked_shots": 4,
+        "corners": 5,
+        "possession": 54,
+        "fouls": 11,
+        "yellow_cards": 3,
+        "red_cards": null,
+        "saves": 0,
+        "total_passes": 472,
+        "pass_accuracy": 81
+      },
+      "stats_away": {
+        "shots_on_goal": 1,
+        "shots_off_goal": 5,
+        "total_shots": 13,
+        "blocked_shots": 7,
+        "corners": 8,
+        "possession": 46,
+        "fouls": 14,
+        "yellow_cards": 3,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 384,
+        "pass_accuracy": 74
+      }
+    },
     {
       "id": 1379236,
       "season": 2025,
