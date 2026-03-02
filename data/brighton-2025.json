@@ -3,11 +3,11 @@
   "season": 2025,
   "byTimeAvailable": false,
   "scored": {
-    "total": 36,
+    "total": 38,
     "byTime": null
   },
   "conceded": {
-    "total": 34,
+    "total": 35,
     "byTime": null
   },
   "home": {
@@ -32,10 +32,10 @@
   },
   "recentForm": [
     "W",
+    "W",
     "L",
     "L",
-    "D",
-    "L"
+    "D"
   ],
   "scorers": [
     {
@@ -160,6 +160,49 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379241,
+      "season": 2025,
+      "team_id": 51,
+      "match_date": "2026-03-01T14:00:00+00:00",
+      "home_team_id": 51,
+      "away_team_id": 65,
+      "home_team_name": "Brighton",
+      "away_team_name": "Nottingham Forest",
+      "goals_home": 2,
+      "goals_away": 1,
+      "ht_home": 2,
+      "ht_away": 1,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 7,
+        "shots_off_goal": 5,
+        "total_shots": 14,
+        "blocked_shots": 2,
+        "corners": 4,
+        "possession": 53,
+        "fouls": 12,
+        "yellow_cards": 3,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 507,
+        "pass_accuracy": 86
+      },
+      "stats_away": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 3,
+        "total_shots": 13,
+        "blocked_shots": 6,
+        "corners": 4,
+        "possession": 47,
+        "fouls": 13,
+        "yellow_cards": 1,
+        "red_cards": null,
+        "saves": 5,
+        "total_passes": 436,
+        "pass_accuracy": 85
+      }
+    },
     {
       "id": 1379230,
       "season": 2025,

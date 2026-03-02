@@ -52,7 +52,7 @@
       "photo": "https://media.api-sports.io/football/players/20638.png",
       "goals": 4,
       "assists": 4,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 84087,
@@ -60,7 +60,7 @@
       "photo": "https://media.api-sports.io/football/players/84087.png",
       "goals": 4,
       "assists": 0,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 336659,
@@ -68,7 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/336659.png",
       "goals": 3,
       "assists": 1,
-      "appearances": 20
+      "appearances": 21
     },
     {
       "id": 55904,
@@ -76,7 +76,15 @@
       "photo": "https://media.api-sports.io/football/players/55904.png",
       "goals": 2,
       "assists": 0,
-      "appearances": 23
+      "appearances": 24
+    },
+    {
+      "id": 349799,
+      "name": "Eliezer Mayenda",
+      "photo": "https://media.api-sports.io/football/players/349799.png",
+      "goals": 2,
+      "assists": 0,
+      "appearances": 16
     },
     {
       "id": 327631,
@@ -84,7 +92,7 @@
       "photo": "https://media.api-sports.io/football/players/327631.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 10
+      "appearances": 11
     },
     {
       "id": 1464,
@@ -92,15 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/1464.png",
       "goals": 1,
       "assists": 5,
-      "appearances": 23
-    },
-    {
-      "id": 349799,
-      "name": "Eliezer Mayenda",
-      "photo": "https://media.api-sports.io/football/players/349799.png",
-      "goals": 1,
-      "assists": 0,
-      "appearances": 15
+      "appearances": 24
     },
     {
       "id": 301771,
@@ -116,7 +116,7 @@
       "photo": "https://media.api-sports.io/football/players/6168.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 23
+      "appearances": 24
     },
     {
       "id": 1146,
@@ -132,7 +132,7 @@
       "photo": "https://media.api-sports.io/football/players/671.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 10
+      "appearances": 11
     }
   ],
   "fixtures": [

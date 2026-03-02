@@ -52,23 +52,23 @@
       "photo": "https://media.api-sports.io/football/players/368030.png",
       "goals": 8,
       "assists": 0,
-      "appearances": 22
-    },
-    {
-      "id": 19245,
-      "name": "M. Tavernier",
-      "photo": "https://media.api-sports.io/football/players/19245.png",
-      "goals": 5,
-      "assists": 3,
       "appearances": 23
     },
     {
       "id": 152856,
       "name": "Evanilson",
       "photo": "https://media.api-sports.io/football/players/152856.png",
-      "goals": 5,
+      "goals": 6,
       "assists": 0,
-      "appearances": 25
+      "appearances": 26
+    },
+    {
+      "id": 19245,
+      "name": "M. Tavernier",
+      "photo": "https://media.api-sports.io/football/players/19245.png",
+      "goals": 5,
+      "assists": 4,
+      "appearances": 24
     },
     {
       "id": 129682,
@@ -76,7 +76,7 @@
       "photo": "https://media.api-sports.io/football/players/129682.png",
       "goals": 3,
       "assists": 1,
-      "appearances": 23
+      "appearances": 24
     },
     {
       "id": 1150,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/1150.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 16
+      "appearances": 17
     },
     {
       "id": 304853,
@@ -92,7 +92,7 @@
       "photo": "https://media.api-sports.io/football/players/304853.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 792,
@@ -108,7 +108,7 @@
       "photo": "https://media.api-sports.io/football/players/407806.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 4
+      "appearances": 5
     },
     {
       "id": 18870,
@@ -116,7 +116,7 @@
       "photo": "https://media.api-sports.io/football/players/18870.png",
       "goals": 1,
       "assists": 2,
-      "appearances": 22
+      "appearances": 23
     },
     {
       "id": 1125,
@@ -124,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/1125.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 17
+      "appearances": 18
     },
     {
       "id": 330437,
@@ -132,7 +132,7 @@
       "photo": "https://media.api-sports.io/football/players/330437.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 23
+      "appearances": 24
     },
     {
       "id": 47499,
@@ -140,7 +140,7 @@
       "photo": "https://media.api-sports.io/football/players/47499.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 14
+      "appearances": 15
     }
   ],
   "fixtures": [

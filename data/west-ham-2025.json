@@ -43,8 +43,8 @@
       "name": "J. Bowen",
       "photo": "https://media.api-sports.io/football/players/19428.png",
       "goals": 8,
-      "assists": 3,
-      "appearances": 27
+      "assists": 4,
+      "appearances": 28
     },
     {
       "id": 2939,
@@ -63,20 +63,20 @@
       "appearances": 18
     },
     {
+      "id": 1243,
+      "name": "T. Souček",
+      "photo": "https://media.api-sports.io/football/players/1243.png",
+      "goals": 4,
+      "assists": 0,
+      "appearances": 25
+    },
+    {
       "id": 37724,
       "name": "C. Summerville",
       "photo": "https://media.api-sports.io/football/players/37724.png",
       "goals": 4,
       "assists": 1,
-      "appearances": 22
-    },
-    {
-      "id": 1243,
-      "name": "T. Souček",
-      "photo": "https://media.api-sports.io/football/players/1243.png",
-      "goals": 3,
-      "assists": 0,
-      "appearances": 24
+      "appearances": 23
     },
     {
       "id": 336585,
@@ -84,7 +84,15 @@
       "photo": "https://media.api-sports.io/football/players/336585.png",
       "goals": 3,
       "assists": 3,
-      "appearances": 25
+      "appearances": 26
+    },
+    {
+      "id": 50856,
+      "name": "V. Castellanos",
+      "photo": "https://media.api-sports.io/football/players/50856.png",
+      "goals": 2,
+      "assists": 0,
+      "appearances": 8
     },
     {
       "id": 171,
@@ -100,15 +108,7 @@
       "photo": "https://media.api-sports.io/football/players/326176.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 16
-    },
-    {
-      "id": 50856,
-      "name": "V. Castellanos",
-      "photo": "https://media.api-sports.io/football/players/50856.png",
-      "goals": 1,
-      "assists": 0,
-      "appearances": 7
+      "appearances": 17
     }
   ],
   "fixtures": [

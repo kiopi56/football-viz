@@ -39,12 +39,20 @@
   ],
   "scorers": [
     {
+      "id": 343684,
+      "name": "T. Barry",
+      "photo": "https://media.api-sports.io/football/players/343684.png",
+      "goals": 6,
+      "assists": 0,
+      "appearances": 28
+    },
+    {
       "id": 148099,
       "name": "K. Dewsbury-Hall",
       "photo": "https://media.api-sports.io/football/players/148099.png",
       "goals": 5,
-      "assists": 2,
-      "appearances": 20
+      "assists": 3,
+      "appearances": 21
     },
     {
       "id": 18592,
@@ -52,15 +60,15 @@
       "photo": "https://media.api-sports.io/football/players/18592.png",
       "goals": 5,
       "assists": 2,
-      "appearances": 21
+      "appearances": 22
     },
     {
-      "id": 343684,
-      "name": "T. Barry",
-      "photo": "https://media.api-sports.io/football/players/343684.png",
-      "goals": 5,
+      "id": 125743,
+      "name": "Beto",
+      "photo": "https://media.api-sports.io/football/players/125743.png",
+      "goals": 4,
       "assists": 0,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 2934,
@@ -68,23 +76,15 @@
       "photo": "https://media.api-sports.io/football/players/2934.png",
       "goals": 3,
       "assists": 0,
-      "appearances": 23
-    },
-    {
-      "id": 125743,
-      "name": "Beto",
-      "photo": "https://media.api-sports.io/football/players/125743.png",
-      "goals": 3,
-      "assists": 0,
-      "appearances": 27
+      "appearances": 24
     },
     {
       "id": 895,
       "name": "J. Garner",
       "photo": "https://media.api-sports.io/football/players/895.png",
       "goals": 2,
-      "assists": 3,
-      "appearances": 27
+      "assists": 4,
+      "appearances": 28
     },
     {
       "id": 2990,
@@ -92,7 +92,7 @@
       "photo": "https://media.api-sports.io/football/players/2990.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 18
+      "appearances": 19
     },
     {
       "id": 19187,
@@ -101,6 +101,14 @@
       "goals": 2,
       "assists": 6,
       "appearances": 20
+    },
+    {
+      "id": 17661,
+      "name": "J. Branthwaite",
+      "photo": "https://media.api-sports.io/football/players/17661.png",
+      "goals": 1,
+      "assists": 0,
+      "appearances": 6
     }
   ],
   "fixtures": [
