@@ -1,9 +1,18 @@
 import { createClient } from "@supabase/supabase-js";
 
 // フロントエンドからの読み取りは anon key を使用（RLS の SELECT ポリシーに従う）
+// flowType: "pkce" を明示することで OAuth callback が ?code=xxx（クエリパラメータ）形式になり
+// HashRouter の #... と衝突しない（implicit flow だと #access_token= がハッシュと競合する）
 export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
+  import.meta.env.VITE_SUPABASE_ANON_KEY,
+  {
+    auth: {
+      flowType: "pkce",
+      detectSessionInUrl: true,
+      persistSession: true,
+    },
+  }
 );
 
 const TRACKED_TEAMS = { 40: "liverpool", 42: "arsenal" };

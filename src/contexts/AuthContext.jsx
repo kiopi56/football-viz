@@ -8,13 +8,20 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
+    // onAuthStateChange 一本化：
+    // - INITIAL_SESSION: 既存セッションの復元（ページリロード時）
+    // - SIGNED_IN: OAuth callback の PKCE コード交換完了後
+    // - SIGNED_OUT: ログアウト時
+    // getSession() を別途呼ぶと PKCE コード交換完了前に loading=false になる競合が起きるため使わない
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+        // INITIAL_SESSION または SIGNED_IN/SIGNED_OUT で確定値が来たらローディング終了
+        if (event === "INITIAL_SESSION" || event === "SIGNED_IN" || event === "SIGNED_OUT") {
+          setLoading(false);
+        }
+      }
+    );
     return () => subscription.unsubscribe();
   }, []);
 
