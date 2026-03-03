@@ -26,9 +26,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Fetch data (2025 season, all teams, with stats)
+      - name: Fetch data (2025 season, all teams, with stats and lineups)
         run: |
-          node scripts/fetchData.mjs --season=2025 --team=all --with-stats
+          node scripts/fetchData.mjs --season=2025 --team=all --with-stats --with-lineups
         env:
           VITE_APISPORTS_KEY:        ${{ secrets.VITE_APISPORTS_KEY }}
           VITE_SUPABASE_URL:         ${{ secrets.VITE_SUPABASE_URL }}

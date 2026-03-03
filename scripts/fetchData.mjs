@@ -111,7 +111,8 @@ const args = Object.fromEntries(
     })
 );
 
-const WITH_STATS    = args["with-stats"] === true;
+const WITH_STATS    = args["with-stats"]   === true;
+const WITH_LINEUPS  = args["with-lineups"] === true;
 const TEAM_FILTER   = (args.team ?? "all").toLowerCase();  // "all" or slug
 const SEASONS_RAW   = args.seasons ?? (args.season ? String(args.season) : "2024");
 const TARGET_SEASONS =
@@ -119,9 +120,10 @@ const TARGET_SEASONS =
     ? ALL_SEASONS
     : SEASONS_RAW.split(",").map(Number).filter(n => !isNaN(n));
 
-console.log(`\nSeasons   : ${TARGET_SEASONS.join(", ")}`);
-console.log(`Team      : ${TEAM_FILTER}`);
-console.log(`With stats: ${WITH_STATS}`);
+console.log(`\nSeasons      : ${TARGET_SEASONS.join(", ")}`);
+console.log(`Team         : ${TEAM_FILTER}`);
+console.log(`With stats   : ${WITH_STATS}`);
+console.log(`With lineups : ${WITH_LINEUPS}`);
 
 // ── Supabase ──────────────────────────────────────────────────
 const supabase =
@@ -236,6 +238,28 @@ async function fetchFixtureStats(fixtureId) {
   } catch (e) {
     console.warn(`    [warn] stats ${fixtureId}: ${e.message}`);
     return {};
+  }
+}
+
+// ── ラインナップ取得 ──────────────────────────────────────────
+
+/**
+ * fixture ラインナップを取得し [{teamId, teamName, players:[{name,number,pos,type}]}] で返す
+ */
+async function fetchFixtureLineup(fixtureId) {
+  try {
+    const json = await apiFetch(`/fixtures/lineups?fixture=${fixtureId}`);
+    return (json.response ?? []).map(entry => ({
+      teamId:   entry.team.id,
+      teamName: entry.team.name,
+      players: [
+        ...(entry.startXI    ?? []).map(({ player: p }) => ({ name: p.name, number: p.number, pos: p.pos, type: "start" })),
+        ...(entry.substitutes ?? []).map(({ player: p }) => ({ name: p.name, number: p.number, pos: p.pos, type: "sub" })),
+      ],
+    }));
+  } catch (e) {
+    console.warn(`    [warn] lineup ${fixtureId}: ${e.message}`);
+    return [];
   }
 }
 
@@ -374,6 +398,30 @@ async function main() {
           console.log(`  ${i + 1}/${allFixtures.length} done`);
         }
       }
+    }
+
+    // ── 3b. ラインナップ取得（--with-lineups のみ） ──
+    if (WITH_LINEUPS) {
+      const lineupDir = join(process.cwd(), "public", "data", "lineups");
+      mkdirSync(lineupDir, { recursive: true });
+      console.log(`[lineups] Fetching lineups for ${allFixtures.length} fixtures...`);
+      let saved = 0, skipped = 0;
+      for (const [i, fx] of allFixtures.entries()) {
+        const lineupPath = join(lineupDir, `${fx.fixture.id}.json`);
+        // 既存ファイルはスキップ（ラインナップは変わらない）
+        if (existsSync(lineupPath)) { skipped++; continue; }
+        await wait(500);
+        const lineup = await fetchFixtureLineup(fx.fixture.id);
+        if (lineup.length > 0) {
+          writeFileSync(lineupPath, JSON.stringify(lineup));
+          saved++;
+        }
+        totalApiCalls++;
+        if ((i + 1) % 50 === 0) {
+          console.log(`  ${i + 1}/${allFixtures.length} done (saved=${saved} skipped=${skipped})`);
+        }
+      }
+      console.log(`[lineups] saved=${saved} skipped=${skipped}`);
     }
 
     // ── 4. Supabase upsert 用の全試合行（一括） ──

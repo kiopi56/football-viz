@@ -122,14 +122,25 @@ function WatchRecordPanel({ fixtureId, teamColor }) {
   // useAuth() を直接呼ぶことで、認証状態の変化を確実にキャッチする
   const { user, loading: authLoading } = useAuth();
 
-  const [watched,  setWatched]  = useState(false);
-  const [rating,   setRating]   = useState(0);
-  const [mom,      setMom]      = useState("");
-  const [memo,     setMemo]     = useState("");
-  const [saving,   setSaving]   = useState(false);
-  const [saved,    setSaved]    = useState(false);
-  const [loadErr,  setLoadErr]  = useState(null);
-  const [saveErr,  setSaveErr]  = useState(null);
+  const [watched,       setWatched]       = useState(false);
+  const [rating,        setRating]        = useState(0);
+  const [mom,           setMom]           = useState("");
+  const [memo,          setMemo]          = useState("");
+  const [saving,        setSaving]        = useState(false);
+  const [saved,         setSaved]         = useState(false);
+  const [loadErr,       setLoadErr]       = useState(null);
+  const [saveErr,       setSaveErr]       = useState(null);
+  const [lineupTeams,   setLineupTeams]   = useState(null);  // null=loading, []=failed/empty
+
+  // ラインナップを静的JSONから読み込む
+  useEffect(() => {
+    if (!fixtureId) return;
+    const base = import.meta.env.BASE_URL ?? "/";
+    fetch(`${base}data/lineups/${fixtureId}.json`)
+      .then(res => { if (!res.ok) throw new Error("not found"); return res.json(); })
+      .then(data => setLineupTeams(data))
+      .catch(() => setLineupTeams([]));
+  }, [fixtureId]);
 
   useEffect(() => {
     if (!user || !fixtureId) return;
@@ -215,22 +226,61 @@ function WatchRecordPanel({ fixtureId, teamColor }) {
       {/* MOM */}
       <div style={{ marginBottom: 12 }}>
         <div style={{ fontSize: 9, color: "#444", marginBottom: 6 }}>MOM</div>
-        <input
-          value={mom}
-          onChange={e => setMom(e.target.value)}
-          placeholder="選手名を入力..."
-          maxLength={50}
-          style={{
-            width: "100%", boxSizing: "border-box",
-            background: "#0a0f14", border: "1px solid #1e2d3a",
-            borderRadius: 5, padding: "6px 8px",
-            color: "#ccc", fontSize: 10,
-            fontFamily: "'Space Mono', monospace",
-            outline: "none",
-          }}
-          onFocus={e => e.target.style.borderColor = AC}
-          onBlur={e => e.target.style.borderColor = "#1e2d3a"}
-        />
+        {lineupTeams === null ? (
+          // ローディング中
+          <div style={{
+            height: 28, borderRadius: 5, background: "rgba(255,255,255,0.04)",
+            animation: "pulse 1.4s ease-in-out infinite alternate",
+          }} />
+        ) : lineupTeams.length > 0 ? (
+          // ドロップダウン選択
+          <select
+            value={mom}
+            onChange={e => setMom(e.target.value)}
+            style={{
+              width: "100%", boxSizing: "border-box",
+              background: "#0a0f14", border: `1px solid ${mom ? AC + "80" : "#1e2d3a"}`,
+              borderRadius: 5, padding: "6px 8px",
+              color: mom ? "#ccc" : "#555", fontSize: 10,
+              fontFamily: "'Space Mono', monospace",
+              cursor: "pointer", outline: "none",
+              appearance: "none",
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23555'/%3E%3C/svg%3E")`,
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "right 8px center",
+              paddingRight: "24px",
+            }}
+          >
+            <option value="">選択してください</option>
+            {lineupTeams.map(team => (
+              <optgroup key={team.teamId} label={`── ${team.teamName} ──`}>
+                {team.players.map(p => (
+                  <option key={`${team.teamId}-${p.number}-${p.name}`} value={p.name}>
+                    {p.number ? `[${p.number}] ` : ""}{p.name}{p.type === "sub" ? " (S)" : ""}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+        ) : (
+          // フォールバック：テキスト入力
+          <input
+            value={mom}
+            onChange={e => setMom(e.target.value)}
+            placeholder="選手名を入力..."
+            maxLength={50}
+            style={{
+              width: "100%", boxSizing: "border-box",
+              background: "#0a0f14", border: "1px solid #1e2d3a",
+              borderRadius: 5, padding: "6px 8px",
+              color: "#ccc", fontSize: 10,
+              fontFamily: "'Space Mono', monospace",
+              outline: "none",
+            }}
+            onFocus={e => e.target.style.borderColor = AC}
+            onBlur={e => e.target.style.borderColor = "#1e2d3a"}
+          />
+        )}
       </div>
 
       {/* メモ */}
