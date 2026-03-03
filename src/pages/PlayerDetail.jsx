@@ -16,8 +16,8 @@ const TEAMS = [
   { id: 40, slug: "liverpool", name: "Liverpool", color: "#C8102E" },
   { id: 42, slug: "arsenal",   name: "Arsenal",   color: "#EF0107" },
 ];
-const SEASONS       = [2022, 2023, 2024];
-const SEASON_LABELS = ["2022-23", "2023-24", "2024-25"];
+const SEASONS       = [2023, 2024, 2025];
+const SEASON_LABELS = ["2023-24", "2024-25", "2025-26"];
 
 // ── ミニバンプチャート定数 ──────────────────────────────────
 const W   = 480;
@@ -48,20 +48,20 @@ export default function PlayerDetail() {
   const playerId = Number(playerIdStr);
 
   // 全チーム × 全シーズン分のデータをロード（6本）
-  const { data: d40_2022, loading: l40_2022 } = useTeamData(40, 2022);
-  const { data: d40_2023, loading: l40_2023 } = useTeamData(40, 2023);
-  const { data: d40_2024, loading: l40_2024 } = useTeamData(40, 2024);
-  const { data: d42_2022, loading: l42_2022 } = useTeamData(42, 2022);
-  const { data: d42_2023, loading: l42_2023 } = useTeamData(42, 2023);
-  const { data: d42_2024, loading: l42_2024 } = useTeamData(42, 2024);
+  const { data: d40_2023, loading: l40_2023 } = useTeamData("liverpool", 2023);
+  const { data: d40_2024, loading: l40_2024 } = useTeamData("liverpool", 2024);
+  const { data: d40_2025, loading: l40_2025 } = useTeamData("liverpool", 2025);
+  const { data: d42_2023, loading: l42_2023 } = useTeamData("arsenal", 2023);
+  const { data: d42_2024, loading: l42_2024 } = useTeamData("arsenal", 2024);
+  const { data: d42_2025, loading: l42_2025 } = useTeamData("arsenal", 2025);
 
-  const loading = l40_2022 || l40_2023 || l40_2024 || l42_2022 || l42_2023 || l42_2024;
+  const loading = l40_2023 || l40_2024 || l40_2025 || l42_2023 || l42_2024 || l42_2025;
 
   // ── 全データを整理 ──────────────────────────────────────────
   const allData = useMemo(() => ({
-    40: { 2022: d40_2022, 2023: d40_2023, 2024: d40_2024 },
-    42: { 2022: d42_2022, 2023: d42_2023, 2024: d42_2024 },
-  }), [d40_2022, d40_2023, d40_2024, d42_2022, d42_2023, d42_2024]);
+    40: { 2023: d40_2023, 2024: d40_2024, 2025: d40_2025 },
+    42: { 2023: d42_2023, 2024: d42_2024, 2025: d42_2025 },
+  }), [d40_2023, d40_2024, d40_2025, d42_2023, d42_2024, d42_2025]);
 
   // ── 選手を全JSONから検索 ──────────────────────────────────
   // seasonStats[season] = { goals, assists, appearances, rank, teamId, teamColor, teamName }
