@@ -42,9 +42,9 @@
       "id": 19221,
       "name": "H. Wilson",
       "photo": "https://media.api-sports.io/football/players/19221.png",
-      "goals": 8,
-      "assists": 5,
-      "appearances": 26
+      "goals": 9,
+      "assists": 6,
+      "appearances": 27
     },
     {
       "id": 2887,
@@ -52,15 +52,15 @@
       "photo": "https://media.api-sports.io/football/players/2887.png",
       "goals": 8,
       "assists": 3,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 1455,
       "name": "A. Iwobi",
       "photo": "https://media.api-sports.io/football/players/1455.png",
-      "goals": 3,
+      "goals": 4,
       "assists": 3,
-      "appearances": 21
+      "appearances": 22
     },
     {
       "id": 1161,
@@ -68,7 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/1161.png",
       "goals": 3,
       "assists": 0,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 1696,
@@ -76,7 +76,7 @@
       "photo": "https://media.api-sports.io/football/players/1696.png",
       "goals": 3,
       "assists": 4,
-      "appearances": 13
+      "appearances": 14
     },
     {
       "id": 19032,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/19032.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 20
+      "appearances": 21
     },
     {
       "id": 657,
@@ -92,7 +92,7 @@
       "photo": "https://media.api-sports.io/football/players/657.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 19
+      "appearances": 20
     },
     {
       "id": 152967,
@@ -100,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/152967.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 19
+      "appearances": 20
     },
     {
       "id": 2823,
@@ -116,7 +116,7 @@
       "photo": "https://media.api-sports.io/football/players/19025.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 17
+      "appearances": 18
     },
     {
       "id": 195106,
@@ -124,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/195106.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 10
+      "appearances": 11
     },
     {
       "id": 19480,

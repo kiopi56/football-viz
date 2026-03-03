@@ -44,7 +44,7 @@
       "photo": "https://media.api-sports.io/football/players/18979.png",
       "goals": 10,
       "assists": 0,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 19586,
@@ -52,7 +52,7 @@
       "photo": "https://media.api-sports.io/football/players/19586.png",
       "goals": 6,
       "assists": 2,
-      "appearances": 22
+      "appearances": 23
     },
     {
       "id": 47315,
@@ -60,7 +60,7 @@
       "photo": "https://media.api-sports.io/football/players/47315.png",
       "goals": 5,
       "assists": 1,
-      "appearances": 28
+      "appearances": 29
     },
     {
       "id": 1460,
@@ -68,7 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/1460.png",
       "goals": 5,
       "assists": 3,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 1946,
@@ -76,15 +76,15 @@
       "photo": "https://media.api-sports.io/football/players/1946.png",
       "goals": 5,
       "assists": 5,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 2937,
       "name": "D. Rice",
       "photo": "https://media.api-sports.io/football/players/2937.png",
       "goals": 4,
-      "assists": 4,
-      "appearances": 27
+      "assists": 5,
+      "appearances": 28
     },
     {
       "id": 47311,
@@ -99,16 +99,16 @@
       "name": "Gabriel Magalhães",
       "photo": "https://media.api-sports.io/football/players/22224.png",
       "goals": 3,
-      "assists": 3,
-      "appearances": 22
+      "assists": 4,
+      "appearances": 23
     },
     {
       "id": 38746,
       "name": "J. Timber",
       "photo": "https://media.api-sports.io/football/players/38746.png",
-      "goals": 2,
+      "goals": 3,
       "assists": 4,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 643,
@@ -117,6 +117,14 @@
       "goals": 2,
       "assists": 0,
       "appearances": 11
+    },
+    {
+      "id": 22090,
+      "name": "W. Saliba",
+      "photo": "https://media.api-sports.io/football/players/22090.png",
+      "goals": 1,
+      "assists": 0,
+      "appearances": 24
     },
     {
       "id": 157052,
@@ -140,7 +148,7 @@
       "photo": "https://media.api-sports.io/football/players/127769.png",
       "goals": 1,
       "assists": 2,
-      "appearances": 22
+      "appearances": 23
     },
     {
       "id": 136723,
@@ -149,14 +157,6 @@
       "goals": 1,
       "assists": 1,
       "appearances": 19
-    },
-    {
-      "id": 127817,
-      "name": "P. Hincapié",
-      "photo": "https://media.api-sports.io/football/players/127817.png",
-      "goals": 1,
-      "assists": 1,
-      "appearances": 18
     }
   ],
   "fixtures": [

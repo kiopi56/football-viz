@@ -52,7 +52,7 @@
       "photo": "https://media.api-sports.io/football/players/2218.png",
       "goals": 5,
       "assists": 1,
-      "appearances": 17
+      "appearances": 18
     },
     {
       "id": 13736,
@@ -60,7 +60,7 @@
       "photo": "https://media.api-sports.io/football/players/13736.png",
       "goals": 3,
       "assists": 2,
-      "appearances": 19
+      "appearances": 20
     },
     {
       "id": 2032,
@@ -68,7 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/2032.png",
       "goals": 2,
       "assists": 0,
-      "appearances": 3
+      "appearances": 4
     },
     {
       "id": 67971,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/184226.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 25
+      "appearances": 26
     },
     {
       "id": 1468,
@@ -100,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/137303.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 3
+      "appearances": 4
     },
     {
       "id": 126949,
@@ -108,7 +108,15 @@
       "photo": "https://media.api-sports.io/football/players/126949.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 23
+      "appearances": 24
+    },
+    {
+      "id": 20995,
+      "name": "M. Lacroix",
+      "photo": "https://media.api-sports.io/football/players/20995.png",
+      "goals": 1,
+      "assists": 2,
+      "appearances": 27
     },
     {
       "id": 182201,
@@ -116,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/182201.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 286458,

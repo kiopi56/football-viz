@@ -42,17 +42,17 @@
       "id": 1469,
       "name": "D. Welbeck",
       "photo": "https://media.api-sports.io/football/players/1469.png",
-      "goals": 9,
+      "goals": 10,
       "assists": 0,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 278370,
       "name": "D. Gómez",
       "photo": "https://media.api-sports.io/football/players/278370.png",
-      "goals": 4,
+      "goals": 5,
       "assists": 0,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 38695,
@@ -60,7 +60,7 @@
       "photo": "https://media.api-sports.io/football/players/38695.png",
       "goals": 3,
       "assists": 2,
-      "appearances": 25
+      "appearances": 26
     },
     {
       "id": 265820,
@@ -76,7 +76,7 @@
       "photo": "https://media.api-sports.io/football/players/162007.png",
       "goals": 2,
       "assists": 0,
-      "appearances": 22
+      "appearances": 23
     },
     {
       "id": 106835,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/106835.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 17
+      "appearances": 18
     },
     {
       "id": 90590,
@@ -132,7 +132,7 @@
       "photo": "https://media.api-sports.io/football/players/296.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 16
+      "appearances": 17
     },
     {
       "id": 537,
@@ -140,15 +140,15 @@
       "photo": "https://media.api-sports.io/football/players/537.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 15
+      "appearances": 16
     },
     {
       "id": 305730,
       "name": "J. Hinshelwood",
       "photo": "https://media.api-sports.io/football/players/305730.png",
       "goals": 1,
-      "assists": 1,
-      "appearances": 16
+      "assists": 2,
+      "appearances": 17
     },
     {
       "id": 343311,
