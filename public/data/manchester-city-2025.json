@@ -170,7 +170,7 @@
         "red_cards": null,
         "saves": 4,
         "total_passes": 311,
-        "pass_accuracy": 73
+        "pass_accuracy": 74
       },
       "stats_away": {
         "shots_on_goal": 5,
@@ -183,7 +183,7 @@
         "yellow_cards": 3,
         "red_cards": null,
         "saves": 2,
-        "total_passes": 649,
+        "total_passes": 655,
         "pass_accuracy": 90
       }
     },

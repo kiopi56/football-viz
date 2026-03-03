@@ -44,23 +44,23 @@
       "photo": "https://media.api-sports.io/football/players/20589.png",
       "goals": 9,
       "assists": 3,
-      "appearances": 22
+      "appearances": 23
     },
     {
       "id": 115589,
       "name": "B. Šeško",
       "photo": "https://media.api-sports.io/football/players/115589.png",
-      "goals": 7,
+      "goals": 8,
       "assists": 1,
-      "appearances": 22
+      "appearances": 23
     },
     {
       "id": 1485,
       "name": "Bruno Fernandes",
       "photo": "https://media.api-sports.io/football/players/1485.png",
-      "goals": 6,
-      "assists": 12,
-      "appearances": 24
+      "goals": 7,
+      "assists": 13,
+      "appearances": 25
     },
     {
       "id": 1165,
@@ -68,7 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/1165.png",
       "goals": 6,
       "assists": 2,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 747,
@@ -76,7 +76,7 @@
       "photo": "https://media.api-sports.io/football/players/747.png",
       "goals": 5,
       "assists": 2,
-      "appearances": 25
+      "appearances": 26
     },
     {
       "id": 382452,
@@ -100,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/157997.png",
       "goals": 2,
       "assists": 2,
-      "appearances": 21
+      "appearances": 22
     },
     {
       "id": 70100,
@@ -108,7 +108,7 @@
       "photo": "https://media.api-sports.io/football/players/70100.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 16
+      "appearances": 17
     },
     {
       "id": 532,
@@ -124,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/886.png",
       "goals": 1,
       "assists": 3,
-      "appearances": 25
+      "appearances": 26
     },
     {
       "id": 2935,
@@ -132,7 +132,7 @@
       "photo": "https://media.api-sports.io/football/players/2935.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 14
+      "appearances": 15
     }
   ],
   "fixtures": [
