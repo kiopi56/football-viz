@@ -21,6 +21,7 @@ import {
 import { useTeamData } from "../hooks/useTeamData";
 import { useAuth } from "../contexts/AuthContext";
 import { getRecord, saveRecord } from "../lib/matchRecords";
+import FormationChart from "../components/FormationChart";
 
 // ── 定数 ─────────────────────────────────────────────────────
 const TEAM_INFO = {
@@ -118,29 +119,18 @@ function StarRating({ value, onChange }) {
   );
 }
 
-function WatchRecordPanel({ fixtureId, teamColor }) {
+function WatchRecordPanel({ fixtureId, teamColor, lineupTeams }) {
   // useAuth() を直接呼ぶことで、認証状態の変化を確実にキャッチする
   const { user, loading: authLoading } = useAuth();
 
-  const [watched,       setWatched]       = useState(false);
-  const [rating,        setRating]        = useState(0);
-  const [mom,           setMom]           = useState("");
-  const [memo,          setMemo]          = useState("");
-  const [saving,        setSaving]        = useState(false);
-  const [saved,         setSaved]         = useState(false);
-  const [loadErr,       setLoadErr]       = useState(null);
-  const [saveErr,       setSaveErr]       = useState(null);
-  const [lineupTeams,   setLineupTeams]   = useState(null);  // null=loading, []=failed/empty
-
-  // ラインナップを静的JSONから読み込む
-  useEffect(() => {
-    if (!fixtureId) return;
-    const base = import.meta.env.BASE_URL ?? "/";
-    fetch(`${base}data/lineups/${fixtureId}.json`)
-      .then(res => { if (!res.ok) throw new Error("not found"); return res.json(); })
-      .then(data => setLineupTeams(data))
-      .catch(() => setLineupTeams([]));
-  }, [fixtureId]);
+  const [watched,  setWatched]  = useState(false);
+  const [rating,   setRating]   = useState(0);
+  const [mom,      setMom]      = useState("");
+  const [memo,     setMemo]     = useState("");
+  const [saving,   setSaving]   = useState(false);
+  const [saved,    setSaved]    = useState(false);
+  const [loadErr,  setLoadErr]  = useState(null);
+  const [saveErr,  setSaveErr]  = useState(null);
 
   useEffect(() => {
     if (!user || !fixtureId) return;
@@ -366,6 +356,7 @@ export default function MatchDetail() {
   const [narrativeError,   setNarrativeError]   = useState(null);
 
   const [relatedArticles, setRelatedArticles] = useState([]);
+  const [lineupTeams,     setLineupTeams]     = useState(null); // null=loading, []=failed/empty
 
   // fixture 読み込み後に teamId を決定
   const teamId = fixture ? resolveTeamId(fixture) : null;
@@ -392,6 +383,16 @@ export default function MatchDetail() {
       })
       .catch(e => setLoadErr(e.message))
       .finally(() => setLoading(false));
+  }, [id]);
+
+  // ── ラインナップ読み込み ──
+  useEffect(() => {
+    if (!id) return;
+    const base = import.meta.env.BASE_URL ?? "/";
+    fetch(`${base}data/lineups/${id}.json`)
+      .then(res => { if (!res.ok) throw new Error("not found"); return res.json(); })
+      .then(data => setLineupTeams(data))
+      .catch(() => setLineupTeams([]));
   }, [id]);
 
   // ── ローディング ──
@@ -611,6 +612,11 @@ ${historyStr}
           {/* ── 左カラム ── */}
           <div>
 
+            {/* ── フォーメーション図 ── */}
+            {lineupTeams?.length > 0 && (
+              <FormationChart lineupTeams={lineupTeams} homeTeamId={fixture.home_team_id} />
+            )}
+
             {/* ── AI ナラティブ ── */}
             <div style={{ background: "#0e1318", border: "1px solid rgba(255,255,255,0.08)",
               borderRadius: 12, padding: "20px 22px", marginBottom: 16 }}>
@@ -767,7 +773,7 @@ ${historyStr}
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
 
             {/* 観戦記録パネル（認証状態はパネル内で管理） */}
-            <WatchRecordPanel fixtureId={id} teamColor={TEAM_COLOR} />
+            <WatchRecordPanel fixtureId={id} teamColor={TEAM_COLOR} lineupTeams={lineupTeams} />
 
             {/* 直近5試合フォーム */}
             <div style={{ background: "#0e1318", border: "1px solid rgba(255,255,255,0.08)",

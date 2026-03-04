@@ -2,11 +2,12 @@
  * src/pages/PlayerDetail.jsx
  *
  * 選手詳細ページ。
- * public/data/{team}-{season}.json の scorers 配列からデータを取得する。
+ * 1. public/data/{team}-{season}.json の scorers 配列から検索
+ * 2. 見つからない場合、{slug}-squad-{season}.json から補完（非スコアラー対応）
  * 外部 API は使用しない。
  */
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useTeamData } from "../hooks/useTeamData";
 
@@ -39,6 +40,148 @@ function rankY(rank, maxRank) {
 function g90(goals, appearances) {
   if (!appearances) return "—";
   return (goals / appearances * 90).toFixed(2);
+}
+
+// ── 非スコアラー用コンポーネント ─────────────────────────────
+
+const SQUAD_TEAMS = [
+  { slug: "liverpool", name: "Liverpool", color: "#C8102E" },
+  { slug: "arsenal",   name: "Arsenal",   color: "#EF0107" },
+];
+const SQUAD_SEASONS = [2025, 2024, 2023];
+
+function NonScorerDetail({ playerId }) {
+  const [squadInfo, setSquadInfo] = useState(null);  // { name, pos, number, appearances, teamName, teamColor, season }
+  const [loadDone, setLoadDone]   = useState(false);
+
+  useEffect(() => {
+    let found = null;
+    const base = import.meta.env.BASE_URL ?? "/";
+    const fetches = [];
+    for (const team of SQUAD_TEAMS) {
+      for (const season of SQUAD_SEASONS) {
+        fetches.push(
+          fetch(`${base}data/${team.slug}-squad-${season}.json`)
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+              if (!data || found) return;
+              const p = data.players?.find(pl => pl.id === playerId);
+              if (p) {
+                found = { ...p, teamName: team.name, teamColor: team.color, season };
+              }
+            })
+            .catch(() => {})
+        );
+      }
+    }
+    Promise.all(fetches).then(() => {
+      setSquadInfo(found);
+      setLoadDone(true);
+    });
+  }, [playerId]);
+
+  if (!loadDone) {
+    return (
+      <div style={{ minHeight: "100vh", background: "#080c10",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontFamily: "'Space Mono', monospace", color: "#444", fontSize: 12 }}>
+        Loading...
+      </div>
+    );
+  }
+
+  if (!squadInfo) {
+    return (
+      <div style={{ minHeight: "100vh", background: "#080c10",
+        display: "flex", flexDirection: "column", alignItems: "center",
+        justifyContent: "center", fontFamily: "'Space Mono', monospace", gap: 14 }}>
+        <div style={{ fontSize: 13, color: "#444" }}>データ準備中</div>
+        <div style={{ fontSize: 10, color: "#2d2d2d" }}>
+          scorers データは node scripts/fetchData.mjs 実行後に利用可能になります
+        </div>
+        <Link to="/" style={{ fontSize: 10, color: "#00ff85", textDecoration: "none" }}>← HOME</Link>
+      </div>
+    );
+  }
+
+  const ACCENT = squadInfo.teamColor;
+  const POS_LABEL = { G: "GK", D: "DF", M: "MF", F: "FW" };
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#080c10", color: "#fff",
+      fontFamily: "'Space Mono', monospace", padding: "28px 20px", boxSizing: "border-box" }}>
+      <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Anton&display=swap" rel="stylesheet" />
+      <div style={{ maxWidth: 800, margin: "0 auto" }}>
+
+        {/* Breadcrumb */}
+        <div style={{ marginBottom: 20, display: "flex", gap: 12, fontSize: 10, color: "#555" }}>
+          <Link to="/" style={{ color: "#555", textDecoration: "none" }}
+            onMouseEnter={e => e.target.style.color = "#00ff85"}
+            onMouseLeave={e => e.target.style.color = "#555"}>← HOME</Link>
+          <span>/</span>
+          <span style={{ color: "#555" }}>{squadInfo.teamName}</span>
+        </div>
+
+        {/* 選手ヘッダー */}
+        <div style={{ background: "#0e1318", border: "1px solid rgba(255,255,255,0.08)",
+          borderTop: `3px solid ${ACCENT}`, borderRadius: 12,
+          padding: "24px 28px", marginBottom: 20,
+          display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
+
+          <div style={{ flex: 1, minWidth: 160 }}>
+            <div style={{ fontFamily: "'Anton', sans-serif",
+              fontSize: "clamp(22px,4vw,38px)", letterSpacing: "0.04em",
+              lineHeight: 1, marginBottom: 6 }}>
+              {squadInfo.name}
+            </div>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+              <span style={{ fontSize: 10, color: ACCENT, fontWeight: 700,
+                padding: "2px 8px", border: `1px solid ${ACCENT}44`, borderRadius: 3 }}>
+                {squadInfo.teamName}
+              </span>
+              {squadInfo.number && (
+                <span style={{ fontSize: 10, color: "#555" }}>#{squadInfo.number}</span>
+              )}
+              {squadInfo.pos && (
+                <span style={{ fontSize: 9, color: "#555", padding: "2px 6px",
+                  border: "1px solid rgba(255,255,255,0.1)", borderRadius: 3 }}>
+                  {POS_LABEL[squadInfo.pos] ?? squadInfo.pos}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div style={{ display: "flex", gap: 20, flexShrink: 0 }}>
+            {[
+              { label: "得点", value: "—",  color: "#22c55e" },
+              { label: "アシスト", value: "—", color: "#ffd93d" },
+              { label: "出場登録", value: squadInfo.appearances, color: "#888" },
+            ].map(({ label, value, color }) => (
+              <div key={label} style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 24, fontWeight: 700, color, lineHeight: 1 }}>{value}</div>
+                <div style={{ fontSize: 8, color: "#444", marginTop: 3 }}>{label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ background: "#0e1318", border: "1px solid rgba(255,255,255,0.08)",
+          borderRadius: 12, padding: "20px 24px", marginBottom: 16,
+          fontSize: 11, color: "#555", lineHeight: 2 }}>
+          <div style={{ fontSize: 10, color: "#444", letterSpacing: "0.1em",
+            textTransform: "uppercase", marginBottom: 10 }}>選手情報</div>
+          <div>スコアラーデータなし（{squadInfo.season}-{String(squadInfo.season + 1).slice(-2)} スカッドに登録）</div>
+          <div style={{ marginTop: 4, fontSize: 9, color: "#333" }}>
+            ※ 得点・アシスト情報は得点者のみ収集されています
+          </div>
+        </div>
+
+        <div style={{ fontSize: 9, color: "#2d2d2d", lineHeight: 1.8 }}>
+          ※ データ：api-sports.io より取得（PL 登録選手・ビルド時生成）
+        </div>
+      </div>
+    </div>
+  );
 }
 
 // ── メインコンポーネント ──────────────────────────────────────
@@ -110,20 +253,9 @@ export default function PlayerDetail() {
     );
   }
 
-  // ── データなし ────────────────────────────────────────────
+  // ── スコアラーにない選手 → squad JSON から補完 ─────────────
   if (!playerName) {
-    return (
-      <div style={{ minHeight: "100vh", background: "#080c10",
-        display: "flex", flexDirection: "column", alignItems: "center",
-        justifyContent: "center", fontFamily: "'Space Mono', monospace",
-        gap: 14 }}>
-        <div style={{ fontSize: 13, color: "#444" }}>データ準備中</div>
-        <div style={{ fontSize: 10, color: "#2d2d2d" }}>
-          scorers データは node scripts/fetchData.mjs 実行後に利用可能になります
-        </div>
-        <Link to="/" style={{ fontSize: 10, color: "#00ff85", textDecoration: "none" }}>← HOME</Link>
-      </div>
-    );
+    return <NonScorerDetail playerId={playerId} />;
   }
 
   const ACCENT = primaryTeam?.color ?? "#00ff85";

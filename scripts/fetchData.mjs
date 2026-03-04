@@ -111,19 +111,27 @@ const args = Object.fromEntries(
     })
 );
 
-const WITH_STATS    = args["with-stats"]   === true;
-const WITH_LINEUPS  = args["with-lineups"] === true;
-const TEAM_FILTER   = (args.team ?? "all").toLowerCase();  // "all" or slug
-const SEASONS_RAW   = args.seasons ?? (args.season ? String(args.season) : "2024");
-const TARGET_SEASONS =
+const WITH_STATS      = args["with-stats"]     === true;
+const WITH_LINEUPS    = args["with-lineups"]   === true;
+const FORCE_LINEUPS   = args["force-lineups"]  === true;
+const TEAM_FILTER     = (args.team ?? "all").toLowerCase();  // "all" or slug
+const SEASONS_RAW     = args.seasons ?? (args.season ? String(args.season) : "2024");
+const TARGET_SEASONS  =
   SEASONS_RAW === "all"
     ? ALL_SEASONS
     : SEASONS_RAW.split(",").map(Number).filter(n => !isNaN(n));
 
-console.log(`\nSeasons      : ${TARGET_SEASONS.join(", ")}`);
-console.log(`Team         : ${TEAM_FILTER}`);
-console.log(`With stats   : ${WITH_STATS}`);
-console.log(`With lineups : ${WITH_LINEUPS}`);
+// lineup 集約対象チーム（slug → teamId）
+const TRACKED_TEAMS = [
+  { id: 40, slug: "liverpool", name: "Liverpool" },
+  { id: 42, slug: "arsenal",   name: "Arsenal"   },
+];
+
+console.log(`\nSeasons        : ${TARGET_SEASONS.join(", ")}`);
+console.log(`Team           : ${TEAM_FILTER}`);
+console.log(`With stats     : ${WITH_STATS}`);
+console.log(`With lineups   : ${WITH_LINEUPS}`);
+console.log(`Force lineups  : ${FORCE_LINEUPS}`);
 
 // ── Supabase ──────────────────────────────────────────────────
 const supabase =
@@ -244,17 +252,18 @@ async function fetchFixtureStats(fixtureId) {
 // ── ラインナップ取得 ──────────────────────────────────────────
 
 /**
- * fixture ラインナップを取得し [{teamId, teamName, players:[{name,number,pos,type}]}] で返す
+ * fixture ラインナップを取得し [{teamId, teamName, formation, players:[{id,name,number,pos,type}]}] で返す
  */
 async function fetchFixtureLineup(fixtureId) {
   try {
     const json = await apiFetch(`/fixtures/lineups?fixture=${fixtureId}`);
     return (json.response ?? []).map(entry => ({
-      teamId:   entry.team.id,
-      teamName: entry.team.name,
+      teamId:    entry.team.id,
+      teamName:  entry.team.name,
+      formation: entry.formation ?? null,
       players: [
-        ...(entry.startXI    ?? []).map(({ player: p }) => ({ name: p.name, number: p.number, pos: p.pos, type: "start" })),
-        ...(entry.substitutes ?? []).map(({ player: p }) => ({ name: p.name, number: p.number, pos: p.pos, type: "sub" })),
+        ...(entry.startXI    ?? []).map(({ player: p }) => ({ id: p.id, name: p.name, number: p.number, pos: p.pos, type: "start" })),
+        ...(entry.substitutes ?? []).map(({ player: p }) => ({ id: p.id, name: p.name, number: p.number, pos: p.pos, type: "sub" })),
       ],
     }));
   } catch (e) {
@@ -408,8 +417,8 @@ async function main() {
       let saved = 0, skipped = 0;
       for (const [i, fx] of allFixtures.entries()) {
         const lineupPath = join(lineupDir, `${fx.fixture.id}.json`);
-        // 既存ファイルはスキップ（ラインナップは変わらない）
-        if (existsSync(lineupPath)) { skipped++; continue; }
+        // --force-lineups が無い場合、既存ファイルはスキップ
+        if (!FORCE_LINEUPS && existsSync(lineupPath)) { skipped++; continue; }
         await wait(500);
         const lineup = await fetchFixtureLineup(fx.fixture.id);
         if (lineup.length > 0) {
@@ -422,6 +431,46 @@ async function main() {
         }
       }
       console.log(`[lineups] saved=${saved} skipped=${skipped}`);
+
+      // ── スカッド集計ファイル生成 ──
+      // lineup ファイルから tracked teams の選手を集約
+      console.log(`[squad] Building squad files...`);
+      for (const trackedTeam of TRACKED_TEAMS) {
+        const playerMap = new Map(); // id → { id, name, number, pos, appearances }
+        let count = 0;
+
+        for (const fx of allFixtures) {
+          const lineupPath = join(lineupDir, `${fx.fixture.id}.json`);
+          if (!existsSync(lineupPath)) continue;
+          try {
+            const lineup = JSON.parse(readFileSync(lineupPath, "utf-8"));
+            const entry = lineup.find(e => e.teamId === trackedTeam.id);
+            if (!entry) continue;
+            count++;
+            for (const p of entry.players) {
+              if (!p.id) continue;
+              if (!playerMap.has(p.id)) {
+                playerMap.set(p.id, { id: p.id, name: p.name, number: p.number ?? null, pos: p.pos ?? null, appearances: 0 });
+              }
+              playerMap.get(p.id).appearances++;
+            }
+          } catch {}
+        }
+
+        const players = [...playerMap.values()]
+          .sort((a, b) => b.appearances - a.appearances);
+
+        const squadData = {
+          teamId:   trackedTeam.id,
+          teamName: trackedTeam.name,
+          season,
+          players,
+        };
+
+        const squadPath = join(process.cwd(), "public", "data", `${trackedTeam.slug}-squad-${season}.json`);
+        writeFileSync(squadPath, JSON.stringify(squadData, null, 2));
+        console.log(`  ✓ ${trackedTeam.slug}-squad-${season}.json (${players.length} players, ${count} fixtures)`);
+      }
     }
 
     // ── 4. Supabase upsert 用の全試合行（一括） ──

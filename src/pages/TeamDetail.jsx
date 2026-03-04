@@ -6,6 +6,7 @@ import {
 } from "recharts";
 import { useTeamData } from "../hooks/useTeamData";
 import ScorerTracker from "../components/ScorerTracker";
+import SquadView from "../components/SquadView";
 import { fetchFixturesWithFallback } from "../lib/supabase";
 import { TEAMS_BY_SLUG } from "../data/teams";
 
@@ -304,7 +305,7 @@ export default function TeamDetail() {
 
         {/* ── メインビュータブ ── */}
         <div style={{ display: "flex", gap: 4, marginBottom: 20 }}>
-          {[["chart", "時間帯分析"], ["scorers", "得点者"]].map(([v, label]) => {
+          {[["chart", "時間帯分析"], ["scorers", "得点者"], ["squad", "スカッド"]].map(([v, label]) => {
             const active = mainView === v;
             return (
               <button key={v} onClick={() => setMainView(v)} style={{
@@ -322,6 +323,11 @@ export default function TeamDetail() {
         {/* ── 得点者ビュー ── */}
         {mainView === "scorers" && (
           <ScorerTracker teamSlug={teamSlug} />
+        )}
+
+        {/* ── スカッドビュー ── */}
+        {mainView === "squad" && (
+          <SquadView teamSlug={teamSlug} season={2025} teamColor={TEAM_COLOR} />
         )}
 
         {/* ── チャートビュー ── */}
