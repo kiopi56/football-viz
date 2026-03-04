@@ -10,6 +10,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useTeamData } from "../hooks/useTeamData";
+import { TEAMS_BY_ID } from "../data/teams";
 
 // ── 定数 ─────────────────────────────────────────────────────
 
@@ -43,41 +44,25 @@ function g90(goals, appearances) {
 }
 
 // ── 非スコアラー用コンポーネント ─────────────────────────────
+// player-index-2025.json（全チーム647選手）から情報を取得
 
-const SQUAD_TEAMS = [
-  { slug: "liverpool", name: "Liverpool", color: "#C8102E" },
-  { slug: "arsenal",   name: "Arsenal",   color: "#EF0107" },
-];
-const SQUAD_SEASONS = [2025, 2024, 2023];
+const POS_LABEL = { G: "GK", D: "DF", M: "MF", F: "FW" };
+const FALLBACK_COLOR = "#00ff85";
 
 function NonScorerDetail({ playerId }) {
-  const [squadInfo, setSquadInfo] = useState(null);  // { name, pos, number, appearances, teamName, teamColor, season }
-  const [loadDone, setLoadDone]   = useState(false);
+  const [info, setInfo]         = useState(null);
+  const [loadDone, setLoadDone] = useState(false);
 
   useEffect(() => {
-    let found = null;
     const base = import.meta.env.BASE_URL ?? "/";
-    const fetches = [];
-    for (const team of SQUAD_TEAMS) {
-      for (const season of SQUAD_SEASONS) {
-        fetches.push(
-          fetch(`${base}data/${team.slug}-squad-${season}.json`)
-            .then(r => r.ok ? r.json() : null)
-            .then(data => {
-              if (!data || found) return;
-              const p = data.players?.find(pl => pl.id === playerId);
-              if (p) {
-                found = { ...p, teamName: team.name, teamColor: team.color, season };
-              }
-            })
-            .catch(() => {})
-        );
-      }
-    }
-    Promise.all(fetches).then(() => {
-      setSquadInfo(found);
-      setLoadDone(true);
-    });
+    fetch(`${base}data/player-index-2025.json`)
+      .then(r => r.ok ? r.json() : null)
+      .then(index => {
+        const entry = index?.[String(playerId)] ?? null;
+        setInfo(entry);
+      })
+      .catch(() => setInfo(null))
+      .finally(() => setLoadDone(true));
   }, [playerId]);
 
   if (!loadDone) {
@@ -90,22 +75,21 @@ function NonScorerDetail({ playerId }) {
     );
   }
 
-  if (!squadInfo) {
+  if (!info) {
     return (
       <div style={{ minHeight: "100vh", background: "#080c10",
         display: "flex", flexDirection: "column", alignItems: "center",
         justifyContent: "center", fontFamily: "'Space Mono', monospace", gap: 14 }}>
-        <div style={{ fontSize: 13, color: "#444" }}>データ準備中</div>
-        <div style={{ fontSize: 10, color: "#2d2d2d" }}>
-          scorers データは node scripts/fetchData.mjs 実行後に利用可能になります
-        </div>
+        <div style={{ fontSize: 13, color: "#444" }}>選手データが見つかりません</div>
+        <div style={{ fontSize: 10, color: "#2d2d2d" }}>ID: {playerId}</div>
         <Link to="/" style={{ fontSize: 10, color: "#00ff85", textDecoration: "none" }}>← HOME</Link>
       </div>
     );
   }
 
-  const ACCENT = squadInfo.teamColor;
-  const POS_LABEL = { G: "GK", D: "DF", M: "MF", F: "FW" };
+  // TEAMS_BY_ID からチームカラーを取得（なければフォールバック）
+  const teamMeta = TEAMS_BY_ID[info.teamId];
+  const ACCENT   = teamMeta?.color ?? FALLBACK_COLOR;
 
   return (
     <div style={{ minHeight: "100vh", background: "#080c10", color: "#fff",
@@ -118,8 +102,6 @@ function NonScorerDetail({ playerId }) {
           <Link to="/" style={{ color: "#555", textDecoration: "none" }}
             onMouseEnter={e => e.target.style.color = "#00ff85"}
             onMouseLeave={e => e.target.style.color = "#555"}>← HOME</Link>
-          <span>/</span>
-          <span style={{ color: "#555" }}>{squadInfo.teamName}</span>
         </div>
 
         {/* 選手ヘッダー */}
@@ -132,20 +114,20 @@ function NonScorerDetail({ playerId }) {
             <div style={{ fontFamily: "'Anton', sans-serif",
               fontSize: "clamp(22px,4vw,38px)", letterSpacing: "0.04em",
               lineHeight: 1, marginBottom: 6 }}>
-              {squadInfo.name}
+              {info.name}
             </div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
               <span style={{ fontSize: 10, color: ACCENT, fontWeight: 700,
                 padding: "2px 8px", border: `1px solid ${ACCENT}44`, borderRadius: 3 }}>
-                {squadInfo.teamName}
+                {info.teamName}
               </span>
-              {squadInfo.number && (
-                <span style={{ fontSize: 10, color: "#555" }}>#{squadInfo.number}</span>
+              {info.number != null && (
+                <span style={{ fontSize: 10, color: "#555" }}>#{info.number}</span>
               )}
-              {squadInfo.pos && (
+              {info.pos && (
                 <span style={{ fontSize: 9, color: "#555", padding: "2px 6px",
                   border: "1px solid rgba(255,255,255,0.1)", borderRadius: 3 }}>
-                  {POS_LABEL[squadInfo.pos] ?? squadInfo.pos}
+                  {POS_LABEL[info.pos] ?? info.pos}
                 </span>
               )}
             </div>
@@ -153,9 +135,9 @@ function NonScorerDetail({ playerId }) {
 
           <div style={{ display: "flex", gap: 20, flexShrink: 0 }}>
             {[
-              { label: "得点", value: "—",  color: "#22c55e" },
-              { label: "アシスト", value: "—", color: "#ffd93d" },
-              { label: "出場登録", value: squadInfo.appearances, color: "#888" },
+              { label: "得点",     value: "—",                            color: "#22c55e" },
+              { label: "アシスト", value: "—",                            color: "#ffd93d" },
+              { label: "出場登録", value: info.appearances ?? "—",        color: "#888"    },
             ].map(({ label, value, color }) => (
               <div key={label} style={{ textAlign: "center" }}>
                 <div style={{ fontSize: 24, fontWeight: 700, color, lineHeight: 1 }}>{value}</div>
@@ -170,9 +152,9 @@ function NonScorerDetail({ playerId }) {
           fontSize: 11, color: "#555", lineHeight: 2 }}>
           <div style={{ fontSize: 10, color: "#444", letterSpacing: "0.1em",
             textTransform: "uppercase", marginBottom: 10 }}>選手情報</div>
-          <div>スコアラーデータなし（{squadInfo.season}-{String(squadInfo.season + 1).slice(-2)} スカッドに登録）</div>
+          <div>2025-26 PL 登録選手（得点スタッツなし）</div>
           <div style={{ marginTop: 4, fontSize: 9, color: "#333" }}>
-            ※ 得点・アシスト情報は得点者のみ収集されています
+            ※ 得点・アシスト情報はスコアラー上位15名のみ収集されています
           </div>
         </div>
 
