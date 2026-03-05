@@ -42,9 +42,9 @@
       "id": 282770,
       "name": "Rodrigo Gomes",
       "photo": "https://media.api-sports.io/football/players/282770.png",
-      "goals": 2,
+      "goals": 3,
       "assists": 0,
-      "appearances": 13
+      "appearances": 14
     },
     {
       "id": 24888,
@@ -60,7 +60,7 @@
       "photo": "https://media.api-sports.io/football/players/135334.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 20
+      "appearances": 21
     },
     {
       "id": 66407,
@@ -68,15 +68,15 @@
       "photo": "https://media.api-sports.io/football/players/66407.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 22
+      "appearances": 23
     },
     {
       "id": 110153,
       "name": "T. Arokodare",
       "photo": "https://media.api-sports.io/football/players/110153.png",
       "goals": 2,
-      "assists": 0,
-      "appearances": 25
+      "assists": 1,
+      "appearances": 26
     },
     {
       "id": 456206,
@@ -84,7 +84,15 @@
       "photo": "https://media.api-sports.io/football/players/456206.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 18
+      "appearances": 19
+    },
+    {
+      "id": 265784,
+      "name": "André",
+      "photo": "https://media.api-sports.io/football/players/265784.png",
+      "goals": 1,
+      "assists": 0,
+      "appearances": 27
     },
     {
       "id": 195103,
@@ -92,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/195103.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 3080,
@@ -116,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/20665.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 20
+      "appearances": 21
     },
     {
       "id": 280687,
@@ -124,7 +132,7 @@
       "photo": "https://media.api-sports.io/football/players/280687.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 13708,
@@ -169,8 +177,8 @@
         "yellow_cards": 2,
         "red_cards": null,
         "saves": 5,
-        "total_passes": 308,
-        "pass_accuracy": 80
+        "total_passes": 315,
+        "pass_accuracy": 79
       },
       "stats_away": {
         "shots_on_goal": 7,
@@ -183,7 +191,7 @@
         "yellow_cards": 1,
         "red_cards": null,
         "saves": 1,
-        "total_passes": 592,
+        "total_passes": 609,
         "pass_accuracy": 89
       }
     },

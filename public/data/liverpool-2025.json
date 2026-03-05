@@ -44,7 +44,7 @@
       "photo": "https://media.api-sports.io/football/players/174565.png",
       "goals": 11,
       "assists": 4,
-      "appearances": 25
+      "appearances": 26
     },
     {
       "id": 247,
@@ -52,7 +52,15 @@
       "photo": "https://media.api-sports.io/football/players/247.png",
       "goals": 6,
       "assists": 3,
-      "appearances": 26
+      "appearances": 27
+    },
+    {
+      "id": 306,
+      "name": "Mohamed Salah",
+      "photo": "https://media.api-sports.io/football/players/306.png",
+      "goals": 5,
+      "assists": 6,
+      "appearances": 21
     },
     {
       "id": 1096,
@@ -60,15 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/1096.png",
       "goals": 4,
       "assists": 3,
-      "appearances": 26
-    },
-    {
-      "id": 306,
-      "name": "Mohamed Salah",
-      "photo": "https://media.api-sports.io/football/players/306.png",
-      "goals": 4,
-      "assists": 6,
-      "appearances": 20
+      "appearances": 27
     },
     {
       "id": 203224,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/542.png",
       "goals": 4,
       "assists": 3,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 290,
@@ -92,7 +92,7 @@
       "photo": "https://media.api-sports.io/football/players/290.png",
       "goals": 3,
       "assists": 0,
-      "appearances": 28
+      "appearances": 29
     },
     {
       "id": 6716,
@@ -100,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/6716.png",
       "goals": 2,
       "assists": 2,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 30410,
@@ -108,7 +108,7 @@
       "photo": "https://media.api-sports.io/football/players/30410.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 20
+      "appearances": 21
     },
     {
       "id": 2864,
@@ -124,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/1145.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 206254,
@@ -132,7 +132,7 @@
       "photo": "https://media.api-sports.io/football/players/206254.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 452685,
@@ -140,7 +140,7 @@
       "photo": "https://media.api-sports.io/football/players/452685.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 10
+      "appearances": 11
     }
   ],
   "fixtures": [
@@ -169,8 +169,8 @@
         "yellow_cards": 2,
         "red_cards": null,
         "saves": 5,
-        "total_passes": 308,
-        "pass_accuracy": 80
+        "total_passes": 315,
+        "pass_accuracy": 79
       },
       "stats_away": {
         "shots_on_goal": 7,
@@ -183,7 +183,7 @@
         "yellow_cards": 1,
         "red_cards": null,
         "saves": 1,
-        "total_passes": 592,
+        "total_passes": 609,
         "pass_accuracy": 89
       }
     },

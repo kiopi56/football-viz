@@ -3,11 +3,11 @@
   "season": 2025,
   "byTimeAvailable": false,
   "scored": {
-    "total": 26,
+    "total": 28,
     "byTime": null
   },
   "conceded": {
-    "total": 41,
+    "total": 43,
     "byTime": null
   },
   "home": {
@@ -31,11 +31,11 @@
     }
   },
   "recentForm": [
+    "D",
     "L",
     "L",
     "D",
-    "L",
-    "D"
+    "L"
   ],
   "scorers": [
     {
@@ -152,6 +152,49 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379255,
+      "season": 2025,
+      "team_id": 65,
+      "match_date": "2026-03-04T19:30:00+00:00",
+      "home_team_id": 50,
+      "away_team_id": 65,
+      "home_team_name": "Manchester City",
+      "away_team_name": "Nottingham Forest",
+      "goals_home": 2,
+      "goals_away": 2,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 6,
+        "shots_off_goal": 8,
+        "total_shots": 21,
+        "blocked_shots": 7,
+        "corners": 6,
+        "possession": 70,
+        "fouls": 10,
+        "yellow_cards": 0,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 773,
+        "pass_accuracy": 92
+      },
+      "stats_away": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 2,
+        "total_shots": 9,
+        "blocked_shots": 3,
+        "corners": 1,
+        "possession": 30,
+        "fouls": 6,
+        "yellow_cards": 4,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 326,
+        "pass_accuracy": 82
+      }
+    },
     {
       "id": 1379241,
       "season": 2025,
