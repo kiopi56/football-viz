@@ -3,8 +3,8 @@
  *
  * 選手詳細ページ。
  * 1. public/data/{team}-{season}.json の scorers 配列から検索
- * 2. 見つからない場合、{slug}-squad-{season}.json から補完（非スコアラー対応）
- * 外部 API は使用しない。
+ * 2. 見つからない場合 player-index-2025.json から補完（全チーム649選手）
+ * 3. それでも見つからない場合 api-sports.io から直接取得（season=2025→2024）
  */
 
 import { useMemo, useState, useEffect } from "react";
@@ -44,25 +44,81 @@ function g90(goals, appearances) {
 }
 
 // ── 非スコアラー用コンポーネント ─────────────────────────────
-// player-index-2025.json（全チーム647選手）から情報を取得
+// ① player-index-2025.json（全チーム649選手）から検索
+// ② なければ api-sports.io から直接取得（season=2025 → 2024）
 
 const POS_LABEL = { G: "GK", D: "DF", M: "MF", F: "FW" };
 const FALLBACK_COLOR = "#00ff85";
+
+function mapApiPosition(apiPos) {
+  if (!apiPos) return null;
+  const p = apiPos.toLowerCase();
+  if (p.includes("goalkeeper")) return "G";
+  if (p.includes("defender"))   return "D";
+  if (p.includes("midfielder")) return "M";
+  if (p.includes("attacker") || p.includes("forward")) return "F";
+  return null;
+}
+
+async function fetchApiPlayer(playerId, season, apiKey) {
+  try {
+    const r = await fetch(
+      `https://v3.football.api-sports.io/players?id=${playerId}&season=${season}`,
+      { headers: { "x-apisports-key": apiKey } }
+    );
+    if (!r.ok) return null;
+    const json = await r.json();
+    const entry = json?.response?.[0];
+    if (!entry) return null;
+    const player = entry.player;
+    const stats  = entry.statistics?.[0];
+    return {
+      id:          player.id,
+      name:        player.name,
+      number:      stats?.games?.number ?? null,
+      pos:         mapApiPosition(stats?.games?.position),
+      teamId:      stats?.team?.id   ?? null,
+      teamName:    stats?.team?.name ?? null,
+      appearances: stats?.games?.appearances ?? null,
+      photo:       player.photo ?? null,
+      fromApi:     true,
+    };
+  } catch {
+    return null;
+  }
+}
 
 function NonScorerDetail({ playerId }) {
   const [info, setInfo]         = useState(null);
   const [loadDone, setLoadDone] = useState(false);
 
   useEffect(() => {
-    const base = import.meta.env.BASE_URL ?? "/";
-    fetch(`${base}data/player-index-2025.json`)
-      .then(r => r.ok ? r.json() : null)
-      .then(index => {
-        const entry = index?.[String(playerId)] ?? null;
-        setInfo(entry);
-      })
-      .catch(() => setInfo(null))
-      .finally(() => setLoadDone(true));
+    const base   = import.meta.env.BASE_URL ?? "/";
+    const apiKey = import.meta.env.VITE_APISPORTS_KEY;
+
+    const run = async () => {
+      // ① player-index-2025.json
+      try {
+        const r = await fetch(`${base}data/player-index-2025.json`);
+        if (r.ok) {
+          const index = await r.json();
+          const entry = index?.[String(playerId)] ?? null;
+          if (entry) { setInfo(entry); setLoadDone(true); return; }
+        }
+      } catch {}
+
+      // ② api-sports.io fallback（season=2025 → 2024）
+      if (apiKey) {
+        let apiInfo = await fetchApiPlayer(playerId, 2025, apiKey);
+        if (!apiInfo) apiInfo = await fetchApiPlayer(playerId, 2024, apiKey);
+        if (apiInfo) { setInfo(apiInfo); setLoadDone(true); return; }
+      }
+
+      setInfo(null);
+      setLoadDone(true);
+    };
+
+    run();
   }, [playerId]);
 
   if (!loadDone) {
@@ -110,6 +166,16 @@ function NonScorerDetail({ playerId }) {
           padding: "24px 28px", marginBottom: 20,
           display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
 
+          {/* 顔写真（API 取得時のみ） */}
+          {info.photo && (
+            <img src={info.photo} alt={info.name}
+              style={{ width: 80, height: 80, borderRadius: "50%",
+                border: `2px solid ${ACCENT}44`,
+                objectFit: "cover", background: "#1a2530", flexShrink: 0 }}
+              onError={e => { e.target.style.display = "none"; }}
+            />
+          )}
+
           <div style={{ flex: 1, minWidth: 160 }}>
             <div style={{ fontFamily: "'Anton', sans-serif",
               fontSize: "clamp(22px,4vw,38px)", letterSpacing: "0.04em",
@@ -152,7 +218,7 @@ function NonScorerDetail({ playerId }) {
           fontSize: 11, color: "#555", lineHeight: 2 }}>
           <div style={{ fontSize: 10, color: "#444", letterSpacing: "0.1em",
             textTransform: "uppercase", marginBottom: 10 }}>選手情報</div>
-          <div>2025-26 PL 登録選手（得点スタッツなし）</div>
+          <div>{info.fromApi ? "api-sports.io より取得" : "PL 登録選手（得点スタッツなし）"}</div>
           <div style={{ marginTop: 4, fontSize: 9, color: "#333" }}>
             ※ 得点・アシスト情報はスコアラー上位15名のみ収集されています
           </div>
