@@ -16,6 +16,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
 } from "recharts";
 import {
+  supabase,
   fetchFixtureWithFallback, fetchGoalEvents, resolveTeamId, fetchPressComments,
 } from "../lib/supabase";
 import { useTeamData } from "../hooks/useTeamData";
@@ -49,28 +50,15 @@ function fmtDate(iso) {
   });
 }
 
-// ── Gemini API 呼び出し ───────────────────────────────────────
+// ── AI ナラティブ生成（Supabase Edge Function 経由） ─────────────
+// GEMINI_API_KEY はフロントに露出せず Supabase Secrets で管理する
 async function generateNarrative(prompt) {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  if (!apiKey) throw new Error("VITE_GEMINI_API_KEY が設定されていません");
-
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-      }),
-    }
-  );
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err?.error?.message ?? `HTTP ${res.status}`);
-  }
-  const json = await res.json();
-  return json.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+  const { data, error } = await supabase.functions.invoke("ai-analysis", {
+    body: { prompt },
+  });
+  if (error) throw new Error(error.message);
+  if (!data?.text) throw new Error("AI からの応答が空です");
+  return data.text;
 }
 
 // ── サブコンポーネント ────────────────────────────────────────
@@ -713,8 +701,13 @@ ${historyStr}
 
             {/* ── 時間帯別カード（今季） ── */}
             <div style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 10, color: "#555", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 10 }}>
-                時間帯別データ（{season}-{String(season + 1).slice(-2)}）
+              <div style={{ marginBottom: 10 }}>
+                <div style={{ fontSize: 10, color: "#555", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                  シーズン累積 時間帯別失点傾向（{season}-{String(season + 1).slice(-2)}）
+                </div>
+                <div style={{ fontSize: 9, color: "#333", marginTop: 4 }}>
+                  ※ この試合個別のデータではなく、シーズン全体の傾向を表示しています
+                </div>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(6,1fr)", gap: 5 }}>
                 {PERIOD_KEYS.map((k, i) => {

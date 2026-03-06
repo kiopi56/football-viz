@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { CURRENT_TEAMS } from "../data/teams";
+import { supabase } from "../lib/supabase";
 
 // ── カラー定数 ────────────────────────────────────────────────
 const C = {
@@ -143,21 +144,16 @@ function calcAvgStats(json) {
   };
 }
 
-// ── Gemini API ────────────────────────────────────────────────
+// ── AI 比較分析（Supabase Edge Function 経由） ───────────────
+// GEMINI_API_KEY はフロントに露出せず Supabase Secrets で管理する
 
 async function callGemini(prompt) {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  if (!apiKey) throw new Error("VITE_GEMINI_API_KEY が設定されていません");
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
-    }
-  );
-  const json = await res.json();
-  return json.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+  const { data, error } = await supabase.functions.invoke("ai-analysis", {
+    body: { prompt },
+  });
+  if (error) throw new Error(error.message);
+  if (!data?.text) throw new Error("AI からの応答が空です");
+  return data.text;
 }
 
 // ── TeamDropdown ──────────────────────────────────────────────
