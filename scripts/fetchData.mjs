@@ -542,6 +542,7 @@ async function main() {
     }
 
     // ── 6. pl-teams-{season}.json 更新（season=2024 のみ） ──
+    // hasData は {slug}-{season}.json の実在をチェックして自動設定
     if (season === 2024) {
       const teamsData = allTeams.map(t => ({
         id:        t.id,
@@ -549,11 +550,12 @@ async function main() {
         shortName: t.name,
         slug:      t.slug,
         logo:      t.logo,
-        hasData:   true,
+        hasData:   existsSync(join(outDir, `${t.slug}-${season}.json`)),
       }));
       const teamsPath = join(outDir, "pl-teams-2024.json");
       writeFileSync(teamsPath, JSON.stringify(teamsData, null, 2));
-      console.log(`\n✓ Saved pl-teams-2024.json (${teamsData.length} teams)`);
+      const withData = teamsData.filter(t => t.hasData).length;
+      console.log(`\n✓ Saved pl-teams-2024.json (${teamsData.length} teams, ${withData} hasData=true)`);
     }
   }
 

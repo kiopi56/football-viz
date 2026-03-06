@@ -1,11 +1,14 @@
+import { lazy, Suspense } from "react";
 import { HashRouter, Routes, Route, NavLink, Navigate } from "react-router-dom";
 import Home        from "./pages/Home";
-import TeamDetail  from "./pages/TeamDetail";
-import Compare     from "./pages/Compare";
-import MatchDetail  from "./pages/MatchDetail";
-import PlayerDetail from "./pages/PlayerDetail";
-import MyRecords    from "./pages/MyRecords";
 import { useAuth } from "./contexts/AuthContext";
+
+// ページコンポーネントを遅延ロード（初回バンドルサイズ削減）
+const TeamDetail  = lazy(() => import("./pages/TeamDetail"));
+const Compare     = lazy(() => import("./pages/Compare"));
+const MatchDetail = lazy(() => import("./pages/MatchDetail"));
+const PlayerDetail = lazy(() => import("./pages/PlayerDetail"));
+const MyRecords   = lazy(() => import("./pages/MyRecords"));
 
 const NAV_BG = "#080c10";
 
@@ -175,21 +178,29 @@ export default function App() {
   return (
     <HashRouter>
       <NavBar />
-      <Routes>
-        <Route path="/"                    element={<Home />} />
-        <Route path="/team/:teamSlug"    element={<TeamDetail />} />
-        <Route path="/match/:fixtureId"  element={<MatchDetail />} />
-        <Route path="/player/:playerId"  element={<PlayerDetail />} />
-        <Route path="/compare"           element={<Compare />} />
-        <Route path="/my-records"        element={<MyRecords />} />
-        {/* 後方互換：旧URLをslugベースにリダイレクト */}
-        <Route path="/liverpool"         element={<Navigate to="/team/liverpool" replace />} />
-        <Route path="/arsenal"           element={<Navigate to="/team/arsenal"   replace />} />
-        <Route path="/team/40"           element={<Navigate to="/team/liverpool" replace />} />
-        <Route path="/team/42"           element={<Navigate to="/team/arsenal"   replace />} />
-        {/* 404: HOME にフォールバック */}
-        <Route path="*"                  element={<Navigate to="/" replace />} />
-      </Routes>
+      <Suspense fallback={
+        <div style={{ minHeight: "100vh", background: "#080c10",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontFamily: "'Space Mono', monospace", color: "#444", fontSize: 12 }}>
+          Loading...
+        </div>
+      }>
+        <Routes>
+          <Route path="/"                  element={<Home />} />
+          <Route path="/team/:teamSlug"    element={<TeamDetail />} />
+          <Route path="/match/:fixtureId"  element={<MatchDetail />} />
+          <Route path="/player/:playerId"  element={<PlayerDetail />} />
+          <Route path="/compare"           element={<Compare />} />
+          <Route path="/my-records"        element={<MyRecords />} />
+          {/* 後方互換：旧URLをslugベースにリダイレクト */}
+          <Route path="/liverpool"         element={<Navigate to="/team/liverpool" replace />} />
+          <Route path="/arsenal"           element={<Navigate to="/team/arsenal"   replace />} />
+          <Route path="/team/40"           element={<Navigate to="/team/liverpool" replace />} />
+          <Route path="/team/42"           element={<Navigate to="/team/arsenal"   replace />} />
+          {/* 404: HOME にフォールバック */}
+          <Route path="*"                  element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </HashRouter>
   );
 }

@@ -10,13 +10,14 @@
 import { useMemo, useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useTeamData } from "../hooks/useTeamData";
-import { TEAMS_BY_ID } from "../data/teams";
+import { TEAMS_BY_ID, TEAMS_BY_SLUG } from "../data/teams";
 
 // ── 定数 ─────────────────────────────────────────────────────
 
-const TEAMS = [
-  { id: 40, slug: "liverpool", name: "Liverpool", color: "#C8102E" },
-  { id: 42, slug: "arsenal",   name: "Arsenal",   color: "#EF0107" },
+// スコアラー検索対象チーム（src/data/teams.js から参照）
+const TRACKED_TEAMS = [
+  TEAMS_BY_SLUG["liverpool"],
+  TEAMS_BY_SLUG["arsenal"],
 ];
 const SEASONS       = [2023, 2024, 2025];
 const SEASON_LABELS = ["2023-24", "2024-25", "2025-26"];
@@ -260,7 +261,7 @@ export default function PlayerDetail() {
     const stats = {};
     let name = null, photo = null, latestTeam = null, latestSeason = -1;
 
-    for (const team of TEAMS) {
+    for (const team of TRACKED_TEAMS) {
       for (const season of SEASONS) {
         const scorers = allData[team.id]?.[season]?.scorers ?? [];
         const idx = scorers.findIndex(s => s.id === playerId);

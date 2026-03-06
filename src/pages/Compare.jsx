@@ -23,7 +23,8 @@ function hexToRgba(hex, alpha = 0.15) {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
-const TEAMS = CURRENT_TEAMS.map(t => ({
+// CURRENT_TEAMS を Compare 固有の表示形式（bgAlpha 付き）に変換
+const compareTeams = CURRENT_TEAMS.map(t => ({
   id:      t.id,
   name:    t.name,
   slug:    t.slug,
@@ -164,7 +165,7 @@ async function callGemini(prompt) {
 function TeamDropdown({ teamId, onChange, label, seasonLabel }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
-  const team = TEAMS.find(t => t.id === teamId) ?? TEAMS[0];
+  const team = compareTeams.find(t => t.id === teamId) ?? compareTeams[0];
 
   useEffect(() => {
     function onMouseDown(e) {
@@ -205,7 +206,7 @@ function TeamDropdown({ teamId, onChange, label, seasonLabel }) {
             background: C.surface, border: `1px solid ${C.border}`, borderTop: "none",
             maxHeight: 320, overflowY: "auto",
           }}>
-            {TEAMS.map(t => (
+            {compareTeams.map(t => (
               <div
                 key={t.id}
                 onMouseDown={e => { e.stopPropagation(); onChange(t.id); setOpen(false); }}
@@ -250,8 +251,8 @@ export default function Compare() {
   const [generating, setGenerating] = useState(false);
   const [genError,   setGenError]   = useState("");
 
-  const teamA = TEAMS.find(t => t.id === teamAId) ?? TEAMS[0];
-  const teamB = TEAMS.find(t => t.id === teamBId) ?? TEAMS[1];
+  const teamA = compareTeams.find(t => t.id === teamAId) ?? compareTeams[0];
+  const teamB = compareTeams.find(t => t.id === teamBId) ?? compareTeams[1];
 
   const seasonLabel = SEASONS.find(s => s.key === season)?.label ?? String(season);
 
