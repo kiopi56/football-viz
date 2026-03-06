@@ -9,7 +9,7 @@
 
 import { useMemo, useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { useTeamData } from "../hooks/useTeamData";
+import { useMultiTeamData } from "../hooks/useMultiTeamData";
 import { TEAMS_BY_ID, TEAMS_BY_SLUG } from "../data/teams";
 
 // ── 定数 ─────────────────────────────────────────────────────
@@ -19,6 +19,7 @@ const TRACKED_TEAMS = [
   TEAMS_BY_SLUG["liverpool"],
   TEAMS_BY_SLUG["arsenal"],
 ];
+const TEAM_SLUGS    = TRACKED_TEAMS.map(t => t.slug);
 const SEASONS       = [2023, 2024, 2025];
 const SEASON_LABELS = ["2023-24", "2024-25", "2025-26"];
 
@@ -44,11 +45,11 @@ function g90(goals, appearances) {
   return (goals / appearances * 90).toFixed(2);
 }
 
-// ── 非スコアラー用コンポーネント ─────────────────────────────
+// ── 非スコアラー用フォールバック ──────────────────────────────
 // ① player-index-2025.json（全チーム649選手）から検索
 // ② なければ api-sports.io から直接取得（season=2025 → 2024）
 
-const POS_LABEL = { G: "GK", D: "DF", M: "MF", F: "FW" };
+const POS_LABEL      = { G: "GK", D: "DF", M: "MF", F: "FW" };
 const FALLBACK_COLOR = "#00ff85";
 
 function mapApiPosition(apiPos) {
@@ -89,171 +90,29 @@ async function fetchApiPlayer(playerId, season, apiKey) {
   }
 }
 
-function NonScorerDetail({ playerId }) {
-  const [info, setInfo]         = useState(null);
-  const [loadDone, setLoadDone] = useState(false);
-
-  useEffect(() => {
-    const base   = import.meta.env.BASE_URL ?? "/";
-    const apiKey = import.meta.env.VITE_APISPORTS_KEY;
-
-    const run = async () => {
-      // ① player-index-2025.json
-      try {
-        const r = await fetch(`${base}data/player-index-2025.json`);
-        if (r.ok) {
-          const index = await r.json();
-          const entry = index?.[String(playerId)] ?? null;
-          if (entry) { setInfo(entry); setLoadDone(true); return; }
-        }
-      } catch {}
-
-      // ② api-sports.io fallback（season=2025 → 2024）
-      if (apiKey) {
-        let apiInfo = await fetchApiPlayer(playerId, 2025, apiKey);
-        if (!apiInfo) apiInfo = await fetchApiPlayer(playerId, 2024, apiKey);
-        if (apiInfo) { setInfo(apiInfo); setLoadDone(true); return; }
-      }
-
-      setInfo(null);
-      setLoadDone(true);
-    };
-
-    run();
-  }, [playerId]);
-
-  if (!loadDone) {
-    return (
-      <div style={{ minHeight: "100vh", background: "#080c10",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        fontFamily: "'Space Mono', monospace", color: "#444", fontSize: 12 }}>
-        Loading...
-      </div>
-    );
-  }
-
-  if (!info) {
-    return (
-      <div style={{ minHeight: "100vh", background: "#080c10",
-        display: "flex", flexDirection: "column", alignItems: "center",
-        justifyContent: "center", fontFamily: "'Space Mono', monospace", gap: 14 }}>
-        <div style={{ fontSize: 13, color: "#444" }}>選手データが見つかりません</div>
-        <div style={{ fontSize: 10, color: "#2d2d2d" }}>ID: {playerId}</div>
-        <Link to="/" style={{ fontSize: 10, color: "#00ff85", textDecoration: "none" }}>← HOME</Link>
-      </div>
-    );
-  }
-
-  // TEAMS_BY_ID からチームカラーを取得（なければフォールバック）
-  const teamMeta = TEAMS_BY_ID[info.teamId];
-  const ACCENT   = teamMeta?.color ?? FALLBACK_COLOR;
-
-  return (
-    <div style={{ minHeight: "100vh", background: "#080c10", color: "#fff",
-      fontFamily: "'Space Mono', monospace", padding: "28px 20px", boxSizing: "border-box" }}>
-      <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Anton&display=swap" rel="stylesheet" />
-      <div style={{ maxWidth: 800, margin: "0 auto" }}>
-
-        {/* Breadcrumb */}
-        <div style={{ marginBottom: 20, display: "flex", gap: 12, fontSize: 10, color: "#555" }}>
-          <Link to="/" style={{ color: "#555", textDecoration: "none" }}
-            onMouseEnter={e => e.target.style.color = "#00ff85"}
-            onMouseLeave={e => e.target.style.color = "#555"}>← HOME</Link>
-        </div>
-
-        {/* 選手ヘッダー */}
-        <div style={{ background: "#0e1318", border: "1px solid rgba(255,255,255,0.08)",
-          borderTop: `3px solid ${ACCENT}`, borderRadius: 12,
-          padding: "24px 28px", marginBottom: 20,
-          display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
-
-          {/* 顔写真（API 取得時のみ） */}
-          {info.photo && (
-            <img src={info.photo} alt={info.name}
-              style={{ width: 80, height: 80, borderRadius: "50%",
-                border: `2px solid ${ACCENT}44`,
-                objectFit: "cover", background: "#1a2530", flexShrink: 0 }}
-              onError={e => { e.target.style.display = "none"; }}
-            />
-          )}
-
-          <div style={{ flex: 1, minWidth: 160 }}>
-            <div style={{ fontFamily: "'Anton', sans-serif",
-              fontSize: "clamp(22px,4vw,38px)", letterSpacing: "0.04em",
-              lineHeight: 1, marginBottom: 6 }}>
-              {info.name}
-            </div>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-              <span style={{ fontSize: 10, color: ACCENT, fontWeight: 700,
-                padding: "2px 8px", border: `1px solid ${ACCENT}44`, borderRadius: 3 }}>
-                {info.teamName}
-              </span>
-              {info.number != null && (
-                <span style={{ fontSize: 10, color: "#555" }}>#{info.number}</span>
-              )}
-              {info.pos && (
-                <span style={{ fontSize: 9, color: "#555", padding: "2px 6px",
-                  border: "1px solid rgba(255,255,255,0.1)", borderRadius: 3 }}>
-                  {POS_LABEL[info.pos] ?? info.pos}
-                </span>
-              )}
-            </div>
-          </div>
-
-          <div style={{ display: "flex", gap: 20, flexShrink: 0 }}>
-            {[
-              { label: "得点",     value: "—",                            color: "#22c55e" },
-              { label: "アシスト", value: "—",                            color: "#ffd93d" },
-              { label: "出場登録", value: info.appearances ?? "—",        color: "#888"    },
-            ].map(({ label, value, color }) => (
-              <div key={label} style={{ textAlign: "center" }}>
-                <div style={{ fontSize: 24, fontWeight: 700, color, lineHeight: 1 }}>{value}</div>
-                <div style={{ fontSize: 8, color: "#444", marginTop: 3 }}>{label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div style={{ background: "#0e1318", border: "1px solid rgba(255,255,255,0.08)",
-          borderRadius: 12, padding: "20px 24px", marginBottom: 16,
-          fontSize: 11, color: "#555", lineHeight: 2 }}>
-          <div style={{ fontSize: 10, color: "#444", letterSpacing: "0.1em",
-            textTransform: "uppercase", marginBottom: 10 }}>選手情報</div>
-          <div>{info.fromApi ? "api-sports.io より取得" : "PL 登録選手（得点スタッツなし）"}</div>
-          <div style={{ marginTop: 4, fontSize: 9, color: "#333" }}>
-            ※ 得点・アシスト情報はスコアラー上位15名のみ収集されています
-          </div>
-        </div>
-
-        <div style={{ fontSize: 9, color: "#2d2d2d", lineHeight: 1.8 }}>
-          ※ データ：api-sports.io より取得（PL 登録選手・ビルド時生成）
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ── メインコンポーネント ──────────────────────────────────────
 
 export default function PlayerDetail() {
   const { playerId: playerIdStr } = useParams();
   const playerId = Number(playerIdStr);
 
-  // 全チーム × 全シーズン分のデータをロード（6本）
-  const { data: d40_2023, loading: l40_2023 } = useTeamData("liverpool", 2023);
-  const { data: d40_2024, loading: l40_2024 } = useTeamData("liverpool", 2024);
-  const { data: d40_2025, loading: l40_2025 } = useTeamData("liverpool", 2025);
-  const { data: d42_2023, loading: l42_2023 } = useTeamData("arsenal", 2023);
-  const { data: d42_2024, loading: l42_2024 } = useTeamData("arsenal", 2024);
-  const { data: d42_2025, loading: l42_2025 } = useTeamData("arsenal", 2025);
+  // 全チーム × 全シーズン分のデータを並列ロード（改善4: 6本 → 1フック）
+  const { data: multiData, loading: teamLoading } = useMultiTeamData(TEAM_SLUGS, SEASONS);
 
-  const loading = l40_2023 || l40_2024 || l40_2025 || l42_2023 || l42_2024 || l42_2025;
+  // fallbackInfo: undefined=待機中（フェッチ前）, null=見つからず, object=情報あり
+  const [fallbackInfo, setFallbackInfo] = useState(undefined);
 
   // ── 全データを整理 ──────────────────────────────────────────
-  const allData = useMemo(() => ({
-    40: { 2023: d40_2023, 2024: d40_2024, 2025: d40_2025 },
-    42: { 2023: d42_2023, 2024: d42_2024, 2025: d42_2025 },
-  }), [d40_2023, d40_2024, d40_2025, d42_2023, d42_2024, d42_2025]);
+  const allData = useMemo(() => {
+    const result = {};
+    for (const team of TRACKED_TEAMS) {
+      result[team.id] = {};
+      for (const season of SEASONS) {
+        result[team.id][season] = multiData[team.slug]?.[season] ?? null;
+      }
+    }
+    return result;
+  }, [multiData]);
 
   // ── 選手を全JSONから検索 ──────────────────────────────────
   // seasonStats[season] = { goals, assists, appearances, rank, teamId, teamColor, teamName }
@@ -291,7 +150,44 @@ export default function PlayerDetail() {
     };
   }, [allData, playerId]);
 
+  // ── 非スコアラーフォールバック（改善5: NonScorerDetail を統合） ──
+  useEffect(() => {
+    // リセット: playerId が変わったとき or チームデータ完了 + スコアラー発見済み
+    setFallbackInfo(undefined);
+    if (teamLoading || playerName) return;
+
+    const base   = import.meta.env.BASE_URL ?? "/";
+    const apiKey = import.meta.env.VITE_APISPORTS_KEY;
+    let cancelled = false;
+
+    (async () => {
+      // ① player-index-2025.json
+      try {
+        const r = await fetch(`${base}data/player-index-2025.json`);
+        if (r.ok) {
+          const index = await r.json();
+          const entry = index?.[String(playerId)] ?? null;
+          if (entry) { if (!cancelled) setFallbackInfo(entry); return; }
+        }
+      } catch {}
+
+      // ② api-sports.io fallback（season=2025 → 2024）
+      if (apiKey) {
+        let apiInfo = await fetchApiPlayer(playerId, 2025, apiKey);
+        if (!apiInfo) apiInfo = await fetchApiPlayer(playerId, 2024, apiKey);
+        if (apiInfo) { if (!cancelled) setFallbackInfo(apiInfo); return; }
+      }
+
+      if (!cancelled) setFallbackInfo(null);
+    })();
+
+    return () => { cancelled = true; };
+  }, [teamLoading, playerName, playerId]);
+
   // ── ローディング ──────────────────────────────────────────
+  // チームデータ読み込み中 OR スコアラーになく fallback 待ち
+  const loading = teamLoading || (!playerName && fallbackInfo === undefined);
+
   if (loading) {
     return (
       <div style={{ minHeight: "100vh", background: "#080c10",
@@ -302,10 +198,113 @@ export default function PlayerDetail() {
     );
   }
 
-  // ── スコアラーにない選手 → squad JSON から補完 ─────────────
+  // ── スコアラーにない選手 ──────────────────────────────────
+
   if (!playerName) {
-    return <NonScorerDetail playerId={playerId} />;
+    // 見つからなかった
+    if (fallbackInfo === null) {
+      return (
+        <div style={{ minHeight: "100vh", background: "#080c10",
+          display: "flex", flexDirection: "column", alignItems: "center",
+          justifyContent: "center", fontFamily: "'Space Mono', monospace", gap: 14 }}>
+          <div style={{ fontSize: 13, color: "#444" }}>選手データが見つかりません</div>
+          <div style={{ fontSize: 10, color: "#2d2d2d" }}>ID: {playerId}</div>
+          <Link to="/" style={{ fontSize: 10, color: "#00ff85", textDecoration: "none" }}>← HOME</Link>
+        </div>
+      );
+    }
+
+    // fallbackInfo はオブジェクト（player-index or API 取得）
+    const info     = fallbackInfo;
+    const teamMeta = TEAMS_BY_ID[info.teamId];
+    const ACCENT   = teamMeta?.color ?? FALLBACK_COLOR;
+
+    return (
+      <div style={{ minHeight: "100vh", background: "#080c10", color: "#fff",
+        fontFamily: "'Space Mono', monospace", padding: "28px 20px", boxSizing: "border-box" }}>
+        <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Anton&display=swap" rel="stylesheet" />
+        <div style={{ maxWidth: 800, margin: "0 auto" }}>
+
+          {/* Breadcrumb */}
+          <div style={{ marginBottom: 20, display: "flex", gap: 12, fontSize: 10, color: "#555" }}>
+            <Link to="/" style={{ color: "#555", textDecoration: "none" }}
+              onMouseEnter={e => e.target.style.color = "#00ff85"}
+              onMouseLeave={e => e.target.style.color = "#555"}>← HOME</Link>
+          </div>
+
+          {/* 選手ヘッダー */}
+          <div style={{ background: "#0e1318", border: "1px solid rgba(255,255,255,0.08)",
+            borderTop: `3px solid ${ACCENT}`, borderRadius: 12,
+            padding: "24px 28px", marginBottom: 20,
+            display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
+
+            {/* 顔写真（API 取得時のみ） */}
+            {info.photo && (
+              <img src={info.photo} alt={info.name}
+                style={{ width: 80, height: 80, borderRadius: "50%",
+                  border: `2px solid ${ACCENT}44`,
+                  objectFit: "cover", background: "#1a2530", flexShrink: 0 }}
+                onError={e => { e.target.style.display = "none"; }}
+              />
+            )}
+
+            <div style={{ flex: 1, minWidth: 160 }}>
+              <div style={{ fontFamily: "'Anton', sans-serif",
+                fontSize: "clamp(22px,4vw,38px)", letterSpacing: "0.04em",
+                lineHeight: 1, marginBottom: 6 }}>
+                {info.name}
+              </div>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                <span style={{ fontSize: 10, color: ACCENT, fontWeight: 700,
+                  padding: "2px 8px", border: `1px solid ${ACCENT}44`, borderRadius: 3 }}>
+                  {info.teamName}
+                </span>
+                {info.number != null && (
+                  <span style={{ fontSize: 10, color: "#555" }}>#{info.number}</span>
+                )}
+                {info.pos && (
+                  <span style={{ fontSize: 9, color: "#555", padding: "2px 6px",
+                    border: "1px solid rgba(255,255,255,0.1)", borderRadius: 3 }}>
+                    {POS_LABEL[info.pos] ?? info.pos}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div style={{ display: "flex", gap: 20, flexShrink: 0 }}>
+              {[
+                { label: "得点",     value: "—",                            color: "#22c55e" },
+                { label: "アシスト", value: "—",                            color: "#ffd93d" },
+                { label: "出場登録", value: info.appearances ?? "—",        color: "#888"    },
+              ].map(({ label, value, color }) => (
+                <div key={label} style={{ textAlign: "center" }}>
+                  <div style={{ fontSize: 24, fontWeight: 700, color, lineHeight: 1 }}>{value}</div>
+                  <div style={{ fontSize: 8, color: "#444", marginTop: 3 }}>{label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ background: "#0e1318", border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: 12, padding: "20px 24px", marginBottom: 16,
+            fontSize: 11, color: "#555", lineHeight: 2 }}>
+            <div style={{ fontSize: 10, color: "#444", letterSpacing: "0.1em",
+              textTransform: "uppercase", marginBottom: 10 }}>選手情報</div>
+            <div>{info.fromApi ? "api-sports.io より取得" : "PL 登録選手（得点スタッツなし）"}</div>
+            <div style={{ marginTop: 4, fontSize: 9, color: "#333" }}>
+              ※ 得点・アシスト情報はスコアラー上位15名のみ収集されています
+            </div>
+          </div>
+
+          <div style={{ fontSize: 9, color: "#2d2d2d", lineHeight: 1.8 }}>
+            ※ データ：api-sports.io より取得（PL 登録選手・ビルド時生成）
+          </div>
+        </div>
+      </div>
+    );
   }
+
+  // ── スコアラーの場合 ──────────────────────────────────────
 
   const ACCENT = primaryTeam?.color ?? "#00ff85";
   const hasSomeData = Object.keys(seasonStats).length > 0;

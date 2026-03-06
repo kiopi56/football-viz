@@ -327,7 +327,16 @@ export default function TeamDetail() {
 
         {/* ── スカッドビュー ── */}
         {mainView === "squad" && (
-          <SquadView teamSlug={teamSlug} season={2025} teamColor={TEAM_COLOR} />
+          season !== 2025 ? (
+            <div style={{ background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.07)",
+              borderRadius: 12, padding: "40px 20px", textAlign: "center",
+              color: "#444", fontSize: 12 }}>
+              スカッドデータは2025-26シーズンのみ対応しています
+            </div>
+          ) : (
+            <SquadView teamSlug={teamSlug} season={2025} teamColor={TEAM_COLOR} />
+          )
         )}
 
         {/* ── チャートビュー ── */}
