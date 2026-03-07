@@ -533,12 +533,6 @@ ${historySections}
 
 データに基づいた具体的な数字を使い、サッカーファンが読んで納得感のある文章にしてください。`;
 
-    // DEBUG: ブラウザコンソールでプロンプト内容を確認
-    console.log("[AI分析] teamSlug:", teamSlug, "season:", season);
-    console.log("[AI分析] currentSeasonData:", currentSeasonData);
-    console.log("[AI分析] halfCurrent:", halfCurrent);
-    console.log("[AI分析] prompt:\n", prompt);
-
     try {
       const text = await generateNarrative(prompt);
       setNarrative(text);
