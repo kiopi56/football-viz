@@ -1,22 +1,22 @@
 /**
  * supabase/functions/ai-analysis/index.ts
  *
- * Supabase Edge Function — Gemini API プロキシ
+ * Supabase Edge Function — Anthropic Claude API プロキシ
  *
- * フロントエンドから { prompt } を受け取り、Gemini 2.0 Flash を呼び出して
- * { text } を返す。GEMINI_API_KEY は Supabase Secrets に保存し、
- * フロントエンドのバンドルには含まれない。
+ * フロントエンドから { prompt } を受け取り、Claude を呼び出して
+ * { text } を返す。ANTHROPIC_API_KEY は Supabase Secrets で管理。
  *
- * Secrets 設定手順:
- *   supabase secrets set GEMINI_API_KEY=<your-key>
- *   または Supabase ダッシュボード → Project Settings → Edge Functions → Secrets
+ * Secrets 設定:
+ *   supabase secrets set ANTHROPIC_API_KEY=<your-key>
  *
  * デプロイ:
  *   supabase functions deploy ai-analysis --no-verify-jwt
  */
 
-const GEMINI_URL =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+const ANTHROPIC_URL     = "https://api.anthropic.com/v1/messages";
+const ANTHROPIC_VERSION = "2023-06-01";
+const MODEL             = "claude-haiku-4-5-20251001";
+const MAX_TOKENS        = 1024;
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin":  "*",
@@ -48,36 +48,42 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    const apiKey = Deno.env.get("GEMINI_API_KEY");
+    const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
     if (!apiKey) {
-      return new Response(JSON.stringify({ error: "GEMINI_API_KEY is not configured" }), {
+      return new Response(JSON.stringify({ error: "ANTHROPIC_API_KEY is not configured" }), {
         status: 500,
         headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
       });
     }
 
-    const geminiRes = await fetch(`${GEMINI_URL}?key=${apiKey}`, {
+    const claudeRes = await fetch(ANTHROPIC_URL, {
       method:  "POST",
-      headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
+      headers: {
+        "Content-Type":    "application/json",
+        "x-api-key":       apiKey,
+        "anthropic-version": ANTHROPIC_VERSION,
+      },
+      body: JSON.stringify({
+        model:      MODEL,
+        max_tokens: MAX_TOKENS,
+        messages:   [{ role: "user", content: prompt }],
       }),
     });
 
-    if (!geminiRes.ok) {
-      const err = await geminiRes.json().catch(() => ({}));
+    if (!claudeRes.ok) {
+      const err = await claudeRes.json().catch(() => ({}));
       const msg = (err as { error?: { message?: string } })?.error?.message
-                  ?? `Gemini API HTTP ${geminiRes.status}`;
+                  ?? `Anthropic API HTTP ${claudeRes.status}`;
       return new Response(JSON.stringify({ error: msg }), {
-        status: geminiRes.status,
+        status: claudeRes.status,
         headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
       });
     }
 
-    const geminiJson = await geminiRes.json();
+    const claudeJson = await claudeRes.json();
     const text: string =
-      (geminiJson as { candidates?: { content?: { parts?: { text?: string }[] } }[] })
-        ?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+      (claudeJson as { content?: { type: string; text: string }[] })
+        ?.content?.[0]?.text ?? "";
 
     return new Response(JSON.stringify({ text }), {
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
