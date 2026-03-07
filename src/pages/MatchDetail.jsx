@@ -50,6 +50,27 @@ function fmtDate(iso) {
   });
 }
 
+// フィクスチャの ht_home/ht_away から前半・後半の得失点を集計
+function computeHalfStats(data) {
+  const fixtures = data?.fixtures ?? [];
+  const tid = data?.teamId;
+  if (!fixtures.length || !tid) return null;
+  let htS = 0, htC = 0;
+  for (const f of fixtures) {
+    if (f.ht_home == null) continue;
+    const isHome = f.home_team_id === tid;
+    htS += isHome ? (f.ht_home ?? 0) : (f.ht_away ?? 0);
+    htC += isHome ? (f.ht_away ?? 0) : (f.ht_home ?? 0);
+  }
+  const totalS = data.scored?.total ?? 0;
+  const totalC = data.conceded?.total ?? 0;
+  return {
+    htScored: htS, shScored: totalS - htS,
+    htConceded: htC, shConceded: totalC - htC,
+    games: fixtures.filter(f => f.ht_home != null).length,
+  };
+}
+
 // ── AI ナラティブ生成（Supabase Edge Function 経由） ─────────────
 // GEMINI_API_KEY はフロントに露出せず Supabase Secrets で管理する
 async function generateNarrative(prompt) {
@@ -363,7 +384,8 @@ export default function MatchDetail() {
   const teamSlug = info?.slug ?? null; // useTeamData はスラグ文字列が必要
   const isHome   = fixture ? fixture.home_team_id === teamId : false;
 
-  // teamSlug が確定してから正しいファイル名でフェッチ（例: liverpool-2024.json）
+  // teamSlug が確定してから正しいファイル名でフェッチ（例: liverpool-2025.json）
+  const { data: data2025 } = useTeamData(teamSlug, 2025);
   const { data: data2024 } = useTeamData(teamSlug, 2024);
   const { data: data2023 } = useTeamData(teamSlug, 2023);
   const { data: data2022 } = useTeamData(teamSlug, 2022);
@@ -426,7 +448,7 @@ export default function MatchDetail() {
   const season     = fixture.season;
 
   // チームの今季 byTime データ
-  const currentSeasonData = season === 2024 ? data2024 : season === 2023 ? data2023 : data2022;
+  const currentSeasonData = season === 2025 ? data2025 : season === 2024 ? data2024 : season === 2023 ? data2023 : data2022;
   const byTime = currentSeasonData?.byTimeAvailable ? currentSeasonData : null;
 
   // この試合でのゴール → 時間帯ハイライト
@@ -444,11 +466,11 @@ export default function MatchDetail() {
     return teamIdVal === fixture.home_team_id ? fixture.home_team_name : fixture.away_team_name;
   };
 
-  // 3シーズン後半（61-90'）失点推移データ
+  // 3シーズン後半（HT-FT）失点推移データ
   const lateGoalsData = [
-    { season: "2022-23", value: (data2022?.conceded?.byTime?.["61-75"] ?? 0) + (data2022?.conceded?.byTime?.["76-90"] ?? 0) },
-    { season: "2023-24", value: (data2023?.conceded?.byTime?.["61-75"] ?? 0) + (data2023?.conceded?.byTime?.["76-90"] ?? 0) },
-    { season: "2024-25", value: (data2024?.conceded?.byTime?.["61-75"] ?? 0) + (data2024?.conceded?.byTime?.["76-90"] ?? 0) },
+    { season: "2022-23", value: computeHalfStats(data2022)?.shConceded ?? 0 },
+    { season: "2023-24", value: computeHalfStats(data2023)?.shConceded ?? 0 },
+    { season: "2024-25", value: computeHalfStats(data2024)?.shConceded ?? 0 },
   ];
 
   const recentForm = currentSeasonData?.recentForm ?? [];
@@ -465,13 +487,12 @@ export default function MatchDetail() {
       `  ${g.minute}' — ${nameOf(g.team_id)}${g.detail === "Penalty" ? "（PK）" : ""}`
     ).join("\n") || "  ゴール情報なし";
 
-    const byTimeStr = byTime
-      ? PERIOD_KEYS.map(k =>
-          `  ${k}': 得点${byTime.scored?.byTime?.[k] ?? "–"} / 失点${byTime.conceded?.byTime?.[k] ?? "–"}`
-        ).join("\n")
+    const halfCurrent = computeHalfStats(currentSeasonData);
+    const byTimeStr = halfCurrent
+      ? `  前半: 得点${halfCurrent.htScored} / 失点${halfCurrent.htConceded}\n  後半: 得点${halfCurrent.shScored} / 失点${halfCurrent.shConceded}\n  合計: 得点${currentSeasonData?.scored?.total ?? "–"} / 失点${currentSeasonData?.conceded?.total ?? "–"}（${halfCurrent.games}試合）`
       : "  データなし";
 
-    // 過去3シーズンの詳細データ（時間帯別含む）
+    // 過去3シーズンの詳細データ（前半・後半別）
     const historySections = [
       { label: "2022-23", data: data2022 },
       { label: "2023-24", data: data2023 },
@@ -480,15 +501,11 @@ export default function MatchDetail() {
       if (!data) return `  ${label}: データなし`;
       const sc = data.scored?.total   ?? "–";
       const co = data.conceded?.total ?? "–";
-      const lateConc = data.byTimeAvailable
-        ? ((data.conceded?.byTime?.["61-75"] ?? 0) + (data.conceded?.byTime?.["76-90"] ?? 0))
-        : "–";
-      const byTimeLine = data.byTimeAvailable
-        ? PERIOD_KEYS.map(k =>
-            `${k}': 得${data.scored?.byTime?.[k] ?? "–"}/失${data.conceded?.byTime?.[k] ?? "–"}`
-          ).join("  ")
-        : "時間帯データなし";
-      return `  ${label}: 得点${sc} / 失点${co} / 後半（61-90'）失点${lateConc}\n    時間帯別: ${byTimeLine}`;
+      const half = computeHalfStats(data);
+      if (half) {
+        return `  ${label}: 得点${sc} / 失点${co}（${half.games}試合）\n    前半: 得${half.htScored}/失${half.htConceded}  後半: 得${half.shScored}/失${half.shConceded}`;
+      }
+      return `  ${label}: 得点${sc} / 失点${co}`;
     }).join("\n");
 
     const prompt = `あなたはプレミアリーグの戦術アナリストです。
@@ -761,7 +778,7 @@ ${historySections}
                 borderRadius: 12, padding: "20px 22px", marginBottom: 16 }}>
                 <div style={{ fontSize: 10, color: "#555", letterSpacing: "0.1em",
                   textTransform: "uppercase", marginBottom: 16 }}>
-                  3シーズン 後半（61–90'）失点推移
+                  3シーズン 後半（HT–FT）失点推移
                 </div>
                 <div style={{ height: 120 }}>
                   <ResponsiveContainer width="100%" height="100%">
