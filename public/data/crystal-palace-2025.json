@@ -50,9 +50,17 @@
       "id": 2218,
       "name": "I. Sarr",
       "photo": "https://media.api-sports.io/football/players/2218.png",
-      "goals": 5,
+      "goals": 7,
       "assists": 1,
-      "appearances": 18
+      "appearances": 19
+    },
+    {
+      "id": 2032,
+      "name": "J. Strand Larsen",
+      "photo": "https://media.api-sports.io/football/players/2032.png",
+      "goals": 3,
+      "assists": 0,
+      "appearances": 5
     },
     {
       "id": 13736,
@@ -60,15 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/13736.png",
       "goals": 3,
       "assists": 2,
-      "appearances": 20
-    },
-    {
-      "id": 2032,
-      "name": "J. Strand Larsen",
-      "photo": "https://media.api-sports.io/football/players/2032.png",
-      "goals": 2,
-      "assists": 0,
-      "appearances": 4
+      "appearances": 21
     },
     {
       "id": 67971,
@@ -100,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/137303.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 4
+      "appearances": 5
     },
     {
       "id": 126949,
@@ -108,7 +108,7 @@
       "photo": "https://media.api-sports.io/football/players/126949.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 20995,
@@ -124,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/182201.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 28
+      "appearances": 29
     },
     {
       "id": 286458,
@@ -161,7 +161,7 @@
         "yellow_cards": 3,
         "red_cards": 1,
         "saves": 1,
-        "total_passes": 303,
+        "total_passes": 311,
         "pass_accuracy": 78
       },
       "stats_away": {
@@ -175,8 +175,8 @@
         "yellow_cards": 2,
         "red_cards": 0,
         "saves": 3,
-        "total_passes": 455,
-        "pass_accuracy": 88
+        "total_passes": 463,
+        "pass_accuracy": 87
       }
     },
     {

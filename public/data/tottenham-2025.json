@@ -44,7 +44,7 @@
       "photo": "https://media.api-sports.io/football/players/2413.png",
       "goals": 8,
       "assists": 3,
-      "appearances": 23
+      "appearances": 24
     },
     {
       "id": 30776,
@@ -60,7 +60,15 @@
       "photo": "https://media.api-sports.io/football/players/152849.png",
       "goals": 4,
       "assists": 1,
-      "appearances": 26
+      "appearances": 27
+    },
+    {
+      "id": 18883,
+      "name": "D. Solanke",
+      "photo": "https://media.api-sports.io/football/players/18883.png",
+      "goals": 3,
+      "assists": 0,
+      "appearances": 10
     },
     {
       "id": 41104,
@@ -68,7 +76,7 @@
       "photo": "https://media.api-sports.io/football/players/41104.png",
       "goals": 3,
       "assists": 2,
-      "appearances": 25
+      "appearances": 26
     },
     {
       "id": 270510,
@@ -76,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/270510.png",
       "goals": 3,
       "assists": 0,
-      "appearances": 21
+      "appearances": 22
     },
     {
       "id": 237129,
@@ -84,15 +92,15 @@
       "photo": "https://media.api-sports.io/football/players/237129.png",
       "goals": 2,
       "assists": 3,
-      "appearances": 19
+      "appearances": 20
     },
     {
       "id": 328089,
       "name": "A. Gray",
       "photo": "https://media.api-sports.io/football/players/328089.png",
       "goals": 2,
-      "assists": 1,
-      "appearances": 18
+      "assists": 2,
+      "appearances": 19
     },
     {
       "id": 15911,
@@ -109,14 +117,6 @@
       "goals": 2,
       "assists": 0,
       "appearances": 16
-    },
-    {
-      "id": 18883,
-      "name": "D. Solanke",
-      "photo": "https://media.api-sports.io/football/players/18883.png",
-      "goals": 2,
-      "assists": 0,
-      "appearances": 9
     },
     {
       "id": 347316,
@@ -148,7 +148,7 @@
       "photo": "https://media.api-sports.io/football/players/162016.png",
       "goals": 1,
       "assists": 4,
-      "appearances": 22
+      "appearances": 23
     },
     {
       "id": 21104,
@@ -156,7 +156,7 @@
       "photo": "https://media.api-sports.io/football/players/21104.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 20
+      "appearances": 21
     }
   ],
   "fixtures": [
@@ -185,7 +185,7 @@
         "yellow_cards": 3,
         "red_cards": 1,
         "saves": 1,
-        "total_passes": 303,
+        "total_passes": 311,
         "pass_accuracy": 78
       },
       "stats_away": {
@@ -199,8 +199,8 @@
         "yellow_cards": 2,
         "red_cards": 0,
         "saves": 3,
-        "total_passes": 455,
-        "pass_accuracy": 88
+        "total_passes": 463,
+        "pass_accuracy": 87
       }
     },
     {
