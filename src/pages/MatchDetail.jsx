@@ -385,10 +385,12 @@ export default function MatchDetail() {
   const isHome   = fixture ? fixture.home_team_id === teamId : false;
 
   // teamSlug が確定してから正しいファイル名でフェッチ（例: liverpool-2025.json）
-  const { data: data2025 } = useTeamData(teamSlug, 2025);
+  const { data: data2025, loading: loading2025 } = useTeamData(teamSlug, 2025);
   const { data: data2024 } = useTeamData(teamSlug, 2024);
   const { data: data2023 } = useTeamData(teamSlug, 2023);
   const { data: data2022 } = useTeamData(teamSlug, 2022);
+  // 今季データ読み込み中はAI分析ボタンを無効化（タイミング問題防止）
+  const teamDataLoading = loading2025;
 
   // ── データロード ──
   useEffect(() => {
@@ -667,16 +669,17 @@ ${historySections}
                 </div>
                 <button
                   onClick={handleGenerateNarrative}
-                  disabled={narrativeLoading}
+                  disabled={narrativeLoading || teamDataLoading}
                   style={{
-                    padding: "7px 16px", borderRadius: 6, fontSize: 10, cursor: narrativeLoading ? "wait" : "pointer",
+                    padding: "7px 16px", borderRadius: 6, fontSize: 10,
+                    cursor: (narrativeLoading || teamDataLoading) ? "wait" : "pointer",
                     fontFamily: "'Space Mono', monospace",
                     border: `1px solid ${TEAM_COLOR}`,
                     background: `${TEAM_COLOR}18`, color: TEAM_COLOR,
-                    opacity: narrativeLoading ? 0.6 : 1,
+                    opacity: (narrativeLoading || teamDataLoading) ? 0.6 : 1,
                   }}
                 >
-                  {narrativeLoading ? "生成中..." : narrative ? "再生成" : "分析を生成"}
+                  {narrativeLoading ? "生成中..." : teamDataLoading ? "データ読み込み中..." : narrative ? "再生成" : "分析を生成"}
                 </button>
               </div>
 
