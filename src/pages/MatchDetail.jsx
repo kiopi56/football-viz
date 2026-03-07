@@ -358,13 +358,15 @@ export default function MatchDetail() {
   const [lineupTeams,     setLineupTeams]     = useState(null); // null=loading, []=failed/empty
 
   // fixture 読み込み後に teamId を決定
-  const teamId = fixture ? resolveTeamId(fixture) : null;
-  const info   = teamId ? TEAM_INFO[teamId] : null;
-  const isHome = fixture ? fixture.home_team_id === teamId : false;
+  const teamId   = fixture ? resolveTeamId(fixture) : null;
+  const info     = teamId ? TEAM_INFO[teamId] : null;
+  const teamSlug = info?.slug ?? null; // useTeamData はスラグ文字列が必要
+  const isHome   = fixture ? fixture.home_team_id === teamId : false;
 
-  const { data: data2024 } = useTeamData(teamId, 2024);
-  const { data: data2023 } = useTeamData(teamId, 2023);
-  const { data: data2022 } = useTeamData(teamId, 2022);
+  // teamSlug が確定してから正しいファイル名でフェッチ（例: liverpool-2024.json）
+  const { data: data2024 } = useTeamData(teamSlug, 2024);
+  const { data: data2023 } = useTeamData(teamSlug, 2023);
+  const { data: data2022 } = useTeamData(teamSlug, 2022);
 
   // ── データロード ──
   useEffect(() => {
