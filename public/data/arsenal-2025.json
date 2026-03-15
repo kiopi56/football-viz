@@ -3,7 +3,7 @@
   "season": 2025,
   "byTimeAvailable": false,
   "scored": {
-    "total": 59,
+    "total": 61,
     "byTime": null
   },
   "conceded": {
@@ -34,7 +34,7 @@
     "W",
     "W",
     "W",
-    "D",
+    "W",
     "D"
   ],
   "scorers": [
@@ -160,6 +160,49 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379259,
+      "season": 2025,
+      "team_id": 42,
+      "match_date": "2026-03-14T17:30:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 45,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Everton",
+      "goals_home": 2,
+      "goals_away": 0,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 7,
+        "shots_off_goal": 9,
+        "total_shots": 25,
+        "blocked_shots": 9,
+        "corners": 8,
+        "possession": 65,
+        "fouls": 11,
+        "yellow_cards": null,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 580,
+        "pass_accuracy": 87
+      },
+      "stats_away": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 2,
+        "total_shots": 9,
+        "blocked_shots": 4,
+        "corners": 3,
+        "possession": 35,
+        "fouls": 12,
+        "yellow_cards": null,
+        "red_cards": null,
+        "saves": 4,
+        "total_passes": 317,
+        "pass_accuracy": 74
+      }
+    },
     {
       "id": 1379251,
       "season": 2025,
