@@ -52,7 +52,15 @@
       "photo": "https://media.api-sports.io/football/players/158054.png",
       "goals": 7,
       "assists": 2,
-      "appearances": 25
+      "appearances": 26
+    },
+    {
+      "id": 138787,
+      "name": "A. Gordon",
+      "photo": "https://media.api-sports.io/football/players/138787.png",
+      "goals": 5,
+      "assists": 2,
+      "appearances": 24
     },
     {
       "id": 18778,
@@ -60,15 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/18778.png",
       "goals": 5,
       "assists": 0,
-      "appearances": 28
-    },
-    {
-      "id": 138787,
-      "name": "A. Gordon",
-      "photo": "https://media.api-sports.io/football/players/138787.png",
-      "goals": 4,
-      "assists": 2,
-      "appearances": 23
+      "appearances": 29
     },
     {
       "id": 163189,
@@ -76,7 +76,7 @@
       "photo": "https://media.api-sports.io/football/players/163189.png",
       "goals": 4,
       "assists": 0,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 19163,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/19163.png",
       "goals": 3,
       "assists": 1,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 723,
@@ -92,7 +92,7 @@
       "photo": "https://media.api-sports.io/football/players/723.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 22
+      "appearances": 23
     },
     {
       "id": 315237,
@@ -108,7 +108,7 @@
       "photo": "https://media.api-sports.io/football/players/19192.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 19
+      "appearances": 20
     },
     {
       "id": 328105,
@@ -124,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/284492.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 22
+      "appearances": 23
     },
     {
       "id": 38734,
@@ -132,7 +132,7 @@
       "photo": "https://media.api-sports.io/football/players/38734.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 16
+      "appearances": 17
     },
     {
       "id": 20649,

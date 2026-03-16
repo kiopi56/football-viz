@@ -3,11 +3,11 @@
   "season": 2025,
   "byTimeAvailable": false,
   "scored": {
-    "total": 39,
+    "total": 40,
     "byTime": null
   },
   "conceded": {
-    "total": 46,
+    "total": 47,
     "byTime": null
   },
   "home": {
@@ -31,7 +31,7 @@
     }
   },
   "recentForm": [
-    "L",
+    "D",
     "L",
     "L",
     "L",
@@ -160,6 +160,49 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379264,
+      "season": 2025,
+      "team_id": 47,
+      "match_date": "2026-03-15T16:30:00+00:00",
+      "home_team_id": 40,
+      "away_team_id": 47,
+      "home_team_name": "Liverpool",
+      "away_team_name": "Tottenham",
+      "goals_home": 1,
+      "goals_away": 1,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 7,
+        "total_shots": 17,
+        "blocked_shots": 6,
+        "corners": 3,
+        "possession": 63,
+        "fouls": 8,
+        "yellow_cards": null,
+        "red_cards": null,
+        "saves": 6,
+        "total_passes": 550,
+        "pass_accuracy": 84
+      },
+      "stats_away": {
+        "shots_on_goal": 7,
+        "shots_off_goal": 3,
+        "total_shots": 13,
+        "blocked_shots": 3,
+        "corners": 4,
+        "possession": 37,
+        "fouls": 13,
+        "yellow_cards": null,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 319,
+        "pass_accuracy": 73
+      }
+    },
     {
       "id": 1379257,
       "season": 2025,

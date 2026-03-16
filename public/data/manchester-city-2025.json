@@ -44,7 +44,7 @@
       "photo": "https://media.api-sports.io/football/players/1100.png",
       "goals": 22,
       "assists": 7,
-      "appearances": 28
+      "appearances": 29
     },
     {
       "id": 631,
@@ -52,7 +52,7 @@
       "photo": "https://media.api-sports.io/football/players/631.png",
       "goals": 7,
       "assists": 3,
-      "appearances": 25
+      "appearances": 26
     },
     {
       "id": 19281,
@@ -60,7 +60,7 @@
       "photo": "https://media.api-sports.io/football/players/19281.png",
       "goals": 5,
       "assists": 1,
-      "appearances": 8
+      "appearances": 9
     },
     {
       "id": 36902,
@@ -68,7 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/36902.png",
       "goals": 5,
       "assists": 2,
-      "appearances": 25
+      "appearances": 26
     },
     {
       "id": 307123,
@@ -76,7 +76,7 @@
       "photo": "https://media.api-sports.io/football/players/307123.png",
       "goals": 4,
       "assists": 3,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 156477,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/156477.png",
       "goals": 3,
       "assists": 8,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 567,
@@ -93,6 +93,14 @@
       "goals": 2,
       "assists": 0,
       "appearances": 25
+    },
+    {
+      "id": 636,
+      "name": "Bernardo Silva",
+      "photo": "https://media.api-sports.io/football/players/636.png",
+      "goals": 2,
+      "assists": 4,
+      "appearances": 30
     },
     {
       "id": 129033,
@@ -111,20 +119,12 @@
       "appearances": 21
     },
     {
-      "id": 636,
-      "name": "Bernardo Silva",
-      "photo": "https://media.api-sports.io/football/players/636.png",
-      "goals": 1,
-      "assists": 4,
-      "appearances": 29
-    },
-    {
       "id": 1422,
       "name": "J. Doku",
       "photo": "https://media.api-sports.io/football/players/1422.png",
       "goals": 1,
       "assists": 4,
-      "appearances": 21
+      "appearances": 22
     },
     {
       "id": 41621,
@@ -132,15 +132,15 @@
       "photo": "https://media.api-sports.io/football/players/41621.png",
       "goals": 1,
       "assists": 4,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 81573,
       "name": "Omar Marmoush",
       "photo": "https://media.api-sports.io/football/players/81573.png",
       "goals": 1,
-      "assists": 2,
-      "appearances": 16
+      "assists": 3,
+      "appearances": 17
     },
     {
       "id": 44,
@@ -148,7 +148,7 @@
       "photo": "https://media.api-sports.io/football/players/44.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 17
+      "appearances": 18
     }
   ],
   "fixtures": [
@@ -176,22 +176,22 @@
         "fouls": 14,
         "yellow_cards": 2,
         "red_cards": null,
-        "saves": 4,
-        "total_passes": 303,
+        "saves": 5,
+        "total_passes": 304,
         "pass_accuracy": 74
       },
       "stats_away": {
-        "shots_on_goal": 5,
+        "shots_on_goal": 6,
         "shots_off_goal": 11,
         "total_shots": 24,
-        "blocked_shots": 8,
+        "blocked_shots": 7,
         "corners": 15,
         "possession": 71,
         "fouls": 5,
         "yellow_cards": 2,
         "red_cards": null,
         "saves": 0,
-        "total_passes": 736,
+        "total_passes": 755,
         "pass_accuracy": 91
       }
     },
