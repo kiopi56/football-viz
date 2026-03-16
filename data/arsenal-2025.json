@@ -3,7 +3,7 @@
   "season": 2025,
   "byTimeAvailable": false,
   "scored": {
-    "total": 59,
+    "total": 61,
     "byTime": null
   },
   "conceded": {
@@ -34,7 +34,7 @@
     "W",
     "W",
     "W",
-    "D",
+    "W",
     "D"
   ],
   "scorers": [
@@ -42,9 +42,9 @@
       "id": 18979,
       "name": "V. Gyökeres",
       "photo": "https://media.api-sports.io/football/players/18979.png",
-      "goals": 10,
+      "goals": 11,
       "assists": 0,
-      "appearances": 28
+      "appearances": 29
     },
     {
       "id": 19586,
@@ -52,7 +52,7 @@
       "photo": "https://media.api-sports.io/football/players/19586.png",
       "goals": 6,
       "assists": 2,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 1460,
@@ -60,7 +60,7 @@
       "photo": "https://media.api-sports.io/football/players/1460.png",
       "goals": 6,
       "assists": 3,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 47315,
@@ -68,7 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/47315.png",
       "goals": 5,
       "assists": 1,
-      "appearances": 30
+      "appearances": 31
     },
     {
       "id": 1946,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/2937.png",
       "goals": 4,
       "assists": 5,
-      "appearances": 29
+      "appearances": 30
     },
     {
       "id": 47311,
@@ -100,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/22224.png",
       "goals": 3,
       "assists": 4,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 38746,
@@ -108,7 +108,7 @@
       "photo": "https://media.api-sports.io/football/players/38746.png",
       "goals": 3,
       "assists": 5,
-      "appearances": 29
+      "appearances": 30
     },
     {
       "id": 643,
@@ -124,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/22090.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 157052,
@@ -132,7 +132,7 @@
       "photo": "https://media.api-sports.io/football/players/157052.png",
       "goals": 1,
       "assists": 2,
-      "appearances": 21
+      "appearances": 22
     },
     {
       "id": 37127,
@@ -147,8 +147,8 @@
       "name": "Gabriel Martinelli",
       "photo": "https://media.api-sports.io/football/players/127769.png",
       "goals": 1,
-      "assists": 2,
-      "appearances": 24
+      "assists": 3,
+      "appearances": 25
     },
     {
       "id": 136723,
@@ -156,10 +156,53 @@
       "photo": "https://media.api-sports.io/football/players/136723.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 19
+      "appearances": 20
     }
   ],
   "fixtures": [
+    {
+      "id": 1379259,
+      "season": 2025,
+      "team_id": 42,
+      "match_date": "2026-03-14T17:30:00+00:00",
+      "home_team_id": 42,
+      "away_team_id": 45,
+      "home_team_name": "Arsenal",
+      "away_team_name": "Everton",
+      "goals_home": 2,
+      "goals_away": 0,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 7,
+        "shots_off_goal": 9,
+        "total_shots": 25,
+        "blocked_shots": 9,
+        "corners": 8,
+        "possession": 65,
+        "fouls": 11,
+        "yellow_cards": null,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 580,
+        "pass_accuracy": 87
+      },
+      "stats_away": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 2,
+        "total_shots": 9,
+        "blocked_shots": 4,
+        "corners": 3,
+        "possession": 35,
+        "fouls": 12,
+        "yellow_cards": null,
+        "red_cards": null,
+        "saves": 4,
+        "total_passes": 317,
+        "pass_accuracy": 74
+      }
+    },
     {
       "id": 1379251,
       "season": 2025,

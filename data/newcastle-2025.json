@@ -3,7 +3,7 @@
   "season": 2025,
   "byTimeAvailable": false,
   "scored": {
-    "total": 42,
+    "total": 43,
     "byTime": null
   },
   "conceded": {
@@ -32,10 +32,10 @@
   },
   "recentForm": [
     "W",
-    "L",
-    "L",
     "W",
-    "L"
+    "L",
+    "L",
+    "W"
   ],
   "scorers": [
     {
@@ -52,7 +52,15 @@
       "photo": "https://media.api-sports.io/football/players/158054.png",
       "goals": 7,
       "assists": 2,
-      "appearances": 25
+      "appearances": 26
+    },
+    {
+      "id": 138787,
+      "name": "A. Gordon",
+      "photo": "https://media.api-sports.io/football/players/138787.png",
+      "goals": 5,
+      "assists": 2,
+      "appearances": 24
     },
     {
       "id": 18778,
@@ -60,15 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/18778.png",
       "goals": 5,
       "assists": 0,
-      "appearances": 28
-    },
-    {
-      "id": 138787,
-      "name": "A. Gordon",
-      "photo": "https://media.api-sports.io/football/players/138787.png",
-      "goals": 4,
-      "assists": 2,
-      "appearances": 23
+      "appearances": 29
     },
     {
       "id": 163189,
@@ -76,7 +76,7 @@
       "photo": "https://media.api-sports.io/football/players/163189.png",
       "goals": 4,
       "assists": 0,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 19163,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/19163.png",
       "goals": 3,
       "assists": 1,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 723,
@@ -92,7 +92,7 @@
       "photo": "https://media.api-sports.io/football/players/723.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 22
+      "appearances": 23
     },
     {
       "id": 315237,
@@ -108,7 +108,7 @@
       "photo": "https://media.api-sports.io/football/players/19192.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 19
+      "appearances": 20
     },
     {
       "id": 328105,
@@ -124,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/284492.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 22
+      "appearances": 23
     },
     {
       "id": 38734,
@@ -132,7 +132,7 @@
       "photo": "https://media.api-sports.io/football/players/38734.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 16
+      "appearances": 17
     },
     {
       "id": 20649,
@@ -144,6 +144,49 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379262,
+      "season": 2025,
+      "team_id": 34,
+      "match_date": "2026-03-14T17:30:00+00:00",
+      "home_team_id": 49,
+      "away_team_id": 34,
+      "home_team_name": "Chelsea",
+      "away_team_name": "Newcastle",
+      "goals_home": 0,
+      "goals_away": 1,
+      "ht_home": 0,
+      "ht_away": 1,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 10,
+        "total_shots": 22,
+        "blocked_shots": 9,
+        "corners": 8,
+        "possession": 67,
+        "fouls": 9,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 4,
+        "total_passes": 661,
+        "pass_accuracy": 92
+      },
+      "stats_away": {
+        "shots_on_goal": 5,
+        "shots_off_goal": 1,
+        "total_shots": 7,
+        "blocked_shots": 1,
+        "corners": 1,
+        "possession": 33,
+        "fouls": 10,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 331,
+        "pass_accuracy": 78
+      }
+    },
     {
       "id": 1379256,
       "season": 2025,

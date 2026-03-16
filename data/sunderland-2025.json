@@ -7,7 +7,7 @@
     "byTime": null
   },
   "conceded": {
-    "total": 34,
+    "total": 35,
     "byTime": null
   },
   "home": {
@@ -31,9 +31,9 @@
     }
   },
   "recentForm": [
+    "L",
     "W",
     "D",
-    "L",
     "L",
     "L"
   ],
@@ -44,7 +44,7 @@
       "photo": "https://media.api-sports.io/football/players/38750.png",
       "goals": 5,
       "assists": 1,
-      "appearances": 22
+      "appearances": 23
     },
     {
       "id": 20638,
@@ -68,7 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/336659.png",
       "goals": 3,
       "assists": 1,
-      "appearances": 21
+      "appearances": 22
     },
     {
       "id": 55904,
@@ -76,7 +76,7 @@
       "photo": "https://media.api-sports.io/football/players/55904.png",
       "goals": 2,
       "assists": 0,
-      "appearances": 25
+      "appearances": 26
     },
     {
       "id": 327631,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/327631.png",
       "goals": 2,
       "assists": 0,
-      "appearances": 12
+      "appearances": 13
     },
     {
       "id": 349799,
@@ -92,7 +92,7 @@
       "photo": "https://media.api-sports.io/football/players/349799.png",
       "goals": 2,
       "assists": 0,
-      "appearances": 17
+      "appearances": 18
     },
     {
       "id": 1464,
@@ -100,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/1464.png",
       "goals": 1,
       "assists": 5,
-      "appearances": 25
+      "appearances": 26
     },
     {
       "id": 301771,
@@ -116,7 +116,7 @@
       "photo": "https://media.api-sports.io/football/players/6168.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 25
+      "appearances": 26
     },
     {
       "id": 1146,
@@ -136,6 +136,49 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379267,
+      "season": 2025,
+      "team_id": 746,
+      "match_date": "2026-03-14T15:00:00+00:00",
+      "home_team_id": 746,
+      "away_team_id": 51,
+      "home_team_name": "Sunderland",
+      "away_team_name": "Brighton",
+      "goals_home": 0,
+      "goals_away": 1,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 5,
+        "total_shots": 14,
+        "blocked_shots": 5,
+        "corners": 7,
+        "possession": 47,
+        "fouls": 7,
+        "yellow_cards": 1,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 407,
+        "pass_accuracy": 78
+      },
+      "stats_away": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 3,
+        "total_shots": 12,
+        "blocked_shots": 5,
+        "corners": 3,
+        "possession": 53,
+        "fouls": 11,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 466,
+        "pass_accuracy": 79
+      }
+    },
     {
       "id": 1379254,
       "season": 2025,

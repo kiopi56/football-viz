@@ -32,10 +32,10 @@
   },
   "recentForm": [
     "D",
-    "L",
-    "L",
     "D",
-    "L"
+    "L",
+    "L",
+    "D"
   ],
   "scorers": [
     {
@@ -152,6 +152,49 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379266,
+      "season": 2025,
+      "team_id": 65,
+      "match_date": "2026-03-15T14:00:00+00:00",
+      "home_team_id": 65,
+      "away_team_id": 36,
+      "home_team_name": "Nottingham Forest",
+      "away_team_name": "Fulham",
+      "goals_home": 0,
+      "goals_away": 0,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 2,
+        "shots_off_goal": 4,
+        "total_shots": 11,
+        "blocked_shots": 5,
+        "corners": 5,
+        "possession": 46,
+        "fouls": 8,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 1,
+        "total_passes": 398,
+        "pass_accuracy": 81
+      },
+      "stats_away": {
+        "shots_on_goal": 1,
+        "shots_off_goal": 3,
+        "total_shots": 5,
+        "blocked_shots": 2,
+        "corners": 4,
+        "possession": 54,
+        "fouls": 10,
+        "yellow_cards": 3,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 472,
+        "pass_accuracy": 80
+      }
+    },
     {
       "id": 1379255,
       "season": 2025,

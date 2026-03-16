@@ -3,11 +3,11 @@
   "season": 2025,
   "byTimeAvailable": false,
   "scored": {
-    "total": 39,
+    "total": 40,
     "byTime": null
   },
   "conceded": {
-    "total": 34,
+    "total": 37,
     "byTime": null
   },
   "home": {
@@ -33,9 +33,9 @@
   "recentForm": [
     "L",
     "L",
+    "L",
     "D",
-    "W",
-    "D"
+    "W"
   ],
   "scorers": [
     {
@@ -128,6 +128,49 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379265,
+      "season": 2025,
+      "team_id": 66,
+      "match_date": "2026-03-15T14:00:00+00:00",
+      "home_team_id": 33,
+      "away_team_id": 66,
+      "home_team_name": "Manchester United",
+      "away_team_name": "Aston Villa",
+      "goals_home": 3,
+      "goals_away": 1,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 6,
+        "shots_off_goal": 6,
+        "total_shots": 16,
+        "blocked_shots": 4,
+        "corners": 6,
+        "possession": 53,
+        "fouls": 10,
+        "yellow_cards": 3,
+        "red_cards": null,
+        "saves": 1,
+        "total_passes": 479,
+        "pass_accuracy": 85
+      },
+      "stats_away": {
+        "shots_on_goal": 2,
+        "shots_off_goal": 5,
+        "total_shots": 9,
+        "blocked_shots": 2,
+        "corners": 6,
+        "possession": 47,
+        "fouls": 5,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 425,
+        "pass_accuracy": 85
+      }
+    },
     {
       "id": 1379249,
       "season": 2025,

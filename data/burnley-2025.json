@@ -31,11 +31,11 @@
     }
   },
   "recentForm": [
+    "D",
     "L",
     "L",
     "D",
-    "W",
-    "L"
+    "W"
   ],
   "scorers": [
     {
@@ -44,7 +44,7 @@
       "photo": "https://media.api-sports.io/football/players/196855.png",
       "goals": 7,
       "assists": 1,
-      "appearances": 28
+      "appearances": 29
     },
     {
       "id": 36927,
@@ -52,7 +52,7 @@
       "photo": "https://media.api-sports.io/football/players/36927.png",
       "goals": 7,
       "assists": 0,
-      "appearances": 20
+      "appearances": 21
     },
     {
       "id": 98936,
@@ -60,7 +60,7 @@
       "photo": "https://media.api-sports.io/football/players/98936.png",
       "goals": 3,
       "assists": 1,
-      "appearances": 21
+      "appearances": 22
     },
     {
       "id": 270508,
@@ -68,7 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/270508.png",
       "goals": 3,
       "assists": 1,
-      "appearances": 28
+      "appearances": 29
     },
     {
       "id": 19827,
@@ -92,7 +92,7 @@
       "photo": "https://media.api-sports.io/football/players/180560.png",
       "goals": 1,
       "assists": 3,
-      "appearances": 21
+      "appearances": 22
     },
     {
       "id": 20303,
@@ -100,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/20303.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 161621,
@@ -116,7 +116,7 @@
       "photo": "https://media.api-sports.io/football/players/37882.png",
       "goals": 1,
       "assists": 3,
-      "appearances": 17
+      "appearances": 18
     },
     {
       "id": 138822,
@@ -124,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/138822.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 19
+      "appearances": 20
     },
     {
       "id": 19182,
@@ -136,6 +136,49 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379261,
+      "season": 2025,
+      "team_id": 44,
+      "match_date": "2026-03-14T15:00:00+00:00",
+      "home_team_id": 44,
+      "away_team_id": 35,
+      "home_team_name": "Burnley",
+      "away_team_name": "Bournemouth",
+      "goals_home": 0,
+      "goals_away": 0,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 2,
+        "shots_off_goal": 5,
+        "total_shots": 15,
+        "blocked_shots": 8,
+        "corners": 5,
+        "possession": 38,
+        "fouls": 11,
+        "yellow_cards": 1,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 287,
+        "pass_accuracy": 70
+      },
+      "stats_away": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 10,
+        "total_shots": 22,
+        "blocked_shots": 9,
+        "corners": 8,
+        "possession": 62,
+        "fouls": 5,
+        "yellow_cards": 0,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 467,
+        "pass_accuracy": 80
+      }
+    },
     {
       "id": 1379252,
       "season": 2025,

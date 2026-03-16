@@ -31,11 +31,11 @@
     }
   },
   "recentForm": [
+    "D",
     "L",
     "L",
     "D",
-    "D",
-    "W"
+    "D"
   ],
   "scorers": [
     {
@@ -136,6 +136,49 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379263,
+      "season": 2025,
+      "team_id": 63,
+      "match_date": "2026-03-15T14:00:00+00:00",
+      "home_team_id": 52,
+      "away_team_id": 63,
+      "home_team_name": "Crystal Palace",
+      "away_team_name": "Leeds",
+      "goals_home": 0,
+      "goals_away": 0,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 0,
+        "shots_off_goal": 5,
+        "total_shots": 12,
+        "blocked_shots": 7,
+        "corners": 8,
+        "possession": 67,
+        "fouls": 12,
+        "yellow_cards": 2,
+        "red_cards": 0,
+        "saves": 3,
+        "total_passes": 448,
+        "pass_accuracy": 79
+      },
+      "stats_away": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 4,
+        "total_shots": 10,
+        "blocked_shots": 3,
+        "corners": 3,
+        "possession": 33,
+        "fouls": 11,
+        "yellow_cards": 3,
+        "red_cards": 1,
+        "saves": 0,
+        "total_passes": 221,
+        "pass_accuracy": 62
+      }
+    },
     {
       "id": 1379254,
       "season": 2025,

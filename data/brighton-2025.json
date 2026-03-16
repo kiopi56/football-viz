@@ -3,7 +3,7 @@
   "season": 2025,
   "byTimeAvailable": false,
   "scored": {
-    "total": 38,
+    "total": 39,
     "byTime": null
   },
   "conceded": {
@@ -31,10 +31,10 @@
     }
   },
   "recentForm": [
+    "W",
     "L",
     "W",
     "W",
-    "L",
     "L"
   ],
   "scorers": [
@@ -44,7 +44,7 @@
       "photo": "https://media.api-sports.io/football/players/1469.png",
       "goals": 10,
       "assists": 0,
-      "appearances": 28
+      "appearances": 29
     },
     {
       "id": 278370,
@@ -52,7 +52,7 @@
       "photo": "https://media.api-sports.io/football/players/278370.png",
       "goals": 5,
       "assists": 0,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 38695,
@@ -60,7 +60,7 @@
       "photo": "https://media.api-sports.io/football/players/38695.png",
       "goals": 3,
       "assists": 2,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 265820,
@@ -68,7 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/265820.png",
       "goals": 3,
       "assists": 2,
-      "appearances": 22
+      "appearances": 23
     },
     {
       "id": 162007,
@@ -76,7 +76,15 @@
       "photo": "https://media.api-sports.io/football/players/162007.png",
       "goals": 2,
       "assists": 0,
-      "appearances": 23
+      "appearances": 24
+    },
+    {
+      "id": 383685,
+      "name": "Y. Minteh",
+      "photo": "https://media.api-sports.io/football/players/383685.png",
+      "goals": 2,
+      "assists": 4,
+      "appearances": 26
     },
     {
       "id": 106835,
@@ -103,20 +111,12 @@
       "appearances": 16
     },
     {
-      "id": 383685,
-      "name": "Y. Minteh",
-      "photo": "https://media.api-sports.io/football/players/383685.png",
-      "goals": 1,
-      "assists": 4,
-      "appearances": 25
-    },
-    {
       "id": 19030,
       "name": "M. O&apos;Riley",
       "photo": "https://media.api-sports.io/football/players/19030.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 3
+      "appearances": 4
     },
     {
       "id": 328225,
@@ -132,7 +132,7 @@
       "photo": "https://media.api-sports.io/football/players/296.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 17
+      "appearances": 18
     },
     {
       "id": 537,
@@ -140,7 +140,7 @@
       "photo": "https://media.api-sports.io/football/players/537.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 17
+      "appearances": 18
     },
     {
       "id": 305730,
@@ -148,7 +148,7 @@
       "photo": "https://media.api-sports.io/football/players/305730.png",
       "goals": 1,
       "assists": 2,
-      "appearances": 18
+      "appearances": 19
     },
     {
       "id": 343311,
@@ -160,6 +160,49 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379267,
+      "season": 2025,
+      "team_id": 51,
+      "match_date": "2026-03-14T15:00:00+00:00",
+      "home_team_id": 746,
+      "away_team_id": 51,
+      "home_team_name": "Sunderland",
+      "away_team_name": "Brighton",
+      "goals_home": 0,
+      "goals_away": 1,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 5,
+        "total_shots": 14,
+        "blocked_shots": 5,
+        "corners": 7,
+        "possession": 47,
+        "fouls": 7,
+        "yellow_cards": 1,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 407,
+        "pass_accuracy": 78
+      },
+      "stats_away": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 3,
+        "total_shots": 12,
+        "blocked_shots": 5,
+        "corners": 3,
+        "possession": 53,
+        "fouls": 11,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 466,
+        "pass_accuracy": 79
+      }
+    },
     {
       "id": 1379251,
       "season": 2025,
