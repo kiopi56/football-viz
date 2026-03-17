@@ -44,7 +44,7 @@
       "photo": "https://media.api-sports.io/football/players/19170.png",
       "goals": 8,
       "assists": 5,
-      "appearances": 29
+      "appearances": 30
     },
     {
       "id": 19366,
@@ -52,7 +52,7 @@
       "photo": "https://media.api-sports.io/football/players/19366.png",
       "goals": 8,
       "assists": 1,
-      "appearances": 28
+      "appearances": 29
     },
     {
       "id": 19071,
@@ -60,7 +60,7 @@
       "photo": "https://media.api-sports.io/football/players/19071.png",
       "goals": 5,
       "assists": 2,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 249,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/19191.png",
       "goals": 3,
       "assists": 2,
-      "appearances": 22
+      "appearances": 23
     },
     {
       "id": 162714,
@@ -92,7 +92,15 @@
       "photo": "https://media.api-sports.io/football/players/162714.png",
       "goals": 2,
       "assists": 0,
-      "appearances": 20
+      "appearances": 21
+    },
+    {
+      "id": 2287,
+      "name": "R. Barkley",
+      "photo": "https://media.api-sports.io/football/players/2287.png",
+      "goals": 2,
+      "assists": 0,
+      "appearances": 13
     },
     {
       "id": 1904,
@@ -108,15 +116,7 @@
       "photo": "https://media.api-sports.io/football/players/47522.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 6
-    },
-    {
-      "id": 2287,
-      "name": "R. Barkley",
-      "photo": "https://media.api-sports.io/football/players/2287.png",
-      "goals": 1,
-      "assists": 0,
-      "appearances": 12
+      "appearances": 7
     },
     {
       "id": 19194,
@@ -124,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/19194.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 6
+      "appearances": 7
     }
   ],
   "fixtures": [

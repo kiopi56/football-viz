@@ -3,11 +3,11 @@
   "season": 2025,
   "byTimeAvailable": false,
   "scored": {
-    "total": 44,
+    "total": 46,
     "byTime": null
   },
   "conceded": {
-    "total": 40,
+    "total": 42,
     "byTime": null
   },
   "home": {
@@ -32,10 +32,10 @@
   },
   "recentForm": [
     "D",
+    "D",
     "W",
     "L",
-    "D",
-    "W"
+    "D"
   ],
   "scorers": [
     {
@@ -128,6 +128,49 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379260,
+      "season": 2025,
+      "team_id": 55,
+      "match_date": "2026-03-16T20:00:00+00:00",
+      "home_team_id": 55,
+      "away_team_id": 39,
+      "home_team_name": "Brentford",
+      "away_team_name": "Wolves",
+      "goals_home": 2,
+      "goals_away": 2,
+      "ht_home": 2,
+      "ht_away": 1,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 7,
+        "total_shots": 10,
+        "blocked_shots": 0,
+        "corners": 1,
+        "possession": 49,
+        "fouls": 12,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 413,
+        "pass_accuracy": 77
+      },
+      "stats_away": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 7,
+        "total_shots": 13,
+        "blocked_shots": 2,
+        "corners": 5,
+        "possession": 51,
+        "fouls": 10,
+        "yellow_cards": 4,
+        "red_cards": null,
+        "saves": 1,
+        "total_passes": 418,
+        "pass_accuracy": 80
+      }
+    },
     {
       "id": 1379250,
       "season": 2025,

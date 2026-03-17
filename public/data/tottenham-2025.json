@@ -42,9 +42,9 @@
       "id": 2413,
       "name": "Richarlison",
       "photo": "https://media.api-sports.io/football/players/2413.png",
-      "goals": 8,
+      "goals": 9,
       "assists": 3,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 30776,
@@ -68,7 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/18883.png",
       "goals": 3,
       "assists": 0,
-      "appearances": 10
+      "appearances": 11
     },
     {
       "id": 41104,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/270510.png",
       "goals": 3,
       "assists": 0,
-      "appearances": 22
+      "appearances": 23
     },
     {
       "id": 237129,
@@ -92,7 +92,7 @@
       "photo": "https://media.api-sports.io/football/players/237129.png",
       "goals": 2,
       "assists": 3,
-      "appearances": 20
+      "appearances": 21
     },
     {
       "id": 328089,
@@ -100,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/328089.png",
       "goals": 2,
       "assists": 2,
-      "appearances": 19
+      "appearances": 20
     },
     {
       "id": 15911,
@@ -148,15 +148,15 @@
       "photo": "https://media.api-sports.io/football/players/162016.png",
       "goals": 1,
       "assists": 4,
-      "appearances": 23
+      "appearances": 24
     },
     {
       "id": 21104,
       "name": "R. Kolo Muani",
       "photo": "https://media.api-sports.io/football/players/21104.png",
       "goals": 1,
-      "assists": 0,
-      "appearances": 21
+      "assists": 1,
+      "appearances": 22
     }
   ],
   "fixtures": [

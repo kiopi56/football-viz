@@ -44,39 +44,39 @@
       "photo": "https://media.api-sports.io/football/players/20589.png",
       "goals": 9,
       "assists": 3,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 115589,
       "name": "B. Šeško",
       "photo": "https://media.api-sports.io/football/players/115589.png",
-      "goals": 8,
+      "goals": 9,
       "assists": 1,
-      "appearances": 24
+      "appearances": 25
+    },
+    {
+      "id": 747,
+      "name": "Casemiro",
+      "photo": "https://media.api-sports.io/football/players/747.png",
+      "goals": 7,
+      "assists": 2,
+      "appearances": 28
     },
     {
       "id": 1485,
       "name": "Bruno Fernandes",
       "photo": "https://media.api-sports.io/football/players/1485.png",
       "goals": 7,
-      "assists": 14,
-      "appearances": 26
-    },
-    {
-      "id": 747,
-      "name": "Casemiro",
-      "photo": "https://media.api-sports.io/football/players/747.png",
-      "goals": 6,
-      "assists": 2,
+      "assists": 16,
       "appearances": 27
     },
     {
       "id": 1165,
       "name": "Matheus Cunha",
       "photo": "https://media.api-sports.io/football/players/1165.png",
-      "goals": 6,
+      "goals": 7,
       "assists": 2,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 382452,
@@ -100,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/157997.png",
       "goals": 2,
       "assists": 2,
-      "appearances": 23
+      "appearances": 24
     },
     {
       "id": 70100,
@@ -124,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/886.png",
       "goals": 1,
       "assists": 3,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 2935,
@@ -132,7 +132,7 @@
       "photo": "https://media.api-sports.io/football/players/2935.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 16
+      "appearances": 17
     }
   ],
   "fixtures": [

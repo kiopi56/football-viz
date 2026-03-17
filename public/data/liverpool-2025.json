@@ -44,7 +44,7 @@
       "photo": "https://media.api-sports.io/football/players/174565.png",
       "goals": 11,
       "assists": 4,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 247,
@@ -52,7 +52,15 @@
       "photo": "https://media.api-sports.io/football/players/247.png",
       "goals": 6,
       "assists": 3,
-      "appearances": 27
+      "appearances": 28
+    },
+    {
+      "id": 1096,
+      "name": "D. Szoboszlai",
+      "photo": "https://media.api-sports.io/football/players/1096.png",
+      "goals": 5,
+      "assists": 3,
+      "appearances": 28
     },
     {
       "id": 306,
@@ -60,15 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/306.png",
       "goals": 5,
       "assists": 6,
-      "appearances": 21
-    },
-    {
-      "id": 1096,
-      "name": "D. Szoboszlai",
-      "photo": "https://media.api-sports.io/football/players/1096.png",
-      "goals": 4,
-      "assists": 3,
-      "appearances": 27
+      "appearances": 22
     },
     {
       "id": 203224,
@@ -76,7 +76,7 @@
       "photo": "https://media.api-sports.io/football/players/203224.png",
       "goals": 4,
       "assists": 2,
-      "appearances": 25
+      "appearances": 26
     },
     {
       "id": 542,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/542.png",
       "goals": 4,
       "assists": 3,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 290,
@@ -92,7 +92,7 @@
       "photo": "https://media.api-sports.io/football/players/290.png",
       "goals": 3,
       "assists": 0,
-      "appearances": 29
+      "appearances": 30
     },
     {
       "id": 6716,
@@ -100,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/6716.png",
       "goals": 2,
       "assists": 2,
-      "appearances": 28
+      "appearances": 29
     },
     {
       "id": 30410,
@@ -108,7 +108,7 @@
       "photo": "https://media.api-sports.io/football/players/30410.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 21
+      "appearances": 22
     },
     {
       "id": 2864,
@@ -140,7 +140,7 @@
       "photo": "https://media.api-sports.io/football/players/452685.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 11
+      "appearances": 12
     }
   ],
   "fixtures": [
