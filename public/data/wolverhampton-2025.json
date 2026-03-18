@@ -44,7 +44,15 @@
       "photo": "https://media.api-sports.io/football/players/282770.png",
       "goals": 3,
       "assists": 0,
-      "appearances": 14
+      "appearances": 15
+    },
+    {
+      "id": 110153,
+      "name": "T. Arokodare",
+      "photo": "https://media.api-sports.io/football/players/110153.png",
+      "goals": 3,
+      "assists": 1,
+      "appearances": 27
     },
     {
       "id": 24888,
@@ -60,7 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/135334.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 21
+      "appearances": 22
     },
     {
       "id": 66407,
@@ -68,15 +76,7 @@
       "photo": "https://media.api-sports.io/football/players/66407.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 23
-    },
-    {
-      "id": 110153,
-      "name": "T. Arokodare",
-      "photo": "https://media.api-sports.io/football/players/110153.png",
-      "goals": 2,
-      "assists": 1,
-      "appearances": 26
+      "appearances": 24
     },
     {
       "id": 456206,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/456206.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 19
+      "appearances": 20
     },
     {
       "id": 265784,
@@ -92,15 +92,15 @@
       "photo": "https://media.api-sports.io/football/players/265784.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 195103,
       "name": "João Gomes",
       "photo": "https://media.api-sports.io/football/players/195103.png",
       "goals": 1,
-      "assists": 0,
-      "appearances": 28
+      "assists": 1,
+      "appearances": 29
     },
     {
       "id": 3080,
@@ -123,8 +123,8 @@
       "name": "J. Bellegarde",
       "photo": "https://media.api-sports.io/football/players/20665.png",
       "goals": 1,
-      "assists": 0,
-      "appearances": 21
+      "assists": 1,
+      "appearances": 22
     },
     {
       "id": 280687,
@@ -132,7 +132,7 @@
       "photo": "https://media.api-sports.io/football/players/280687.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 13708,
@@ -141,6 +141,14 @@
       "goals": 1,
       "assists": 0,
       "appearances": 23
+    },
+    {
+      "id": 19484,
+      "name": "A. Armstrong",
+      "photo": "https://media.api-sports.io/football/players/19484.png",
+      "goals": 1,
+      "assists": 2,
+      "appearances": 7
     },
     {
       "id": 389302,
@@ -172,27 +180,27 @@
         "total_shots": 10,
         "blocked_shots": 0,
         "corners": 1,
-        "possession": 49,
+        "possession": 50,
         "fouls": 12,
         "yellow_cards": 2,
         "red_cards": null,
         "saves": 2,
-        "total_passes": 413,
+        "total_passes": 438,
         "pass_accuracy": 77
       },
       "stats_away": {
         "shots_on_goal": 4,
-        "shots_off_goal": 7,
+        "shots_off_goal": 6,
         "total_shots": 13,
-        "blocked_shots": 2,
+        "blocked_shots": 3,
         "corners": 5,
-        "possession": 51,
+        "possession": 50,
         "fouls": 10,
         "yellow_cards": 4,
         "red_cards": null,
         "saves": 1,
-        "total_passes": 418,
-        "pass_accuracy": 80
+        "total_passes": 428,
+        "pass_accuracy": 81
       }
     },
     {

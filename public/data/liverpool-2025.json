@@ -169,7 +169,7 @@
         "yellow_cards": null,
         "red_cards": null,
         "saves": 6,
-        "total_passes": 550,
+        "total_passes": 553,
         "pass_accuracy": 84
       },
       "stats_away": {
@@ -183,7 +183,7 @@
         "yellow_cards": null,
         "red_cards": null,
         "saves": 3,
-        "total_passes": 319,
+        "total_passes": 320,
         "pass_accuracy": 73
       }
     },

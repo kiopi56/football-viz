@@ -42,9 +42,9 @@
       "id": 196156,
       "name": "Thiago",
       "photo": "https://media.api-sports.io/football/players/196156.png",
-      "goals": 18,
+      "goals": 19,
       "assists": 1,
-      "appearances": 29
+      "appearances": 30
     },
     {
       "id": 178077,
@@ -52,23 +52,23 @@
       "photo": "https://media.api-sports.io/football/players/178077.png",
       "goals": 7,
       "assists": 3,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 284797,
       "name": "D. Ouattara",
       "photo": "https://media.api-sports.io/football/players/284797.png",
       "goals": 5,
-      "assists": 2,
-      "appearances": 23
+      "assists": 3,
+      "appearances": 24
     },
     {
       "id": 106725,
       "name": "K. Lewis-Potter",
       "photo": "https://media.api-sports.io/football/players/106725.png",
       "goals": 3,
-      "assists": 1,
-      "appearances": 27
+      "assists": 2,
+      "appearances": 28
     },
     {
       "id": 15908,
@@ -76,7 +76,7 @@
       "photo": "https://media.api-sports.io/football/players/15908.png",
       "goals": 3,
       "assists": 4,
-      "appearances": 25
+      "appearances": 26
     },
     {
       "id": 47438,
@@ -84,7 +84,15 @@
       "photo": "https://media.api-sports.io/football/players/47438.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 27
+      "appearances": 28
+    },
+    {
+      "id": 342022,
+      "name": "M. Kayode",
+      "photo": "https://media.api-sports.io/football/players/342022.png",
+      "goals": 1,
+      "assists": 0,
+      "appearances": 29
     },
     {
       "id": 19495,
@@ -92,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/19495.png",
       "goals": 1,
       "assists": 2,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 263538,
@@ -100,7 +108,7 @@
       "photo": "https://media.api-sports.io/football/players/263538.png",
       "goals": 1,
       "assists": 2,
-      "appearances": 29
+      "appearances": 30
     },
     {
       "id": 153066,
@@ -116,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/292.png",
       "goals": 1,
       "assists": 3,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 25073,
@@ -148,27 +156,27 @@
         "total_shots": 10,
         "blocked_shots": 0,
         "corners": 1,
-        "possession": 49,
+        "possession": 50,
         "fouls": 12,
         "yellow_cards": 2,
         "red_cards": null,
         "saves": 2,
-        "total_passes": 413,
+        "total_passes": 438,
         "pass_accuracy": 77
       },
       "stats_away": {
         "shots_on_goal": 4,
-        "shots_off_goal": 7,
+        "shots_off_goal": 6,
         "total_shots": 13,
-        "blocked_shots": 2,
+        "blocked_shots": 3,
         "corners": 5,
-        "possession": 51,
+        "possession": 50,
         "fouls": 10,
         "yellow_cards": 4,
         "red_cards": null,
         "saves": 1,
-        "total_passes": 418,
-        "pass_accuracy": 80
+        "total_passes": 428,
+        "pass_accuracy": 81
       }
     },
     {
