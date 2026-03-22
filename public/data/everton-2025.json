@@ -3,7 +3,7 @@
   "season": 2025,
   "byTimeAvailable": false,
   "scored": {
-    "total": 34,
+    "total": 37,
     "byTime": null
   },
   "conceded": {
@@ -31,10 +31,10 @@
     }
   },
   "recentForm": [
+    "W",
     "L",
     "W",
     "W",
-    "L",
     "L"
   ],
   "scorers": [
@@ -120,6 +120,49 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379272,
+      "season": 2025,
+      "team_id": 45,
+      "match_date": "2026-03-21T17:30:00+00:00",
+      "home_team_id": 45,
+      "away_team_id": 49,
+      "home_team_name": "Everton",
+      "away_team_name": "Chelsea",
+      "goals_home": 3,
+      "goals_away": 0,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 9,
+        "shots_off_goal": 0,
+        "total_shots": 10,
+        "blocked_shots": 1,
+        "corners": 3,
+        "possession": 36,
+        "fouls": 5,
+        "yellow_cards": 0,
+        "red_cards": null,
+        "saves": 4,
+        "total_passes": 383,
+        "pass_accuracy": 82
+      },
+      "stats_away": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 4,
+        "total_shots": 12,
+        "blocked_shots": 4,
+        "corners": 9,
+        "possession": 64,
+        "fouls": 7,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 5,
+        "total_passes": 677,
+        "pass_accuracy": 89
+      }
+    },
     {
       "id": 1379259,
       "season": 2025,

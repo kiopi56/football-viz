@@ -3,11 +3,11 @@
   "season": 2025,
   "byTimeAvailable": false,
   "scored": {
-    "total": 49,
+    "total": 50,
     "byTime": null
   },
   "conceded": {
-    "total": 40,
+    "total": 42,
     "byTime": null
   },
   "home": {
@@ -31,9 +31,9 @@
     }
   },
   "recentForm": [
+    "L",
     "D",
     "L",
-    "W",
     "W",
     "W"
   ],
@@ -144,6 +144,49 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379271,
+      "season": 2025,
+      "team_id": 40,
+      "match_date": "2026-03-21T12:30:00+00:00",
+      "home_team_id": 51,
+      "away_team_id": 40,
+      "home_team_name": "Brighton",
+      "away_team_name": "Liverpool",
+      "goals_home": 2,
+      "goals_away": 1,
+      "ht_home": 1,
+      "ht_away": 1,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 7,
+        "shots_off_goal": 7,
+        "total_shots": 16,
+        "blocked_shots": 2,
+        "corners": 4,
+        "possession": 46,
+        "fouls": 11,
+        "yellow_cards": 5,
+        "red_cards": null,
+        "saves": 4,
+        "total_passes": 361,
+        "pass_accuracy": 79
+      },
+      "stats_away": {
+        "shots_on_goal": 5,
+        "shots_off_goal": 4,
+        "total_shots": 12,
+        "blocked_shots": 3,
+        "corners": 8,
+        "possession": 54,
+        "fouls": 12,
+        "yellow_cards": 5,
+        "red_cards": null,
+        "saves": 4,
+        "total_passes": 421,
+        "pass_accuracy": 80
+      }
+    },
     {
       "id": 1379264,
       "season": 2025,

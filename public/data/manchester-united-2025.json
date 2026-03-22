@@ -44,7 +44,7 @@
       "photo": "https://media.api-sports.io/football/players/20589.png",
       "goals": 9,
       "assists": 3,
-      "appearances": 25
+      "appearances": 26
     },
     {
       "id": 115589,
@@ -52,7 +52,15 @@
       "photo": "https://media.api-sports.io/football/players/115589.png",
       "goals": 9,
       "assists": 1,
-      "appearances": 25
+      "appearances": 26
+    },
+    {
+      "id": 1485,
+      "name": "Bruno Fernandes",
+      "photo": "https://media.api-sports.io/football/players/1485.png",
+      "goals": 8,
+      "assists": 16,
+      "appearances": 28
     },
     {
       "id": 747,
@@ -60,15 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/747.png",
       "goals": 7,
       "assists": 2,
-      "appearances": 28
-    },
-    {
-      "id": 1485,
-      "name": "Bruno Fernandes",
-      "photo": "https://media.api-sports.io/football/players/1485.png",
-      "goals": 7,
-      "assists": 16,
-      "appearances": 27
+      "appearances": 29
     },
     {
       "id": 1165,
@@ -76,7 +76,7 @@
       "photo": "https://media.api-sports.io/football/players/1165.png",
       "goals": 7,
       "assists": 2,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 382452,
@@ -92,7 +92,7 @@
       "photo": "https://media.api-sports.io/football/players/19220.png",
       "goals": 3,
       "assists": 0,
-      "appearances": 17
+      "appearances": 18
     },
     {
       "id": 157997,
@@ -100,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/157997.png",
       "goals": 2,
       "assists": 2,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 70100,
@@ -124,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/886.png",
       "goals": 1,
       "assists": 3,
-      "appearances": 28
+      "appearances": 29
     },
     {
       "id": 2935,
@@ -132,7 +132,7 @@
       "photo": "https://media.api-sports.io/football/players/2935.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 17
+      "appearances": 18
     }
   ],
   "fixtures": [
@@ -161,7 +161,7 @@
         "yellow_cards": 2,
         "red_cards": 0,
         "saves": 4,
-        "total_passes": 499,
+        "total_passes": 502,
         "pass_accuracy": 85
       },
       "stats_away": {
@@ -175,8 +175,8 @@
         "yellow_cards": 2,
         "red_cards": 1,
         "saves": 3,
-        "total_passes": 406,
-        "pass_accuracy": 78
+        "total_passes": 415,
+        "pass_accuracy": 77
       }
     },
     {
