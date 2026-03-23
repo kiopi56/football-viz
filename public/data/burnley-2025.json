@@ -39,28 +39,28 @@
   ],
   "scorers": [
     {
+      "id": 36927,
+      "name": "Z. Flemming",
+      "photo": "https://media.api-sports.io/football/players/36927.png",
+      "goals": 8,
+      "assists": 0,
+      "appearances": 22
+    },
+    {
       "id": 196855,
       "name": "J. Anthony",
       "photo": "https://media.api-sports.io/football/players/196855.png",
       "goals": 7,
       "assists": 1,
-      "appearances": 29
-    },
-    {
-      "id": 36927,
-      "name": "Z. Flemming",
-      "photo": "https://media.api-sports.io/football/players/36927.png",
-      "goals": 7,
-      "assists": 0,
-      "appearances": 21
+      "appearances": 30
     },
     {
       "id": 98936,
       "name": "L. Foster",
       "photo": "https://media.api-sports.io/football/players/98936.png",
       "goals": 3,
-      "assists": 1,
-      "appearances": 22
+      "assists": 2,
+      "appearances": 23
     },
     {
       "id": 270508,
@@ -68,7 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/270508.png",
       "goals": 3,
       "assists": 1,
-      "appearances": 29
+      "appearances": 30
     },
     {
       "id": 19827,
@@ -92,7 +92,7 @@
       "photo": "https://media.api-sports.io/football/players/180560.png",
       "goals": 1,
       "assists": 3,
-      "appearances": 22
+      "appearances": 23
     },
     {
       "id": 20303,
@@ -100,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/20303.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 161621,
@@ -108,7 +108,7 @@
       "photo": "https://media.api-sports.io/football/players/161621.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 22
+      "appearances": 23
     },
     {
       "id": 37882,
@@ -116,7 +116,7 @@
       "photo": "https://media.api-sports.io/football/players/37882.png",
       "goals": 1,
       "assists": 3,
-      "appearances": 18
+      "appearances": 19
     },
     {
       "id": 138822,

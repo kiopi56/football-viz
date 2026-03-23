@@ -44,7 +44,7 @@
       "photo": "https://media.api-sports.io/football/players/196156.png",
       "goals": 19,
       "assists": 1,
-      "appearances": 30
+      "appearances": 31
     },
     {
       "id": 178077,
@@ -52,7 +52,7 @@
       "photo": "https://media.api-sports.io/football/players/178077.png",
       "goals": 7,
       "assists": 3,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 284797,
@@ -60,7 +60,7 @@
       "photo": "https://media.api-sports.io/football/players/284797.png",
       "goals": 5,
       "assists": 3,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 106725,
@@ -68,7 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/106725.png",
       "goals": 3,
       "assists": 2,
-      "appearances": 28
+      "appearances": 29
     },
     {
       "id": 15908,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/47438.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 28
+      "appearances": 29
     },
     {
       "id": 342022,
@@ -92,7 +92,7 @@
       "photo": "https://media.api-sports.io/football/players/342022.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 29
+      "appearances": 30
     },
     {
       "id": 19495,
@@ -100,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/19495.png",
       "goals": 1,
       "assists": 2,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 263538,
@@ -108,7 +108,7 @@
       "photo": "https://media.api-sports.io/football/players/263538.png",
       "goals": 1,
       "assists": 2,
-      "appearances": 30
+      "appearances": 31
     },
     {
       "id": 153066,
@@ -124,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/292.png",
       "goals": 1,
       "assists": 3,
-      "appearances": 28
+      "appearances": 29
     },
     {
       "id": 25073,
@@ -152,16 +152,16 @@
       "status": "FT",
       "stats_home": {
         "shots_on_goal": 4,
-        "shots_off_goal": 2,
+        "shots_off_goal": 3,
         "total_shots": 14,
-        "blocked_shots": 8,
+        "blocked_shots": 7,
         "corners": 6,
         "possession": 57,
         "fouls": 6,
         "yellow_cards": 2,
         "red_cards": null,
         "saves": 2,
-        "total_passes": 454,
+        "total_passes": 461,
         "pass_accuracy": 80
       },
       "stats_away": {
@@ -175,8 +175,8 @@
         "yellow_cards": 0,
         "red_cards": null,
         "saves": 4,
-        "total_passes": 352,
-        "pass_accuracy": 66
+        "total_passes": 358,
+        "pass_accuracy": 65
       }
     },
     {

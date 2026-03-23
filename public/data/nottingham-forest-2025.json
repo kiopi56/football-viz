@@ -3,7 +3,7 @@
   "season": 2025,
   "byTimeAvailable": false,
   "scored": {
-    "total": 28,
+    "total": 31,
     "byTime": null
   },
   "conceded": {
@@ -31,11 +31,11 @@
     }
   },
   "recentForm": [
+    "W",
     "D",
     "D",
     "L",
-    "L",
-    "D"
+    "L"
   ],
   "scorers": [
     {
@@ -152,6 +152,49 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379277,
+      "season": 2025,
+      "team_id": 65,
+      "match_date": "2026-03-22T14:15:00+00:00",
+      "home_team_id": 47,
+      "away_team_id": 65,
+      "home_team_name": "Tottenham",
+      "away_team_name": "Nottingham Forest",
+      "goals_home": 0,
+      "goals_away": 3,
+      "ht_home": 0,
+      "ht_away": 1,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 5,
+        "total_shots": 14,
+        "blocked_shots": 6,
+        "corners": 13,
+        "possession": 58,
+        "fouls": 13,
+        "yellow_cards": 1,
+        "red_cards": null,
+        "saves": 4,
+        "total_passes": 451,
+        "pass_accuracy": 79
+      },
+      "stats_away": {
+        "shots_on_goal": 7,
+        "shots_off_goal": 0,
+        "total_shots": 8,
+        "blocked_shots": 1,
+        "corners": 3,
+        "possession": 42,
+        "fouls": 13,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 338,
+        "pass_accuracy": 75
+      }
+    },
     {
       "id": 1379266,
       "season": 2025,

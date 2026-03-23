@@ -3,11 +3,11 @@
   "season": 2025,
   "byTimeAvailable": false,
   "scored": {
-    "total": 30,
+    "total": 32,
     "byTime": null
   },
   "conceded": {
-    "total": 35,
+    "total": 36,
     "byTime": null
   },
   "home": {
@@ -31,10 +31,10 @@
     }
   },
   "recentForm": [
+    "W",
     "L",
     "W",
     "D",
-    "L",
     "L"
   ],
   "scorers": [
@@ -136,6 +136,49 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379276,
+      "season": 2025,
+      "team_id": 746,
+      "match_date": "2026-03-22T12:00:00+00:00",
+      "home_team_id": 34,
+      "away_team_id": 746,
+      "home_team_name": "Newcastle",
+      "away_team_name": "Sunderland",
+      "goals_home": 1,
+      "goals_away": 2,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 8,
+        "total_shots": 16,
+        "blocked_shots": 4,
+        "corners": 9,
+        "possession": 60,
+        "fouls": 8,
+        "yellow_cards": 0,
+        "red_cards": null,
+        "saves": 4,
+        "total_passes": 398,
+        "pass_accuracy": 81
+      },
+      "stats_away": {
+        "shots_on_goal": 7,
+        "shots_off_goal": 5,
+        "total_shots": 17,
+        "blocked_shots": 5,
+        "corners": 5,
+        "possession": 40,
+        "fouls": 19,
+        "yellow_cards": 6,
+        "red_cards": null,
+        "saves": 3,
+        "total_passes": 257,
+        "pass_accuracy": 72
+      }
+    },
     {
       "id": 1379267,
       "season": 2025,
