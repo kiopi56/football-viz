@@ -7,7 +7,7 @@
     "byTime": null
   },
   "conceded": {
-    "total": 55,
+    "total": 57,
     "byTime": null
   },
   "home": {
@@ -31,10 +31,10 @@
     }
   },
   "recentForm": [
+    "L",
     "D",
     "W",
     "L",
-    "D",
     "D"
   ],
   "scorers": [
@@ -120,6 +120,49 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379269,
+      "season": 2025,
+      "team_id": 48,
+      "match_date": "2026-03-22T14:15:00+00:00",
+      "home_team_id": 66,
+      "away_team_id": 48,
+      "home_team_name": "Aston Villa",
+      "away_team_name": "West Ham",
+      "goals_home": 2,
+      "goals_away": 0,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 7,
+        "shots_off_goal": 9,
+        "total_shots": 23,
+        "blocked_shots": 7,
+        "corners": 6,
+        "possession": 59,
+        "fouls": 3,
+        "yellow_cards": 0,
+        "red_cards": null,
+        "saves": 1,
+        "total_passes": 498,
+        "pass_accuracy": 89
+      },
+      "stats_away": {
+        "shots_on_goal": 1,
+        "shots_off_goal": 3,
+        "total_shots": 9,
+        "blocked_shots": 5,
+        "corners": 6,
+        "possession": 41,
+        "fouls": 7,
+        "yellow_cards": 1,
+        "red_cards": null,
+        "saves": 4,
+        "total_passes": 335,
+        "pass_accuracy": 83
+      }
+    },
     {
       "id": 1379268,
       "season": 2025,

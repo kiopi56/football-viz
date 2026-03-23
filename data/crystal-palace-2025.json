@@ -44,7 +44,7 @@
       "photo": "https://media.api-sports.io/football/players/25927.png",
       "goals": 8,
       "assists": 0,
-      "appearances": 23
+      "appearances": 24
     },
     {
       "id": 2218,
@@ -52,7 +52,7 @@
       "photo": "https://media.api-sports.io/football/players/2218.png",
       "goals": 7,
       "assists": 1,
-      "appearances": 19
+      "appearances": 20
     },
     {
       "id": 2032,
@@ -60,7 +60,7 @@
       "photo": "https://media.api-sports.io/football/players/2032.png",
       "goals": 3,
       "assists": 0,
-      "appearances": 5
+      "appearances": 6
     },
     {
       "id": 13736,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/184226.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 1468,
@@ -100,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/137303.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 5
+      "appearances": 6
     },
     {
       "id": 126949,
@@ -108,7 +108,7 @@
       "photo": "https://media.api-sports.io/football/players/126949.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 25
+      "appearances": 26
     },
     {
       "id": 20995,
@@ -116,7 +116,7 @@
       "photo": "https://media.api-sports.io/football/players/20995.png",
       "goals": 1,
       "assists": 2,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 182201,
@@ -124,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/182201.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 29
+      "appearances": 30
     },
     {
       "id": 286458,
@@ -161,7 +161,7 @@
         "yellow_cards": 2,
         "red_cards": 0,
         "saves": 3,
-        "total_passes": 448,
+        "total_passes": 463,
         "pass_accuracy": 79
       },
       "stats_away": {
@@ -175,7 +175,7 @@
         "yellow_cards": 3,
         "red_cards": 1,
         "saves": 0,
-        "total_passes": 221,
+        "total_passes": 228,
         "pass_accuracy": 62
       }
     },

@@ -7,7 +7,7 @@
     "byTime": null
   },
   "conceded": {
-    "total": 35,
+    "total": 38,
     "byTime": null
   },
   "home": {
@@ -32,9 +32,9 @@
   },
   "recentForm": [
     "L",
+    "L",
     "W",
     "L",
-    "D",
     "D"
   ],
   "scorers": [
@@ -44,7 +44,7 @@
       "photo": "https://media.api-sports.io/football/players/10329.png",
       "goals": 14,
       "assists": 5,
-      "appearances": 30
+      "appearances": 31
     },
     {
       "id": 152982,
@@ -52,7 +52,7 @@
       "photo": "https://media.api-sports.io/football/players/152982.png",
       "goals": 9,
       "assists": 1,
-      "appearances": 19
+      "appearances": 20
     },
     {
       "id": 5996,
@@ -60,7 +60,7 @@
       "photo": "https://media.api-sports.io/football/players/5996.png",
       "goals": 8,
       "assists": 3,
-      "appearances": 29
+      "appearances": 30
     },
     {
       "id": 1864,
@@ -68,7 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/1864.png",
       "goals": 5,
       "assists": 4,
-      "appearances": 28
+      "appearances": 29
     },
     {
       "id": 19720,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/116117.png",
       "goals": 3,
       "assists": 1,
-      "appearances": 25
+      "appearances": 26
     },
     {
       "id": 19545,
@@ -100,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/425733.png",
       "goals": 2,
       "assists": 2,
-      "appearances": 19
+      "appearances": 20
     },
     {
       "id": 161907,
@@ -108,7 +108,7 @@
       "photo": "https://media.api-sports.io/football/players/161907.png",
       "goals": 2,
       "assists": 3,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 366735,
@@ -124,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/47380.png",
       "goals": 1,
       "assists": 3,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 161948,
@@ -132,7 +132,7 @@
       "photo": "https://media.api-sports.io/football/players/161948.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 21
+      "appearances": 22
     },
     {
       "id": 284324,
@@ -140,10 +140,53 @@
       "photo": "https://media.api-sports.io/football/players/284324.png",
       "goals": 1,
       "assists": 4,
-      "appearances": 19
+      "appearances": 20
     }
   ],
   "fixtures": [
+    {
+      "id": 1379272,
+      "season": 2025,
+      "team_id": 49,
+      "match_date": "2026-03-21T17:30:00+00:00",
+      "home_team_id": 45,
+      "away_team_id": 49,
+      "home_team_name": "Everton",
+      "away_team_name": "Chelsea",
+      "goals_home": 3,
+      "goals_away": 0,
+      "ht_home": 1,
+      "ht_away": 0,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 9,
+        "shots_off_goal": 0,
+        "total_shots": 10,
+        "blocked_shots": 1,
+        "corners": 3,
+        "possession": 36,
+        "fouls": 5,
+        "yellow_cards": 0,
+        "red_cards": null,
+        "saves": 4,
+        "total_passes": 383,
+        "pass_accuracy": 82
+      },
+      "stats_away": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 4,
+        "total_shots": 12,
+        "blocked_shots": 4,
+        "corners": 9,
+        "possession": 64,
+        "fouls": 7,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 5,
+        "total_passes": 677,
+        "pass_accuracy": 89
+      }
+    },
     {
       "id": 1379262,
       "season": 2025,
@@ -169,7 +212,7 @@
         "yellow_cards": 2,
         "red_cards": null,
         "saves": 4,
-        "total_passes": 661,
+        "total_passes": 675,
         "pass_accuracy": 92
       },
       "stats_away": {

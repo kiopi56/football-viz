@@ -3,11 +3,11 @@
   "season": 2025,
   "byTimeAvailable": false,
   "scored": {
-    "total": 44,
+    "total": 46,
     "byTime": null
   },
   "conceded": {
-    "total": 40,
+    "total": 42,
     "byTime": null
   },
   "home": {
@@ -32,19 +32,19 @@
   },
   "recentForm": [
     "D",
-    "W",
-    "L",
     "D",
-    "W"
+    "D",
+    "W",
+    "L"
   ],
   "scorers": [
     {
       "id": 196156,
       "name": "Thiago",
       "photo": "https://media.api-sports.io/football/players/196156.png",
-      "goals": 18,
+      "goals": 19,
       "assists": 1,
-      "appearances": 29
+      "appearances": 31
     },
     {
       "id": 178077,
@@ -52,23 +52,23 @@
       "photo": "https://media.api-sports.io/football/players/178077.png",
       "goals": 7,
       "assists": 3,
-      "appearances": 26
+      "appearances": 28
     },
     {
       "id": 284797,
       "name": "D. Ouattara",
       "photo": "https://media.api-sports.io/football/players/284797.png",
       "goals": 5,
-      "assists": 2,
-      "appearances": 23
+      "assists": 3,
+      "appearances": 25
     },
     {
       "id": 106725,
       "name": "K. Lewis-Potter",
       "photo": "https://media.api-sports.io/football/players/106725.png",
       "goals": 3,
-      "assists": 1,
-      "appearances": 27
+      "assists": 2,
+      "appearances": 29
     },
     {
       "id": 15908,
@@ -76,7 +76,7 @@
       "photo": "https://media.api-sports.io/football/players/15908.png",
       "goals": 3,
       "assists": 4,
-      "appearances": 25
+      "appearances": 26
     },
     {
       "id": 47438,
@@ -84,7 +84,15 @@
       "photo": "https://media.api-sports.io/football/players/47438.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 27
+      "appearances": 29
+    },
+    {
+      "id": 342022,
+      "name": "M. Kayode",
+      "photo": "https://media.api-sports.io/football/players/342022.png",
+      "goals": 1,
+      "assists": 0,
+      "appearances": 30
     },
     {
       "id": 19495,
@@ -92,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/19495.png",
       "goals": 1,
       "assists": 2,
-      "appearances": 26
+      "appearances": 28
     },
     {
       "id": 263538,
@@ -100,7 +108,7 @@
       "photo": "https://media.api-sports.io/football/players/263538.png",
       "goals": 1,
       "assists": 2,
-      "appearances": 29
+      "appearances": 31
     },
     {
       "id": 153066,
@@ -116,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/292.png",
       "goals": 1,
       "assists": 3,
-      "appearances": 27
+      "appearances": 29
     },
     {
       "id": 25073,
@@ -128,6 +136,92 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379274,
+      "season": 2025,
+      "team_id": 55,
+      "match_date": "2026-03-21T20:00:00+00:00",
+      "home_team_id": 63,
+      "away_team_id": 55,
+      "home_team_name": "Leeds",
+      "away_team_name": "Brentford",
+      "goals_home": 0,
+      "goals_away": 0,
+      "ht_home": 0,
+      "ht_away": 0,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 3,
+        "total_shots": 14,
+        "blocked_shots": 7,
+        "corners": 6,
+        "possession": 57,
+        "fouls": 6,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 461,
+        "pass_accuracy": 80
+      },
+      "stats_away": {
+        "shots_on_goal": 2,
+        "shots_off_goal": 3,
+        "total_shots": 6,
+        "blocked_shots": 1,
+        "corners": 2,
+        "possession": 43,
+        "fouls": 9,
+        "yellow_cards": 0,
+        "red_cards": null,
+        "saves": 4,
+        "total_passes": 358,
+        "pass_accuracy": 65
+      }
+    },
+    {
+      "id": 1379260,
+      "season": 2025,
+      "team_id": 55,
+      "match_date": "2026-03-16T20:00:00+00:00",
+      "home_team_id": 55,
+      "away_team_id": 39,
+      "home_team_name": "Brentford",
+      "away_team_name": "Wolves",
+      "goals_home": 2,
+      "goals_away": 2,
+      "ht_home": 2,
+      "ht_away": 1,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 3,
+        "shots_off_goal": 7,
+        "total_shots": 10,
+        "blocked_shots": 0,
+        "corners": 1,
+        "possession": 50,
+        "fouls": 12,
+        "yellow_cards": 2,
+        "red_cards": null,
+        "saves": 2,
+        "total_passes": 438,
+        "pass_accuracy": 77
+      },
+      "stats_away": {
+        "shots_on_goal": 4,
+        "shots_off_goal": 6,
+        "total_shots": 13,
+        "blocked_shots": 3,
+        "corners": 5,
+        "possession": 50,
+        "fouls": 10,
+        "yellow_cards": 4,
+        "red_cards": null,
+        "saves": 1,
+        "total_passes": 428,
+        "pass_accuracy": 81
+      }
+    },
     {
       "id": 1379250,
       "season": 2025,

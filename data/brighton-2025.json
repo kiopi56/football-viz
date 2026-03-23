@@ -3,11 +3,11 @@
   "season": 2025,
   "byTimeAvailable": false,
   "scored": {
-    "total": 39,
+    "total": 41,
     "byTime": null
   },
   "conceded": {
-    "total": 36,
+    "total": 37,
     "byTime": null
   },
   "home": {
@@ -32,27 +32,27 @@
   },
   "recentForm": [
     "W",
+    "W",
     "L",
     "W",
-    "W",
-    "L"
+    "W"
   ],
   "scorers": [
     {
       "id": 1469,
       "name": "D. Welbeck",
       "photo": "https://media.api-sports.io/football/players/1469.png",
-      "goals": 10,
+      "goals": 12,
       "assists": 0,
-      "appearances": 29
+      "appearances": 30
     },
     {
       "id": 278370,
       "name": "D. Gómez",
       "photo": "https://media.api-sports.io/football/players/278370.png",
       "goals": 5,
-      "assists": 0,
-      "appearances": 27
+      "assists": 1,
+      "appearances": 28
     },
     {
       "id": 38695,
@@ -60,7 +60,7 @@
       "photo": "https://media.api-sports.io/football/players/38695.png",
       "goals": 3,
       "assists": 2,
-      "appearances": 28
+      "appearances": 29
     },
     {
       "id": 265820,
@@ -68,7 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/265820.png",
       "goals": 3,
       "assists": 2,
-      "appearances": 23
+      "appearances": 24
     },
     {
       "id": 162007,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/383685.png",
       "goals": 2,
       "assists": 4,
-      "appearances": 26
+      "appearances": 27
     },
     {
       "id": 106835,
@@ -92,7 +92,7 @@
       "photo": "https://media.api-sports.io/football/players/106835.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 19
+      "appearances": 20
     },
     {
       "id": 90590,
@@ -100,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/90590.png",
       "goals": 2,
       "assists": 2,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 392482,
@@ -132,7 +132,7 @@
       "photo": "https://media.api-sports.io/football/players/296.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 18
+      "appearances": 19
     },
     {
       "id": 537,
@@ -140,15 +140,15 @@
       "photo": "https://media.api-sports.io/football/players/537.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 18
+      "appearances": 19
     },
     {
       "id": 305730,
       "name": "J. Hinshelwood",
       "photo": "https://media.api-sports.io/football/players/305730.png",
       "goals": 1,
-      "assists": 2,
-      "appearances": 19
+      "assists": 3,
+      "appearances": 20
     },
     {
       "id": 343311,
@@ -160,6 +160,49 @@
     }
   ],
   "fixtures": [
+    {
+      "id": 1379271,
+      "season": 2025,
+      "team_id": 51,
+      "match_date": "2026-03-21T12:30:00+00:00",
+      "home_team_id": 51,
+      "away_team_id": 40,
+      "home_team_name": "Brighton",
+      "away_team_name": "Liverpool",
+      "goals_home": 2,
+      "goals_away": 1,
+      "ht_home": 1,
+      "ht_away": 1,
+      "status": "FT",
+      "stats_home": {
+        "shots_on_goal": 7,
+        "shots_off_goal": 7,
+        "total_shots": 16,
+        "blocked_shots": 2,
+        "corners": 4,
+        "possession": 46,
+        "fouls": 11,
+        "yellow_cards": 5,
+        "red_cards": null,
+        "saves": 4,
+        "total_passes": 361,
+        "pass_accuracy": 79
+      },
+      "stats_away": {
+        "shots_on_goal": 5,
+        "shots_off_goal": 4,
+        "total_shots": 12,
+        "blocked_shots": 3,
+        "corners": 8,
+        "possession": 54,
+        "fouls": 12,
+        "yellow_cards": 5,
+        "red_cards": null,
+        "saves": 4,
+        "total_passes": 421,
+        "pass_accuracy": 80
+      }
+    },
     {
       "id": 1379267,
       "season": 2025,
@@ -180,13 +223,13 @@
         "total_shots": 14,
         "blocked_shots": 5,
         "corners": 7,
-        "possession": 47,
+        "possession": 48,
         "fouls": 7,
         "yellow_cards": 1,
         "red_cards": null,
         "saves": 3,
-        "total_passes": 407,
-        "pass_accuracy": 78
+        "total_passes": 422,
+        "pass_accuracy": 79
       },
       "stats_away": {
         "shots_on_goal": 4,
@@ -194,12 +237,12 @@
         "total_shots": 12,
         "blocked_shots": 5,
         "corners": 3,
-        "possession": 53,
-        "fouls": 11,
+        "possession": 52,
+        "fouls": 12,
         "yellow_cards": 2,
         "red_cards": null,
         "saves": 3,
-        "total_passes": 466,
+        "total_passes": 471,
         "pass_accuracy": 79
       }
     },
