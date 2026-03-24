@@ -44,7 +44,7 @@
       "photo": "https://media.api-sports.io/football/players/2413.png",
       "goals": 9,
       "assists": 3,
-      "appearances": 25
+      "appearances": 26
     },
     {
       "id": 30776,
@@ -52,7 +52,7 @@
       "photo": "https://media.api-sports.io/football/players/30776.png",
       "goals": 4,
       "assists": 1,
-      "appearances": 21
+      "appearances": 22
     },
     {
       "id": 152849,
@@ -60,7 +60,7 @@
       "photo": "https://media.api-sports.io/football/players/152849.png",
       "goals": 4,
       "assists": 1,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 18883,
@@ -68,7 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/18883.png",
       "goals": 3,
       "assists": 0,
-      "appearances": 11
+      "appearances": 12
     },
     {
       "id": 41104,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/270510.png",
       "goals": 3,
       "assists": 0,
-      "appearances": 23
+      "appearances": 24
     },
     {
       "id": 237129,
@@ -92,7 +92,7 @@
       "photo": "https://media.api-sports.io/football/players/237129.png",
       "goals": 2,
       "assists": 3,
-      "appearances": 21
+      "appearances": 22
     },
     {
       "id": 328089,
@@ -100,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/328089.png",
       "goals": 2,
       "assists": 2,
-      "appearances": 20
+      "appearances": 21
     },
     {
       "id": 15911,
@@ -124,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/347316.png",
       "goals": 1,
       "assists": 2,
-      "appearances": 17
+      "appearances": 18
     },
     {
       "id": 863,
@@ -148,7 +148,7 @@
       "photo": "https://media.api-sports.io/football/players/162016.png",
       "goals": 1,
       "assists": 4,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 21104,
@@ -156,7 +156,7 @@
       "photo": "https://media.api-sports.io/football/players/21104.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 22
+      "appearances": 23
     }
   ],
   "fixtures": [

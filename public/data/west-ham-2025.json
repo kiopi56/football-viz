@@ -44,7 +44,7 @@
       "photo": "https://media.api-sports.io/football/players/19428.png",
       "goals": 8,
       "assists": 6,
-      "appearances": 30
+      "appearances": 31
     },
     {
       "id": 2939,
@@ -52,7 +52,7 @@
       "photo": "https://media.api-sports.io/football/players/2939.png",
       "goals": 5,
       "assists": 1,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 37724,
@@ -76,7 +76,7 @@
       "photo": "https://media.api-sports.io/football/players/1243.png",
       "goals": 4,
       "assists": 0,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 336585,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/336585.png",
       "goals": 3,
       "assists": 3,
-      "appearances": 28
+      "appearances": 29
     },
     {
       "id": 50856,
@@ -92,7 +92,7 @@
       "photo": "https://media.api-sports.io/football/players/50856.png",
       "goals": 2,
       "assists": 0,
-      "appearances": 10
+      "appearances": 11
     },
     {
       "id": 171,
@@ -108,7 +108,7 @@
       "photo": "https://media.api-sports.io/football/players/1445.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 23
+      "appearances": 24
     },
     {
       "id": 326176,
@@ -116,7 +116,7 @@
       "photo": "https://media.api-sports.io/football/players/326176.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 19
+      "appearances": 20
     }
   ],
   "fixtures": [

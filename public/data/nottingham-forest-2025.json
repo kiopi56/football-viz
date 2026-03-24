@@ -42,17 +42,25 @@
       "id": 18746,
       "name": "M. Gibbs-White",
       "photo": "https://media.api-sports.io/football/players/18746.png",
-      "goals": 8,
+      "goals": 9,
       "assists": 2,
-      "appearances": 30
+      "appearances": 31
     },
     {
       "id": 2298,
       "name": "C. Hudson-Odoi",
       "photo": "https://media.api-sports.io/football/players/2298.png",
       "goals": 3,
-      "assists": 2,
-      "appearances": 28
+      "assists": 3,
+      "appearances": 29
+    },
+    {
+      "id": 9366,
+      "name": "Igor Jesus",
+      "photo": "https://media.api-sports.io/football/players/9366.png",
+      "goals": 3,
+      "assists": 3,
+      "appearances": 30
     },
     {
       "id": 22149,
@@ -60,7 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/22149.png",
       "goals": 2,
       "assists": 2,
-      "appearances": 22
+      "appearances": 23
     },
     {
       "id": 138908,
@@ -68,7 +76,7 @@
       "photo": "https://media.api-sports.io/football/players/138908.png",
       "goals": 2,
       "assists": 2,
-      "appearances": 30
+      "appearances": 31
     },
     {
       "id": 18931,
@@ -79,12 +87,12 @@
       "appearances": 8
     },
     {
-      "id": 9366,
-      "name": "Igor Jesus",
-      "photo": "https://media.api-sports.io/football/players/9366.png",
+      "id": 8598,
+      "name": "T. Awoniyi",
+      "photo": "https://media.api-sports.io/football/players/8598.png",
       "goals": 2,
-      "assists": 3,
-      "appearances": 29
+      "assists": 0,
+      "appearances": 12
     },
     {
       "id": 181806,
@@ -100,15 +108,15 @@
       "photo": "https://media.api-sports.io/football/players/363695.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 22
+      "appearances": 23
     },
     {
       "id": 138780,
       "name": "N. Williams",
       "photo": "https://media.api-sports.io/football/players/138780.png",
       "goals": 1,
-      "assists": 1,
-      "appearances": 29
+      "assists": 3,
+      "appearances": 30
     },
     {
       "id": 48648,
@@ -116,15 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/48648.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 22
-    },
-    {
-      "id": 8598,
-      "name": "T. Awoniyi",
-      "photo": "https://media.api-sports.io/football/players/8598.png",
-      "goals": 1,
-      "assists": 0,
-      "appearances": 11
+      "appearances": 23
     },
     {
       "id": 284428,
@@ -132,7 +132,7 @@
       "photo": "https://media.api-sports.io/football/players/284428.png",
       "goals": 1,
       "assists": 3,
-      "appearances": 23
+      "appearances": 24
     },
     {
       "id": 6056,
@@ -140,7 +140,7 @@
       "photo": "https://media.api-sports.io/football/players/6056.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 19
+      "appearances": 20
     },
     {
       "id": 199089,
