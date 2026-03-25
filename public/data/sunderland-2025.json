@@ -158,10 +158,10 @@
         "corners": 9,
         "possession": 60,
         "fouls": 8,
-        "yellow_cards": 0,
+        "yellow_cards": 1,
         "red_cards": null,
         "saves": 4,
-        "total_passes": 398,
+        "total_passes": 403,
         "pass_accuracy": 81
       },
       "stats_away": {
@@ -175,8 +175,8 @@
         "yellow_cards": 6,
         "red_cards": null,
         "saves": 3,
-        "total_passes": 257,
-        "pass_accuracy": 72
+        "total_passes": 262,
+        "pass_accuracy": 71
       }
     },
     {
