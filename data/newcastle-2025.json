@@ -51,16 +51,16 @@
       "name": "N. Woltemade",
       "photo": "https://media.api-sports.io/football/players/158054.png",
       "goals": 7,
-      "assists": 2,
-      "appearances": 26
+      "assists": 3,
+      "appearances": 27
     },
     {
       "id": 138787,
       "name": "A. Gordon",
       "photo": "https://media.api-sports.io/football/players/138787.png",
-      "goals": 5,
+      "goals": 6,
       "assists": 2,
-      "appearances": 24
+      "appearances": 25
     },
     {
       "id": 18778,
@@ -68,7 +68,7 @@
       "photo": "https://media.api-sports.io/football/players/18778.png",
       "goals": 5,
       "assists": 0,
-      "appearances": 29
+      "appearances": 30
     },
     {
       "id": 163189,
@@ -76,7 +76,7 @@
       "photo": "https://media.api-sports.io/football/players/163189.png",
       "goals": 4,
       "assists": 0,
-      "appearances": 27
+      "appearances": 28
     },
     {
       "id": 19163,
@@ -84,7 +84,7 @@
       "photo": "https://media.api-sports.io/football/players/19163.png",
       "goals": 3,
       "assists": 1,
-      "appearances": 25
+      "appearances": 26
     },
     {
       "id": 723,
@@ -92,7 +92,7 @@
       "photo": "https://media.api-sports.io/football/players/723.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 23
+      "appearances": 24
     },
     {
       "id": 315237,
@@ -100,7 +100,7 @@
       "photo": "https://media.api-sports.io/football/players/315237.png",
       "goals": 2,
       "assists": 0,
-      "appearances": 16
+      "appearances": 17
     },
     {
       "id": 19192,
@@ -108,7 +108,7 @@
       "photo": "https://media.api-sports.io/football/players/19192.png",
       "goals": 2,
       "assists": 1,
-      "appearances": 20
+      "appearances": 21
     },
     {
       "id": 328105,
@@ -124,7 +124,7 @@
       "photo": "https://media.api-sports.io/football/players/284492.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 23
+      "appearances": 24
     },
     {
       "id": 38734,
@@ -132,7 +132,7 @@
       "photo": "https://media.api-sports.io/football/players/38734.png",
       "goals": 1,
       "assists": 1,
-      "appearances": 17
+      "appearances": 18
     },
     {
       "id": 20649,
@@ -140,7 +140,7 @@
       "photo": "https://media.api-sports.io/football/players/20649.png",
       "goals": 1,
       "assists": 0,
-      "appearances": 12
+      "appearances": 13
     }
   ],
   "fixtures": [
@@ -166,10 +166,10 @@
         "corners": 9,
         "possession": 60,
         "fouls": 8,
-        "yellow_cards": 0,
+        "yellow_cards": 1,
         "red_cards": null,
         "saves": 4,
-        "total_passes": 398,
+        "total_passes": 403,
         "pass_accuracy": 81
       },
       "stats_away": {
@@ -183,8 +183,8 @@
         "yellow_cards": 6,
         "red_cards": null,
         "saves": 3,
-        "total_passes": 257,
-        "pass_accuracy": 72
+        "total_passes": 262,
+        "pass_accuracy": 71
       }
     },
     {

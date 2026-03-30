@@ -165,12 +165,12 @@
         "blocked_shots": 1,
         "corners": 3,
         "possession": 36,
-        "fouls": 5,
+        "fouls": 6,
         "yellow_cards": 0,
         "red_cards": null,
         "saves": 4,
-        "total_passes": 383,
-        "pass_accuracy": 82
+        "total_passes": 392,
+        "pass_accuracy": 81
       },
       "stats_away": {
         "shots_on_goal": 4,
@@ -183,7 +183,7 @@
         "yellow_cards": 2,
         "red_cards": null,
         "saves": 5,
-        "total_passes": 677,
+        "total_passes": 690,
         "pass_accuracy": 89
       }
     },
